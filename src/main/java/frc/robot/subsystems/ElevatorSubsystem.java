@@ -7,7 +7,13 @@ public ElevatorSubsystem (){
 public Command place(){
     return runOnce(null);
 }
- 
+ public void setHeight(){}
+public void getHeight(){}
+ public void coastOut(){}
+ public boolean isAtTarget(){
+    return true;
+ }
+public void sendData(){}
 @Override
 public void periodic() {
     // TODO Auto-generated method stub

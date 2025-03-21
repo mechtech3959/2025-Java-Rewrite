@@ -33,6 +33,7 @@ public class ClawSubsystem extends SubsystemBase {
   SparkMax feedMotor;
   MotionMagicVoltage axisMotion;
   MotionMagicVoltage zeroAxis;
+  double lastKnownAngle;
   
 
 public ClawSubsystem (){
@@ -41,6 +42,7 @@ public ClawSubsystem (){
   feedMotor = new SparkMax(30, MotorType.kBrushless);
   axisMotion = new MotionMagicVoltage(0);
   zeroAxis = new MotionMagicVoltage(0);
+  lastKnownAngle = 0;
   config();
 }
 public void config(){
@@ -67,6 +69,7 @@ public Command place(){
 //check this, cpp take TR?
   public void setAxis(Double pose){
     axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
+    lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
   }
   public double getAxis(){
     return axisMotor.getPosition().getValueAsDouble();
@@ -94,11 +97,17 @@ public Command place(){
         return false;}
   }
   public boolean acceptableAngle(){
-    return true;
-  }
+    if ((getAxis() == lastKnownAngle) ||
+    ((getAxis() >= lastKnownAngle - 5) &&
+     (getAxis() <= lastKnownAngle + 5))) {
+  return true;
+} else {
+  return false;
+}  }
 @Override
 public void periodic() {
   hasCoral();
+  getAxis();
     // TODO Auto-generated method stub
     super.periodic();
 }

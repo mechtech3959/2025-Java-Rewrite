@@ -17,7 +17,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -30,7 +29,12 @@ CANcoder elevatorEncoder;
 MotionMagicVoltage elevatorMotion;
 
 public ElevatorSubsystem (){
- }
+    masterM = new TalonFX(19, "CanBus");
+    slaveM = new TalonFX(20,"CanBus");
+    elevatorEncoder = new CANcoder(9,"CanBus");
+    config();
+}
+
 public Command place(){
     return runOnce(null);
 }

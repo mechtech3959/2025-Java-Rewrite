@@ -56,8 +56,12 @@ public void config(){
   slaveM.getConfigurator().apply(elevatorConfig);
   elevatorEncoder.getConfigurator().apply(elevatorEncConfig);
 }
-public void setHeight(){}
-public void getHeight(){}
+public void setHeight(double pos){
+    masterM.setControl(elevatorMotion.withPosition(pos).withEnableFOC(true).withUseTimesync(true).withOverrideBrakeDurNeutral(true));
+}
+public double getHeight(){
+    return masterM.getPosition().getValueAsDouble();
+}
  public void coastOut(){}
  public boolean isAtTarget(){
     return true;

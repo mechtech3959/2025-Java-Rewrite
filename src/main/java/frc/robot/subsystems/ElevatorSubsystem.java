@@ -57,12 +57,21 @@ public void config(){
   slaveM.getConfigurator().apply(elevatorConfig);
   elevatorEncoder.getConfigurator().apply(elevatorEncConfig);
 }
-public void setHeight(){}
-public void getHeight(){}
- public void coastOut(){}
- public boolean isAtTarget(){
-    return true;
+public void setHeight(double pose){
+    masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(1).withUseTimesync((1)));
+}
+public double getHeight(){
+    masterM.getPosition().getValueAsDouble();
+    slaveM.getPosition().getValueAsDouble();
+    return elevatorEncoder.getPosition().getValueAsDouble();
+}
+ public void coastOut(){
+    
  }
+ public boolean isAtTarget(){
+   // if(masterM.getPosition().getValueAsDouble() <= elevatorMotion.getPositionMeasure().baseUnitMagnitude());
+return true; 
+}
 public void sendData(){}
 @Override
 public void periodic() {

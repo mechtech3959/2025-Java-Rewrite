@@ -58,7 +58,7 @@ public void config(){
   elevatorEncoder.getConfigurator().apply(elevatorEncConfig);
 }
 public void setHeight(double pose){
-    masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(1).withUseTimesync((1)));
+    masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
 }
 public double getHeight(){
     masterM.getPosition().getValueAsDouble();

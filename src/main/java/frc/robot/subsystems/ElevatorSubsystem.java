@@ -28,6 +28,7 @@ TalonFX masterM;
 TalonFX slaveM;
 CANcoder elevatorEncoder;
 MotionMagicVoltage elevatorMotion;
+double target = 0;
 
 public ElevatorSubsystem (){
     masterM = new TalonFX(19, "CanBus");
@@ -69,13 +70,13 @@ public double getHeight(){
     
  }
  public boolean isAtTarget(){
-   // if(masterM.getPosition().getValueAsDouble() <= elevatorMotion.getPositionMeasure().baseUnitMagnitude());
-return true; 
+if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return false};
 }
 public void sendData(){}
 @Override
 public void periodic() {
-    // TODO Auto-generated method stub
+    isAtTarget();
+    
     super.periodic();
 }
 

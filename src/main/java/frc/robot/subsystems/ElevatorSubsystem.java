@@ -60,6 +60,7 @@ public void config(){
 }
 public void setHeight(double pose){
     masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+    target = elevatorMotion.Position; 
 }
 public double getHeight(){
     masterM.getPosition().getValueAsDouble();
@@ -70,7 +71,7 @@ public double getHeight(){
     
  }
  public boolean isAtTarget(){
-if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return false;};
+if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return false;}
 }
 public void sendData(){}
 @Override

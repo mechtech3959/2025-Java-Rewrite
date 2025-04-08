@@ -66,7 +66,6 @@ axisEncoder.getConfigurator().apply(axisEncConfig);
 public Command place(){
     return runOnce(null);
 }
-//check this, cpp take TR?
   public void setAxis(Double pose){
     axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
     lastKnownAngle = axisMotor.getPosition().getValueAsDouble();

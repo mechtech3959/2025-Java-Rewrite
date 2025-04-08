@@ -70,13 +70,13 @@ public double getHeight(){
     
  }
  public boolean isAtTarget(){
-if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return false};
+if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return false;};
 }
 public void sendData(){}
 @Override
 public void periodic() {
     isAtTarget();
-    
+
     super.periodic();
 }
 

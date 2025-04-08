@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -31,6 +33,7 @@ public class ClawSubsystem extends SubsystemBase {
   SparkMax feedMotor;
   MotionMagicVoltage axisMotion;
   MotionMagicVoltage zeroAxis;
+  double lastKnownAngle;
   
 
 public ClawSubsystem (){
@@ -39,6 +42,7 @@ public ClawSubsystem (){
   feedMotor = new SparkMax(30, MotorType.kBrushless);
   axisMotion = new MotionMagicVoltage(0);
   zeroAxis = new MotionMagicVoltage(0);
+  lastKnownAngle = 0;
   config();
 }
 public void config(){
@@ -62,21 +66,47 @@ axisEncoder.getConfigurator().apply(axisEncConfig);
 public Command place(){
     return runOnce(null);
 }
-  public void setAxis(){}
-  public void getAxis(){}
-  public void setIntake(){}
-  public void setFeed(){}
-  public void setFeedStop(){}  
+  public void setAxis(Double pose){
+    axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
+    lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
+  }
+  public double getAxis(){
+    return axisMotor.getPosition().getValueAsDouble();
+  }
+  public void setIntake(){
+    if(hasCoral()){
+      feedMotor.set(0);
+    }else{
+      feedMotor.set(-0.2);
+    }
+  }
+  public void setFeed(double output){
+    feedMotor.set(output);
+  }
+  public void setFeedStop(){
+    feedMotor.set(0);
+  }  
   public void setStaticIntake(){}
   public void setStaticOutake(){}  
+  
   public boolean hasCoral(){
-    return true;
+    if(feedMotor.getAnalog().getVoltage() >= 2.9 ){
+       return true;}
+       else{
+        return false;}
   }
   public boolean acceptableAngle(){
-    return true;
-  }
+    if ((getAxis() == lastKnownAngle) ||
+    ((getAxis() >= lastKnownAngle - 5) &&
+     (getAxis() <= lastKnownAngle + 5))) {
+  return true;
+} else {
+  return false;
+}  }
 @Override
 public void periodic() {
+  hasCoral();
+  getAxis();
     // TODO Auto-generated method stub
     super.periodic();
 }

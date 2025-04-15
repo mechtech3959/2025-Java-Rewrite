@@ -16,6 +16,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -40,16 +45,25 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    private final XboxController coJostick = new XboxController(1);
+    private final CommandXboxController coJoystick = new CommandXboxController(1);
+    // private final XboxController coJostick = new XboxController(1);
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final ClawSubsystem claw = new ClawSubsystem();
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
+    PrintCommand notA = new PrintCommand("NO");
+    PrintCommand A = new PrintCommand("NO");
+    public Command E(){
+       return new RunCommand(() -> elevator.setHeight(1));
+    }
+
+    // public SequentialCommandGroup(){}
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        
 
         configureBindings();
     }
@@ -89,7 +103,10 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-        coJostick.getAButtonPressed();
+        //coJoystick.a().onChange()
+        //TODO:
+        //ConditionalCommand Accept = new ConditionalCommand(this.E(),,()->claw.acceptableAngle());
+      //  coJoystick.a().onChange(Accept);
     }
 
     public Command getAutonomousCommand() {

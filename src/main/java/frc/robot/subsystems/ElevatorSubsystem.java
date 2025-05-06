@@ -53,7 +53,7 @@ public void config(){
     .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Brake))
     .withMotionMagic(motion)
     .withSlot0(slot)
-    (new CurrentLimitsConfigs().withSupplyCurrentLowerLimit(30).withSupplyCurrentLimit(60).withSupplyCurrentLowerTime(1));
+    .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLowerLimit(30).withSupplyCurrentLimit(60).withSupplyCurrentLowerTime(1));
   CANcoderConfiguration elevatorEncConfig = new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
   masterM.getConfigurator().apply(elevatorConfig);
   slaveM.getConfigurator().apply(elevatorConfig);

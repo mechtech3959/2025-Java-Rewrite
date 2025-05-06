@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
@@ -107,6 +108,7 @@ public class RobotContainer {
         //TODO:
         //ConditionalCommand Accept = new ConditionalCommand(this.E(),,()->claw.acceptableAngle());
       //  coJoystick.a().onChange(Accept);
+      coJoystick.a().whileTrue();
     }
 
     public Command getAutonomousCommand() {

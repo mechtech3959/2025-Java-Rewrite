@@ -35,7 +35,13 @@ public class ClawSubsystem extends SubsystemBase {
   MotionMagicVoltage axisMotion;
   MotionMagicVoltage zeroAxis;
   double lastKnownAngle;
-  
+ public enum clawState{
+    Intake,
+    Travel,
+    L1,
+    L4
+  };
+  clawState state;
 
 public ClawSubsystem (){
   axisMotor = new TalonFX(14, "CanBus");

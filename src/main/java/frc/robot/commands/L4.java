@@ -16,14 +16,20 @@ public class L4 extends Command {
     }
     @Override
     public void initialize(){
-
+        c.setAxis(20.0);
     } 
     @Override
     public void execute(){
-        
+        if(c.acceptableAngle() && c.hasCoral()){
+            e.setHeight(5.2);
+        }
     }
     @Override
     public boolean isFinished(){
-        return true;
+        if(e.isAtTarget()){
+            c.setAxis(20.00);
+        return true;}else{
+            return false; 
+        }
     }
 }

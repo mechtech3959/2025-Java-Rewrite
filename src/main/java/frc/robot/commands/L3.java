@@ -5,10 +5,10 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 
-public class L1 extends Command {
+public class L3 extends Command {
     public final ClawSubsystem c;
     public final ElevatorSubsystem e;
-    public L1(ClawSubsystem Claw,ElevatorSubsystem Elevator){
+    public L3(ClawSubsystem Claw,ElevatorSubsystem Elevator){
         c = Claw;
         e = Elevator;
         addRequirements(getRequirements());
@@ -32,3 +32,4 @@ public class L1 extends Command {
         }
     }
 }
+

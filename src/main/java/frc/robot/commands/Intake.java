@@ -5,22 +5,26 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 
-public class L1 extends Command {
+public class Intake extends Command {
     public final ClawSubsystem c;
     public final ElevatorSubsystem e;
-    public L1(ClawSubsystem Claw,ElevatorSubsystem Elevator){
+    public Intake(ClawSubsystem Claw,ElevatorSubsystem Elevator){
         c = Claw;
         e = Elevator;
         addRequirements(getRequirements());
     }
     @Override
     public void initialize(){
-        c.setAxis(20.0);
+        e.setHeight(0.0);
+
     } 
     @Override
     public void execute(){
-        if(c.acceptableAngle() && c.hasCoral()){
-            e.setHeight(1.0);
+        if(e.isAtTarget()){
+            c.setAxis(0.00);
+            do {
+                c.setIntake();
+            } while (!c.hasCoral());
         }
     }
     @Override

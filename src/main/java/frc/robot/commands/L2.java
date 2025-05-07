@@ -5,10 +5,10 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 
-public class L1 extends Command {
+public class L2 extends Command {
     public final ClawSubsystem c;
     public final ElevatorSubsystem e;
-    public L1(ClawSubsystem Claw,ElevatorSubsystem Elevator){
+    public L2(ClawSubsystem Claw,ElevatorSubsystem Elevator){
         c = Claw;
         e = Elevator;
         addRequirements(getRequirements());
@@ -20,7 +20,7 @@ public class L1 extends Command {
     @Override
     public void execute(){
         if(c.acceptableAngle() && c.hasCoral()){
-            e.setHeight(1.0);
+            e.setHeight(2.3);
         }
     }
     @Override

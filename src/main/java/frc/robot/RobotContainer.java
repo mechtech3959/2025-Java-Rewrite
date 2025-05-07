@@ -30,6 +30,14 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 
+import frc.robot.commands.Intake;
+import frc.robot.commands.L1;
+import frc.robot.commands.L2;
+import frc.robot.commands.L3;
+import frc.robot.commands.L4;
+import frc.robot.commands.Zero;
+import frc.robot.commands.travel;
+
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -55,12 +63,13 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
     PrintCommand notA = new PrintCommand("NO");
     PrintCommand A = new PrintCommand("NO");
-    public Command E(){
-       return new RunCommand(() -> elevator.setHeight(1));
-    }
 
-    // public SequentialCommandGroup(){}
-
+    L1 l1;
+    L2 l2;
+    L3 l3;
+    L4 l4; 
+    Zero zero;
+    Intake intake;
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -108,7 +117,12 @@ public class RobotContainer {
         //TODO:
         //ConditionalCommand Accept = new ConditionalCommand(this.E(),,()->claw.acceptableAngle());
       //  coJoystick.a().onChange(Accept);
-      coJoystick.a().whileTrue();
+      coJoystick.a().whileTrue(zero);
+      coJoystick.b().whileTrue(l2);
+      coJoystick.x().whileTrue(l3);
+      coJoystick.y().whileTrue(l4);
+      coJoystick.start().onChange(intake);
+      
     }
 
     public Command getAutonomousCommand() {

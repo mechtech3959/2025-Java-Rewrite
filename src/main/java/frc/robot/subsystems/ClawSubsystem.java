@@ -115,7 +115,6 @@ public Command place(){
 public void periodic() {
   hasCoral();
   getAxis();
-    // TODO Auto-generated method stub
     super.periodic();
 }
 

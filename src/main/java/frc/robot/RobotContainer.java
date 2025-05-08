@@ -117,12 +117,12 @@ public class RobotContainer {
         //TODO:
         //ConditionalCommand Accept = new ConditionalCommand(this.E(),,()->claw.acceptableAngle());
       //  coJoystick.a().onChange(Accept);
-      coJoystick.a().whileTrue(zero);
-      coJoystick.b().whileTrue(l2);
-      coJoystick.x().whileTrue(l3);
-      coJoystick.y().whileTrue(l4);
+      coJoystick.a().onChange(zero);
+      coJoystick.b().onChange(l2);
+      coJoystick.x().onChange(l3);
+      coJoystick.y().onChange(l4);
       coJoystick.start().onChange(intake);
-      
+
     }
 
     public Command getAutonomousCommand() {

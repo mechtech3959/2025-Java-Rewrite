@@ -37,6 +37,7 @@ import frc.robot.commands.L3;
 import frc.robot.commands.L4;
 import frc.robot.commands.Zero;
 import frc.robot.commands.travel;
+@SuppressWarnings("unused")
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -55,7 +56,6 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController coJoystick = new CommandXboxController(1);
-    // private final XboxController coJostick = new XboxController(1);
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final ClawSubsystem claw = new ClawSubsystem();
@@ -113,10 +113,6 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-        //coJoystick.a().onChange()
-        //TODO:
-        //ConditionalCommand Accept = new ConditionalCommand(this.E(),,()->claw.acceptableAngle());
-      //  coJoystick.a().onChange(Accept);
       coJoystick.a().onChange(zero);
       coJoystick.b().onChange(l2);
       coJoystick.x().onChange(l3);

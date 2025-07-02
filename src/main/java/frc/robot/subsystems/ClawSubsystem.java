@@ -105,32 +105,20 @@ public Command place(){
        else{
         return false;}
   }
-  // this is really dumb.. conditional commands requires a boolean supplier which activates upon true statements
-  public BooleanSupplier coral;
-  public void supNoCoral(){
-    if(feedMotor.getAnalog().getVoltage() >= 2.9 ){
-        coral = () -> false; }
-      else{
-       coral = () -> true;}
-
-  }
-  public BooleanSupplier accept;
-  public boolean acceptableAngle(){
+  
+   public boolean acceptableAngle(){
     if ((getAxis() == lastKnownAngle) ||
     ((getAxis() >= lastKnownAngle - 5) &&
      (getAxis() <= lastKnownAngle + 5))) {
-      accept = ()->true;
-      return true;
+       return true;
 } else {
-  accept = ()->false;
-  return false;
+   return false;
 }  }
     
 @Override
 public void periodic() {
   hasCoral();
-  supNoCoral();
-  getAxis();
+   getAxis();
   acceptableAngle();
     super.periodic();
 }

@@ -16,11 +16,12 @@ public scoreL1(ElevatorSubsystem e, ClawSubsystem c){
     elevator = e;
     claw = c;
     addCommands(
-    Commands.runOnce(() -> claw.setAxis(20.0)),
-    Commands.runOnce(() -> elevator.setHeight(1.0)).onlyIf(claw.accept),
+    Commands.runOnce(() -> claw.setAxis(30.0)),
+    Commands.runOnce(() -> elevator.setHeight(1.0)).onlyIf(() -> claw.acceptableAngle()),
     Commands.runOnce(() -> claw.setFeed(-0.2)), 
-    Commands.waitUntil(claw.coral),
-    Commands.parallel( Commands.runOnce(() -> claw.setFeed(0.0)), Commands.runOnce(() -> elevator.setHeight(0.0)))
+    Commands.waitUntil(() -> !claw.hasCoral()),
+    Commands.parallel( Commands.runOnce(() -> claw.setFeed(0.0)), Commands.runOnce(() -> elevator.setHeight(0.0))),
+    Commands.runOnce(()-> claw.setAxis(0.0)).onlyIf(()-> elevator.isAtTarget())
    ); 
 }
 

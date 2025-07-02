@@ -18,6 +18,9 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -102,19 +105,33 @@ public Command place(){
        else{
         return false;}
   }
+  // this is really dumb.. conditional commands requires a boolean supplier which activates upon true statements
+  public BooleanSupplier coral;
+  public void supNoCoral(){
+    if(feedMotor.getAnalog().getVoltage() >= 2.9 ){
+        coral = () -> false; }
+      else{
+       coral = () -> true;}
+
+  }
+  public BooleanSupplier accept;
   public boolean acceptableAngle(){
     if ((getAxis() == lastKnownAngle) ||
     ((getAxis() >= lastKnownAngle - 5) &&
      (getAxis() <= lastKnownAngle + 5))) {
-  return true;
+      accept = ()->true;
+      return true;
 } else {
+  accept = ()->false;
   return false;
 }  }
     
 @Override
 public void periodic() {
   hasCoral();
+  supNoCoral();
   getAxis();
+  acceptableAngle();
     super.periodic();
 }
 

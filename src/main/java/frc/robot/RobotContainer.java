@@ -6,16 +6,22 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -59,6 +65,7 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController coJoystick = new CommandXboxController(1);
+    private final XboxController cc = new XboxController(2);
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final ClawSubsystem claw = new ClawSubsystem();
@@ -77,8 +84,8 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+         configureBindings();
 
-        configureBindings();
     }
 
     private void configureBindings() {
@@ -118,14 +125,29 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-        coJoystick.a().onChange(zero);
-        coJoystick.b().onChange(l2);
-        coJoystick.x().onChange(l3);
-        coJoystick.y().onChange(l4);
-       coJoystick.start().onChange(intake);
-
-    }
-
+        //coJoystick.a().onChange(zero);
+        //coJoystick.b().onChange(l2);
+       coJoystick.x().onChange(Commands.runOnce( () -> elevator.setHeight(1)));
+       coJoystick.a().onChange(Commands.runOnce( () -> elevator.setHeight(0)));
+       coJoystick.y().onChange(Commands.runOnce( () -> elevator.setHeight(5)));
+       
+        
+ 
+//  coJoystick.y().onChange(l4);
+      // coJoystick.start().onChange(intake);
+      
+     }
+ 
+public void periodic(){
+        Rotation3d c = new Rotation3d(drivetrain.getState().RawHeading);
+       Translation3d t = new Translation3d(drivetrain.getState().Pose.getTranslation() );
+        Pose3d m = new Pose3d(t,c);
+       Translation3d q = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.elevatorSim.getPositionMeters());
+        Logger.recordOutput("myPose", drivetrain.getState().Pose);
+        Logger.recordOutput("Myposearray",m  );
+        Logger.recordOutput("Eout", q);
+ 
+}
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();

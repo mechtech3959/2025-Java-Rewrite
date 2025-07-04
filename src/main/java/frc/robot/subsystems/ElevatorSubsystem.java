@@ -5,6 +5,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -12,6 +21,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -23,6 +34,11 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import edu.wpi.first.hal.simulation.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
 TalonFX masterM;
@@ -30,14 +46,16 @@ TalonFX slaveM;
 CANcoder elevatorEncoder;
 MotionMagicVoltage elevatorMotion;
 double target = 0;
-
-public ElevatorSubsystem (){
+  public ElevatorSubsystem (){
     masterM = new TalonFX(19, "CanBus");
     slaveM = new TalonFX(20,"CanBus");
     elevatorEncoder = new CANcoder(9,"CanBus");
     config();
-}
+ TalonFXSimState simMaster = masterM.getSimState();
+TalonFXSimState simSlave = slaveM.getSimState();
+CANcoderSimState simEncoder = elevatorEncoder.getSimState();
 
+}
 public Command place(){
     return runOnce(null);
 }
@@ -61,8 +79,11 @@ public void config(){
   elevatorEncoder.getConfigurator().apply(elevatorEncConfig);
 }
 public void setHeight(double pose){
-    masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
-    target = elevatorMotion.Position; 
+if(RobotBase.isReal()){    masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+    target = elevatorMotion.Position;}
+    else{
+        target = pose;
+    } 
 }
 public double getHeight(){
     masterM.getPosition().getValueAsDouble();
@@ -76,6 +97,28 @@ public double getHeight(){
 if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return false;}
 }
 
+
+
+public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, -0.001, 2.33, true, 0, 0.1,0.0);
+Color8Bit blue = new Color8Bit(0,0,255);
+public Mechanism2d visElevator = new Mechanism2d(20, 50,blue );
+MechanismRoot2d root = visElevator.getRoot("elev",10,0);
+MechanismLigament2d lig = root.append(new MechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
+public void simulationInit(){
+ elevatorSim.setInputVoltage(12);
+   elevatorSim.setInput(0); 
+    
+}
+public void simSetHeight(double rot){}
+public void simulationPeriodic(){
+ lig.setLength(target);
+ elevatorSim.setState(target ,  1);
+ elevatorSim.update(0.2);
+        SmartDashboard.putNumber("Elevator", elevatorSim.getPositionMeters());
+
+ SmartDashboard.putData("2dev", visElevator);
+  
+}
 void sendData(){}
 
 @Override

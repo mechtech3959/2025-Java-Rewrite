@@ -28,6 +28,13 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
+import java.util.logging.Logger;
+
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -99,11 +106,16 @@ if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return 
 
 
 
-public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, -0.001, 2.33, true, 0, 0.1,0.0);
+public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 2.33, true, 0.0, 0.0,0.0);
 Color8Bit blue = new Color8Bit(0,0,255);
-public Mechanism2d visElevator = new Mechanism2d(20, 50,blue );
-MechanismRoot2d root = visElevator.getRoot("elev",10,0);
-MechanismLigament2d lig = root.append(new MechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
+public LoggedMechanism2d visElevator = new LoggedMechanism2d(20, 50,blue );
+LoggedMechanismRoot2d root = visElevator.getRoot("elev",10,0);
+LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
+/*
+public LoggedMechanism2d visElevator = new LoggedMechanism2d(20, 50,blue );
+LoggedMechanismRoot2d root = visElevator.getRoot("elev",10,0);
+LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
+ */
 public void simulationInit(){
  elevatorSim.setInputVoltage(12);
    elevatorSim.setInput(0); 
@@ -117,6 +129,7 @@ public void simulationPeriodic(){
         SmartDashboard.putNumber("Elevator", elevatorSim.getPositionMeters());
 
  SmartDashboard.putData("2dev", visElevator);
+  
   
 }
 void sendData(){}

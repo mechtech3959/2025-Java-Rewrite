@@ -143,9 +143,13 @@ public void periodic(){
        Translation3d t = new Translation3d(drivetrain.getState().Pose.getTranslation() );
         Pose3d m = new Pose3d(t,c);
        Translation3d q = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.elevatorSim.getPositionMeters());
-        Logger.recordOutput("myPose", drivetrain.getState().Pose);
-        Logger.recordOutput("Myposearray",m  );
+        Pose3d a = new Pose3d(q, c);
+       Logger.recordOutput("myPose", drivetrain.getState().Pose);
+        Logger.recordOutput("Myposearray",a  );
         Logger.recordOutput("Eout", q);
+        Logger.recordOutput("ele", elevator.visElevator);
+       // Logger.recordOutput("ele/pos", );
+        Logger.recordOutput("final comp", new Pose3d[] { new Pose3d(0,0,0.04,new Rotation3d(3.14159,0,1.57)), new Pose3d(0,0,0.041,new Rotation3d(3.14159,0,1.57))});
  
 }
     public Command getAutonomousCommand() {

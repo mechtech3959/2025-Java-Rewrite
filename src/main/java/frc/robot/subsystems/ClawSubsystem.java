@@ -7,6 +7,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.hal.simulation.*;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -19,6 +31,11 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import java.util.function.BooleanSupplier;
 
@@ -86,8 +103,12 @@ public class ClawSubsystem extends SubsystemBase {
 
   public void setAxis(Double pose) {
     axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
-    lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
-  }
+    if(RobotBase.isReal()){lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
+    }else{
+
+      lastKnownAngle = pose;
+
+    }}
 
   public double getAxis() {
     return axisMotor.getPosition().getValueAsDouble();
@@ -131,6 +152,24 @@ public class ClawSubsystem extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
+      SingleJointedArmSim.estimateMOI(1, 12), 1, 0, 270, true, 0, 0.0,0.0);
+  public LoggedMechanism2d clawsim = new LoggedMechanism2d(5, 10, new Color8Bit(0,0,255));
+  LoggedMechanismRoot2d root = clawsim.getRoot("cl", 10, 0);
+  LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("cl", 10, 90));
+
+  public void simulationInit() {
+    sim.setInputVoltage(12);
+    sim.getInput(0);
+  }
+
+  public void simulationPeriodic() {
+    sim.update(0.05);
+    sim.setState(lastKnownAngle, 1);
+    lig.setAngle(lastKnownAngle);
+SmartDashboard.putData("cc" , clawsim);
   }
 
   @Override

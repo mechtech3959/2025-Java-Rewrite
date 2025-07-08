@@ -137,19 +137,29 @@ public class RobotContainer {
       // coJoystick.start().onChange(intake);
       
      }
+     
  
 public void periodic(){
+        double x,y = 0;
+        x =+ joystick.getLeftX();
+        y =+ joystick.getLeftY();
         Rotation3d c = new Rotation3d(drivetrain.getState().RawHeading);
        Translation3d t = new Translation3d(drivetrain.getState().Pose.getTranslation() );
         Pose3d m = new Pose3d(t,c);
-       Translation3d q = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.elevatorSim.getPositionMeters());
-        Pose3d a = new Pose3d(q, c);
-       Logger.recordOutput("myPose", drivetrain.getState().Pose);
-        Logger.recordOutput("Myposearray",a  );
+             Pose3d g = new Pose3d(drivetrain.getState().Pose);
+
+          Translation3d q = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.elevatorSim.getPositionMeters());
+       Translation3d carriage = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.carriagElevatorSim.getPositionMeters());
+    //   Pose3d q = new Pose3d(-x,-y,elevator.elevatorSim.getPositionMeters(),c);
+      // Pose3d carriage = new Pose3d(-x,-y,elevator.carriagElevatorSim.getPositionMeters(),c);
+       Pose3d a = new Pose3d(q, c);
+       Pose3d b = new Pose3d(carriage,c);
+       Logger.recordOutput("myPose",  g);
+        Logger.recordOutput("Myposearray", a, b );
         Logger.recordOutput("Eout", q);
         Logger.recordOutput("ele", elevator.visElevator);
        // Logger.recordOutput("ele/pos", );
-        Logger.recordOutput("final comp", new Pose3d[] { new Pose3d(0,0,0.04,new Rotation3d(3.14159,0,1.57)), new Pose3d(0,0,0.041,new Rotation3d(3.14159,0,1.57))});
+        Logger.recordOutput("final comp", new Pose3d[] { new Pose3d(0,0,elevator.elevatorSim.getPositionMeters(),new Rotation3d(0,0,0)), new Pose3d(0,0,elevator.carriagElevatorSim.getPositionMeters(),new Rotation3d(0,0,0))});
  
 }
     public Command getAutonomousCommand() {

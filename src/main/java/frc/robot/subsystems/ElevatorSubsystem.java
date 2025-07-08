@@ -106,7 +106,8 @@ if(masterM.getPosition().getValueAsDouble() == target){return true;}else{return 
 
 
 
-public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 2.33, true, 0.0, 0.0,0.0);
+public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1, true, 0.0, 0.0,0.0);
+public ElevatorSim carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1.9, true, 0.0, 0.0,0.0);
 Color8Bit blue = new Color8Bit(0,0,255);
 public LoggedMechanism2d visElevator = new LoggedMechanism2d(20, 50,blue );
 LoggedMechanismRoot2d root = visElevator.getRoot("elev",10,0);
@@ -119,13 +120,16 @@ LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("elev"
 public void simulationInit(){
  elevatorSim.setInputVoltage(12);
    elevatorSim.setInput(0); 
-    
+   carriagElevatorSim.setInputVoltage(12);
+    carriagElevatorSim.setInput(0);
 }
 public void simSetHeight(double rot){}
 public void simulationPeriodic(){
  lig.setLength(target);
  elevatorSim.setState(target ,  1);
- elevatorSim.update(0.2);
+ carriagElevatorSim.setState(target, 1);
+ elevatorSim.update(0.05);
+ carriagElevatorSim.update(0.05);
         SmartDashboard.putNumber("Elevator", elevatorSim.getPositionMeters());
 
  SmartDashboard.putData("2dev", visElevator);

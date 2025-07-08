@@ -139,7 +139,9 @@ public class RobotContainer {
 
                 drivetrain.registerTelemetry(logger::telemeterize);
                 // coJoystick.a().onChange(zero);
-                // coJoystick.b().onChange(l2);
+                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(1.57)));
+                coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
+
                 coJoystick.x().onChange(Commands.runOnce(() -> elevator.setHeight(1)));
                 coJoystick.a().onChange(Commands.runOnce(() -> elevator.setHeight(0)));
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5)));
@@ -176,7 +178,13 @@ public class RobotContainer {
                                 new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
                                                 new Rotation3d(0, 0, 0)),
-                                new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)) });
+                                new Pose3d(-claw.sim.getAngleRads() * 0.26 , 0, elevator.carriagElevatorSim.getPositionMeters() +claw.sim.getAngleRads() * 0.35 , new Rotation3d(0, claw.sim.getAngleRads(), 0)) });
+
+Logger.recordOutput("cal", new Pose3d[] {
+        new Pose3d(0, 0,  0, new Rotation3d(0, 0, 0)),
+        new Pose3d(0, 0,  0,
+                        new Rotation3d(0, 0, 0)),
+         });
 
         }
 

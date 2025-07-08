@@ -48,122 +48,140 @@ import frc.robot.commands.travel;
 @SuppressWarnings("unused")
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity
+        private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+                                                                                      // speed
+        private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
+                                                                                          // second
+                                                                                          // max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        /* Setting up bindings for necessary control of the swerve drive platform */
+        private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
+                                                                                 // motors
+        private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+        private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+        private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+        private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController coJoystick = new CommandXboxController(1);
-    private final XboxController cc = new XboxController(2);
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
-    public final ClawSubsystem claw = new ClawSubsystem();
-    /* Path follower */
-    private final SendableChooser<Command> autoChooser;
-    PrintCommand notA = new PrintCommand("NO");
-    PrintCommand A = new PrintCommand("NO");
-    scoreL1 scorel1;
-    L1 l1;
-    L2 l2;
-    L3 l3;
-    L4 l4;
-    Zero zero;
-    Intake intake;
+        private final CommandXboxController joystick = new CommandXboxController(0);
+        private final CommandXboxController coJoystick = new CommandXboxController(1);
+        private final XboxController cc = new XboxController(2);
+        public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+        public final ClawSubsystem claw = new ClawSubsystem();
+        /* Path follower */
+        private final SendableChooser<Command> autoChooser;
+        PrintCommand notA = new PrintCommand("NO");
+        PrintCommand A = new PrintCommand("NO");
+        scoreL1 scorel1;
+        L1 l1;
+        L2 l2;
+        L3 l3;
+        L4 l4;
+        Zero zero;
+        Intake intake;
 
-    public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
-        SmartDashboard.putData("Auto Mode", autoChooser);
-         configureBindings();
+        public RobotContainer() {
+                autoChooser = AutoBuilder.buildAutoChooser("Tests");
+                SmartDashboard.putData("Auto Mode", autoChooser);
+                configureBindings();
 
-    }
+        }
 
-    private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-                // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                                   // negative Y
-                                                                                                   // (forward)
-                        .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with
-                                                                                    // negative X (left)
-                ));
+        private void configureBindings() {
+                // Note that X is defined as forward according to WPILib convention,
+                // and Y is defined as to the left according to WPILib convention.
+                drivetrain.setDefaultCommand(
+                                // Drivetrain will execute this command periodically
+                                drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive
+                                                                                                                   // forward
+                                                                                                                   // with
+                                                                                                                   // negative
+                                                                                                                   // Y
+                                                                                                                   // (forward)
+                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with
+                                                                                                // negative X (left)
+                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive
+                                                                                                            // counterclockwise
+                                                                                                            // with
+                                                                                                            // negative
+                                                                                                            // X (left)
+                                ));
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(
-                () -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+                joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+                joystick.b().whileTrue(drivetrain.applyRequest(
+                                () -> point.withModuleDirection(
+                                                new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-        joystick.pov(180)
-                .whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+                joystick.pov(0).whileTrue(
+                                drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+                joystick.pov(180)
+                                .whileTrue(drivetrain.applyRequest(
+                                                () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        /*
-         * joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction
-         * .kForward));
-         * joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction
-         * .kReverse));
-         * joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(
-         * Direction.kForward));
-         * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
-         * Direction.kReverse));
-         */
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+                // Run SysId routines when holding back/start and X/Y.
+                // Note that each routine should be run exactly once in a single log.
+                /*
+                 * joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction
+                 * .kForward));
+                 * joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction
+                 * .kReverse));
+                 * joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(
+                 * Direction.kForward));
+                 * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
+                 * Direction.kReverse));
+                 */
+                // reset the field-centric heading on left bumper press
+                joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
-        //coJoystick.a().onChange(zero);
-        //coJoystick.b().onChange(l2);
-       coJoystick.x().onChange(Commands.runOnce( () -> elevator.setHeight(1)));
-       coJoystick.a().onChange(Commands.runOnce( () -> elevator.setHeight(0)));
-       coJoystick.y().onChange(Commands.runOnce( () -> elevator.setHeight(5)));
-       
-        
- 
-//  coJoystick.y().onChange(l4);
-      // coJoystick.start().onChange(intake);
-      
-     }
-     
- 
-public void periodic(){
-        double x,y = 0;
-        x =+ joystick.getLeftX();
-        y =+ joystick.getLeftY();
-        Rotation3d c = new Rotation3d(drivetrain.getState().RawHeading);
-       Translation3d t = new Translation3d(drivetrain.getState().Pose.getTranslation() );
-        Pose3d m = new Pose3d(t,c);
-             Pose3d g = new Pose3d(drivetrain.getState().Pose);
+                drivetrain.registerTelemetry(logger::telemeterize);
+                // coJoystick.a().onChange(zero);
+                // coJoystick.b().onChange(l2);
+                coJoystick.x().onChange(Commands.runOnce(() -> elevator.setHeight(1)));
+                coJoystick.a().onChange(Commands.runOnce(() -> elevator.setHeight(0)));
+                coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5)));
 
-          Translation3d q = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.elevatorSim.getPositionMeters());
-       Translation3d carriage = new Translation3d(drivetrain.getState().Pose.getX(),drivetrain.getState().Pose.getY(),elevator.carriagElevatorSim.getPositionMeters());
-    //   Pose3d q = new Pose3d(-x,-y,elevator.elevatorSim.getPositionMeters(),c);
-      // Pose3d carriage = new Pose3d(-x,-y,elevator.carriagElevatorSim.getPositionMeters(),c);
-       Pose3d a = new Pose3d(q, c);
-       Pose3d b = new Pose3d(carriage,c);
-       Logger.recordOutput("myPose",  g);
-        Logger.recordOutput("Myposearray", a, b );
-        Logger.recordOutput("Eout", q);
-        Logger.recordOutput("ele", elevator.visElevator);
-       // Logger.recordOutput("ele/pos", );
-        Logger.recordOutput("final comp", new Pose3d[] { new Pose3d(0,0,elevator.elevatorSim.getPositionMeters(),new Rotation3d(0,0,0)), new Pose3d(0,0,elevator.carriagElevatorSim.getPositionMeters(),new Rotation3d(0,0,0))});
- 
-}
-    public Command getAutonomousCommand() {
-        /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
-    }
+                // coJoystick.y().onChange(l4);
+                // coJoystick.start().onChange(intake);
+
+        }
+
+        public void periodic() {
+                double x, y = 0;
+                x = +joystick.getLeftX();
+                y = +joystick.getLeftY();
+                Rotation3d c = new Rotation3d(drivetrain.getState().RawHeading);
+                Translation3d t = new Translation3d(drivetrain.getState().Pose.getTranslation());
+                Pose3d m = new Pose3d(t, c);
+                Pose3d g = new Pose3d(drivetrain.getState().Pose);
+
+                Translation3d q = new Translation3d(drivetrain.getState().Pose.getX(),
+                                drivetrain.getState().Pose.getY(), elevator.elevatorSim.getPositionMeters());
+                Translation3d carriage = new Translation3d(drivetrain.getState().Pose.getX(),
+                                drivetrain.getState().Pose.getY(), elevator.carriagElevatorSim.getPositionMeters());
+                // Pose3d q = new Pose3d(-x,-y,elevator.elevatorSim.getPositionMeters(),c);
+                // Pose3d carriage = new
+                // Pose3d(-x,-y,elevator.carriagElevatorSim.getPositionMeters(),c);
+                Pose3d a = new Pose3d(q, c);
+                Pose3d b = new Pose3d(carriage, c);
+                Logger.recordOutput("myPose", g);
+                Logger.recordOutput("Myposearray", a, b);
+                Logger.recordOutput("Eout", q);
+                Logger.recordOutput("ele", elevator.visElevator);
+                // Logger.recordOutput("ele/pos", );
+                Logger.recordOutput("final comp", new Pose3d[] {
+                                new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)),
+                                new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
+                                                new Rotation3d(0, 0, 0)),
+                                new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)) });
+
+        }
+
+        public Command getAutonomousCommand() {
+                /* Run the path selected from the auto chooser */
+                return autoChooser.getSelected();
+        }
 }

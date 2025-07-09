@@ -6,6 +6,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.regex.MatchResult;
+
+import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -139,7 +142,7 @@ public class RobotContainer {
 
                 drivetrain.registerTelemetry(logger::telemeterize);
                 // coJoystick.a().onChange(zero);
-                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(1.57)));
+                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(2.67)));
                 coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
                 coJoystick.x().onChange(Commands.runOnce(() -> elevator.setHeight(1)));
@@ -167,6 +170,20 @@ public class RobotContainer {
                 // Pose3d q = new Pose3d(-x,-y,elevator.elevatorSim.getPositionMeters(),c);
                 // Pose3d carriage = new
                 // Pose3d(-x,-y,elevator.carriagElevatorSim.getPositionMeters(),c);
+                // using a sin reggression model translation should be
+                 double modelY =0.547343*Math.sin((10.77753 * claw.sim.getAngleRads())-0.466346)+0.821554;
+           //     double modelY = 0.547343*Math.sin((10.77753 * claw.sim.getAngleRads())-0.466346)+0.821554;
+            //    double modelY = 0.423617 * Math.sin((25.96233* claw.sim.getAngleRads())-0.650119)+0.360771;
+          //  double modelY = 0.396687 * Math.sin((25.87504 * claw.sim.getAngleRads())-0.609115)+0.377282; 
+          //  double modelY = 0.41066 * Math.sin((25.92268* claw.sim.getAngleRads())-0.63127)+0.368711;
+          double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554/0.547343);
+         modelX=+ 0.466346/10.77753;
+            Translation3d robotOrigin = new Translation3d(0,0,0);
+                double finalH;
+                
+                Pose3d clawPose3d = new Pose3d(robotOrigin.plus(new Translation3d(-elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, claw.sim.getAngleRads(),0) )),
+                new Rotation3d(0, claw.sim.getAngleRads(),0)
+                );
                 Pose3d a = new Pose3d(q, c);
                 Pose3d b = new Pose3d(carriage, c);
                 Logger.recordOutput("myPose", g);
@@ -174,17 +191,20 @@ public class RobotContainer {
                 Logger.recordOutput("Eout", q);
                 Logger.recordOutput("ele", elevator.visElevator);
                 // Logger.recordOutput("ele/pos", );
+                System.out.print(modelX);
                 Logger.recordOutput("final comp", new Pose3d[] {
                                 new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
                                                 new Rotation3d(0, 0, 0)),
-                                new Pose3d(-claw.sim.getAngleRads() * 0.26 , 0, elevator.carriagElevatorSim.getPositionMeters() +claw.sim.getAngleRads() * 0.35 , new Rotation3d(0, claw.sim.getAngleRads(), 0)) });
+                              new Pose3d(0, 0, 0, new Rotation3d(0, claw.sim.getAngleRads(), 0))
+                });
 
 Logger.recordOutput("cal", new Pose3d[] {
         new Pose3d(0, 0,  0, new Rotation3d(0, 0, 0)),
         new Pose3d(0, 0,  0,
                         new Rotation3d(0, 0, 0)),
          });
+ 
 
         }
 

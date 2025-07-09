@@ -37,6 +37,8 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -155,20 +157,21 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
-      SingleJointedArmSim.estimateMOI(1, 12), 1, 0, 270, true, 0, 0.0,0.0);
-  public LoggedMechanism2d clawsim = new LoggedMechanism2d(5, 10, new Color8Bit(0,0,255));
-  LoggedMechanismRoot2d root = clawsim.getRoot("cl", 10, 0);
-  LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("cl", 10, 90));
-
+      SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 270, true, 0, 0.0,0.0);
+  public LoggedMechanism2d clawsim = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0,0,255));
+    LoggedMechanismRoot2d root = clawsim.getRoot("cl", 0.3, 0.4);
+ public LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("cl", 0.1, 90));
+  public LoggedMechanismLigament2d flat =  root.append(new LoggedMechanismLigament2d("flat", 0.2, 0));
   public void simulationInit() {
     sim.setInputVoltage(12);
     sim.getInput(0);
   }
 
   public void simulationPeriodic() {
+    double rad = ((lastKnownAngle * (180/Math.PI)) - 90) * (Math.PI/180);
     sim.update(0.05);
     sim.setState(lastKnownAngle, 1);
-    lig.setAngle(lastKnownAngle);
+    lig.setAngle(lastKnownAngle * (180/Math.PI));
 SmartDashboard.putData("cc" , clawsim);
   }
 

@@ -10,9 +10,9 @@ public class scoreL1 extends SequentialCommandGroup {
     public final ElevatorSubsystem elevator;
     public final ClawSubsystem claw;
 
-    public scoreL1(ElevatorSubsystem e, ClawSubsystem c) {
-        elevator = e;
-        claw = c;
+    public scoreL1(ElevatorSubsystem _ElevatorSubsystem, ClawSubsystem _ClawSubsystem) {
+        elevator = _ElevatorSubsystem;
+        claw = _ClawSubsystem;
         addCommands(
                 Commands.runOnce(() -> claw.setAxis(0.349)),
                 Commands.runOnce(() -> elevator.setHeight(1.0)).onlyIf(() -> claw.acceptableAngle()),

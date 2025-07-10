@@ -35,10 +35,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
-
+import frc.robot.subsystems.Claw.ClawSubsystem;
+import frc.robot.subsystems.Claw.ClawSubsystem.clawState;
 import frc.robot.commands.Intake;
 import frc.robot.commands.scoreL1;
 import frc.robot.commands.L1;
@@ -142,22 +142,40 @@ public class RobotContainer {
 
                 drivetrain.registerTelemetry(logger::telemeterize);
                 // coJoystick.a().onChange(zero);
-                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(2.67)));
+                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(20.0)));
                 coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
-                coJoystick.x().onChange(Commands.runOnce(() -> elevator.setHeight(1)));
-                coJoystick.a().onChange(Commands.runOnce(() -> elevator.setHeight(0)));
+                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(40.0)));
+                coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(150.0)));
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5)));
 
                 // coJoystick.y().onChange(l4);
                 // coJoystick.start().onChange(intake);
 
         }
+                double finalH =0;
+               double finalX =0;
 
         public void periodic() {
-                double x, y = 0;
-                x = +joystick.getLeftX();
-                y = +joystick.getLeftY();
+                double p = claw.lastKnownAngle;
+                if(p == 0){
+                        finalH =0;
+                        finalX =0;
+                }else if(p == 20){
+                        finalH =0.1415;
+                        finalX =-0.13;
+
+
+                }else if(p == 40){
+                        finalH =-0.08;
+                        finalX =0.318;
+
+                }else if(p == 150){
+                        finalH =0.72;
+                        finalX =0.335;
+
+                }
+
                 Rotation3d c = new Rotation3d(drivetrain.getState().RawHeading);
                 Translation3d t = new Translation3d(drivetrain.getState().Pose.getTranslation());
                 Pose3d m = new Pose3d(t, c);
@@ -172,36 +190,21 @@ public class RobotContainer {
                 // Pose3d(-x,-y,elevator.carriagElevatorSim.getPositionMeters(),c);
                 // using a sin reggression model translation should be
                 double modelY = 0.547343 * Math.sin((10.77753 * claw.sim.getAngleRads()) - 0.466346) + 0.821554;
-                // double modelY = 0.547343*Math.sin((10.77753 *
-                // claw.sim.getAngleRads())-0.466346)+0.821554;
-                // double modelY = 0.423617 * Math.sin((25.96233*
-                // claw.sim.getAngleRads())-0.650119)+0.360771;
-                // double modelY = 0.396687 * Math.sin((25.87504 *
-                // claw.sim.getAngleRads())-0.609115)+0.377282;
-                // double modelY = 0.41066 * Math.sin((25.92268*
-                // claw.sim.getAngleRads())-0.63127)+0.368711;
-                double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343);
-                modelX = +0.466346 / 10.77753;
-                Translation3d robotOrigin = new Translation3d(0, 0, 0);
-                double finalH;
-
-                Pose3d clawPose3d = new Pose3d(
-                                robotOrigin.plus(new Translation3d(-elevator.elevatorSim.getPositionMeters(),
-                                                new Rotation3d(0, claw.sim.getAngleRads(), 0))),
-                                new Rotation3d(0, claw.sim.getAngleRads(), 0));
+                double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) + 0.466346 / 10.77753;
+                // this was wrong:sob:
                 Pose3d a = new Pose3d(q, c);
                 Pose3d b = new Pose3d(carriage, c);
                 Logger.recordOutput("myPose", g);
                 Logger.recordOutput("Myposearray", a, b);
                 Logger.recordOutput("Eout", q);
                 Logger.recordOutput("ele", elevator.visElevator);
-                // Logger.recordOutput("ele/pos", );
+
                 System.out.print(modelX);
                 Logger.recordOutput("final comp", new Pose3d[] {
                                 new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
                                                 new Rotation3d(0, 0, 0)),
-                                new Pose3d(0, 0, 0, new Rotation3d(0, claw.sim.getAngleRads(), 0))
+                                new Pose3d(finalX, 0, finalH + elevator.carriagElevatorSim.getPositionMeters(), new Rotation3d(0, claw.sim.getAngleRads(), 0))
                 });
 
                 Logger.recordOutput("cal", new Pose3d[] {

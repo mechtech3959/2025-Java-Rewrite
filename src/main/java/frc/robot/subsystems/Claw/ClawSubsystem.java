@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Claw;
 
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,13 +57,19 @@ public class ClawSubsystem extends SubsystemBase {
   SparkMax feedMotor;
   MotionMagicVoltage axisMotion;
   MotionMagicVoltage zeroAxis;
-  double lastKnownAngle;
+public  double lastKnownAngle;
+     
 
-  public enum clawState {
+
+
+   public enum clawState {
     Intake,
     Travel,
     L1,
-    L4
+    L2,
+    L3,
+    L4,
+    algea;
   };
 
   clawState state;
@@ -170,8 +176,8 @@ public class ClawSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     double rad = ((lastKnownAngle * (180/Math.PI)) - 90) * (Math.PI/180);
     sim.update(0.05);
-    sim.setState(lastKnownAngle, 1);
-    lig.setAngle(lastKnownAngle * (180/Math.PI));
+    sim.setState(rad, 1);
+    lig.setAngle(lastKnownAngle);
 SmartDashboard.putData("cc" , clawsim);
   }
 

@@ -57,12 +57,13 @@ public class ClawSubsystem extends SubsystemBase {
   SparkMax feedMotor;
   MotionMagicVoltage axisMotion;
   MotionMagicVoltage zeroAxis;
-public  double lastKnownAngle;
-     
+  public double lastKnownAngle;
+  public SingleJointedArmSim sim;
+  public LoggedMechanism2d clawMech;
+  public LoggedMechanismLigament2d pivot;
+  public LoggedMechanismLigament2d flat;
 
-
-
-   public enum clawState {
+  public enum clawState {
     Intake,
     Travel,
     L1,
@@ -81,6 +82,12 @@ public  double lastKnownAngle;
     axisMotion = new MotionMagicVoltage(0);
     zeroAxis = new MotionMagicVoltage(0);
     lastKnownAngle = 0;
+    sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
+        SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0, 0.0);
+    clawMech = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0, 0, 255));
+    LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.3, 0.4);
+    pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.1, 90));
+    flat = root.append(new LoggedMechanismLigament2d("flat", 0.2, 0));
     config();
   }
 
@@ -111,12 +118,14 @@ public  double lastKnownAngle;
 
   public void setAxis(Double pose) {
     axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
-    if(RobotBase.isReal()){lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
-    }else{
+    if (RobotBase.isReal()) {
+      lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
+    } else {
 
       lastKnownAngle = pose;
 
-    }}
+    }
+  }
 
   public double getAxis() {
     return axisMotor.getPosition().getValueAsDouble();
@@ -162,22 +171,17 @@ public  double lastKnownAngle;
     }
   }
 
-  public SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
-      SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0,0.0);
-  public LoggedMechanism2d clawsim = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0,0,255));
-    LoggedMechanismRoot2d root = clawsim.getRoot("cl", 0.3, 0.4);
- public LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("cl", 0.1, 90));
-  public LoggedMechanismLigament2d flat =  root.append(new LoggedMechanismLigament2d("flat", 0.2, 0));
   public void simulationInit() {
     sim.setInputVoltage(12);
     sim.getInput(0);
-    
+
   }
+
   public void simulationPeriodic() {
     sim.update(0.05);
     sim.setState(lastKnownAngle, 1);
-    lig.setAngle(lastKnownAngle);
-SmartDashboard.putData("cc" , clawsim);
+    pivot.setAngle(lastKnownAngle);
+    SmartDashboard.putData("cc", clawMech);
   }
 
   @Override

@@ -163,7 +163,7 @@ public  double lastKnownAngle;
   }
 
   public SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
-      SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 270, true, 0, 0.0,0.0);
+      SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0,0.0);
   public LoggedMechanism2d clawsim = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0,0,255));
     LoggedMechanismRoot2d root = clawsim.getRoot("cl", 0.3, 0.4);
  public LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("cl", 0.1, 90));
@@ -171,12 +171,11 @@ public  double lastKnownAngle;
   public void simulationInit() {
     sim.setInputVoltage(12);
     sim.getInput(0);
+    
   }
-
   public void simulationPeriodic() {
-    double rad = ((lastKnownAngle * (180/Math.PI)) - 90) * (Math.PI/180);
     sim.update(0.05);
-    sim.setState(rad, 1);
+    sim.setState(lastKnownAngle, 1);
     lig.setAngle(lastKnownAngle);
 SmartDashboard.putData("cc" , clawsim);
   }

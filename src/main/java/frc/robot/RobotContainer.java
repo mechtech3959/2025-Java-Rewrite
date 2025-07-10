@@ -142,37 +142,37 @@ public class RobotContainer {
 
                 drivetrain.registerTelemetry(logger::telemeterize);
                 // coJoystick.a().onChange(zero);
-                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(20.0)));
+                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(0.349)));//20
                 coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
-                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(40.0)));
-                coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(150.0)));
+                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.698)));//40
+                coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(2.61)));//150
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5)));
 
                 // coJoystick.y().onChange(l4);
                 // coJoystick.start().onChange(intake);
 
         }
-                double finalH =0;
-               double finalX =0;
+
+        double finalH = 0;
+        double finalX = 0;
 
         public void periodic() {
                 double p = claw.lastKnownAngle;
-                if(p == 0){
-                        finalH =0;
-                        finalX =0;
-                }else if(p == 20){
-                        finalH =0.1415;
-                        finalX =-0.13;
+                if (p == 0) {
+                        finalH = 0;
+                        finalX = 0;
+                } else if (p == 0.349) {
+                        finalH = 0.115;// 0.1415;
+                        finalX = -0.11;// -0.13;
 
+                } else if (p == 0.698) {
+                        finalH = 0.259;
+                        finalX = -0.1755;
 
-                }else if(p == 40){
-                        finalH =-0.08;
-                        finalX =0.318;
-
-                }else if(p == 150){
-                        finalH =0.72;
-                        finalX =0.335;
+                } else if (p == 2.61) {
+                        finalH = 0.825;// 0.72;
+                        finalX = 0.31;
 
                 }
 
@@ -198,13 +198,12 @@ public class RobotContainer {
                 Logger.recordOutput("Myposearray", a, b);
                 Logger.recordOutput("Eout", q);
                 Logger.recordOutput("ele", elevator.visElevator);
-
-                System.out.print(modelX);
                 Logger.recordOutput("final comp", new Pose3d[] {
                                 new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(), new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
                                                 new Rotation3d(0, 0, 0)),
-                                new Pose3d(finalX, 0, finalH + elevator.carriagElevatorSim.getPositionMeters(), new Rotation3d(0, claw.sim.getAngleRads(), 0))
+                                new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() + finalH,
+                                                new Rotation3d(0, claw.sim.getAngleRads(), 0))
                 });
 
                 Logger.recordOutput("cal", new Pose3d[] {

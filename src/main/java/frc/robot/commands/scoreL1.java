@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -15,7 +14,7 @@ public class scoreL1 extends SequentialCommandGroup {
         elevator = e;
         claw = c;
         addCommands(
-                Commands.runOnce(() -> claw.setAxis(30.0)),
+                Commands.runOnce(() -> claw.setAxis(0.349)),
                 Commands.runOnce(() -> elevator.setHeight(1.0)).onlyIf(() -> claw.acceptableAngle()),
                 Commands.runOnce(() -> claw.setFeed(-0.2)),
                 Commands.waitUntil(() -> !claw.hasCoral()),

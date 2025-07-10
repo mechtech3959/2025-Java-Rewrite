@@ -55,6 +55,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     CANcoder elevatorEncoder;
     MotionMagicVoltage elevatorMotion;
     double target = 0;
+    public ElevatorSim elevatorSim;
+    public ElevatorSim carriagElevatorSim;
+    Color8Bit blue;
+    public LoggedMechanism2d elevatorMech;
+    LoggedMechanismRoot2d root;
+    LoggedMechanismLigament2d elevatorLin;
 
     public ElevatorSubsystem() {
         masterM = new TalonFX(19, "CanBus");
@@ -64,6 +70,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         TalonFXSimState simMaster = masterM.getSimState();
         TalonFXSimState simSlave = slaveM.getSimState();
         CANcoderSimState simEncoder = elevatorEncoder.getSimState();
+        elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1, true, 0.0, 0.0, 0.0);
+        carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1.9, true, 0.0,
+                0.0, 0.0);
+        blue = new Color8Bit(0, 0, 255);
+        elevatorMech = new LoggedMechanism2d(20, 50, blue);
+        root = elevatorMech.getRoot("elev", 10, 0);
+        elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
 
     }
 
@@ -123,15 +136,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
-    public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1, true, 0.0, 0.0, 0.0);
-    public ElevatorSim carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1.9, true, 0.0,
-            0.0, 0.0);
-    Color8Bit blue = new Color8Bit(0, 0, 255);
-    public LoggedMechanism2d visElevator = new LoggedMechanism2d(20, 50, blue);
-    LoggedMechanismRoot2d root = visElevator.getRoot("elev", 10, 0);
-    LoggedMechanismLigament2d lig = root
-            .append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
-
     public void simulationInit() {
         elevatorSim.setInputVoltage(12);
         elevatorSim.setInput(0);
@@ -143,14 +147,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void simulationPeriodic() {
-        lig.setLength(target);
+        elevatorLin.setLength(target);
         elevatorSim.setState(target, 1);
         carriagElevatorSim.setState(target, 1);
         elevatorSim.update(0.05);
         carriagElevatorSim.update(0.05);
         SmartDashboard.putNumber("Elevator", elevatorSim.getPositionMeters());
 
-        SmartDashboard.putData("2dev", visElevator);
+        SmartDashboard.putData("2dev", elevatorMech);
 
     }
 

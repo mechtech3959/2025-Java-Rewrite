@@ -73,8 +73,6 @@ public class ClawSubsystem extends SubsystemBase {
     algea;
   };
 
-  clawState state;
-
   public ClawSubsystem() {
     axisMotor = new TalonFX(14, "CanBus");
     axisEncoder = new CANcoder(15, "CanBus");
@@ -110,10 +108,6 @@ public class ClawSubsystem extends SubsystemBase {
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
     axisMotor.getConfigurator().apply(axisConfig);
     axisEncoder.getConfigurator().apply(axisEncConfig);
-  }
-
-  public Command place() {
-    return runOnce(null);
   }
 
   public void setAxis(Double pose) {
@@ -163,8 +157,8 @@ public class ClawSubsystem extends SubsystemBase {
 
   public boolean acceptableAngle() {
     if ((getAxis() == lastKnownAngle) ||
-        ((getAxis() >= lastKnownAngle - 5) &&
-            (getAxis() <= lastKnownAngle + 5))) {
+        ((getAxis() >= lastKnownAngle - 0.08) &&
+            (getAxis() <= lastKnownAngle + 0.08))) {
       return true;
     } else {
       return false;

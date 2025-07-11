@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Claw;
 
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +37,8 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -55,16 +57,21 @@ public class ClawSubsystem extends SubsystemBase {
   SparkMax feedMotor;
   MotionMagicVoltage axisMotion;
   MotionMagicVoltage zeroAxis;
-  double lastKnownAngle;
+  public double lastKnownAngle;
+  public SingleJointedArmSim sim;
+  public LoggedMechanism2d clawMech;
+  public LoggedMechanismLigament2d pivot;
+  public LoggedMechanismLigament2d flat;
 
   public enum clawState {
     Intake,
     Travel,
     L1,
-    L4
+    L2,
+    L3,
+    L4,
+    algea;
   };
-
-  clawState state;
 
   public ClawSubsystem() {
     axisMotor = new TalonFX(14, "CanBus");
@@ -73,6 +80,12 @@ public class ClawSubsystem extends SubsystemBase {
     axisMotion = new MotionMagicVoltage(0);
     zeroAxis = new MotionMagicVoltage(0);
     lastKnownAngle = 0;
+    sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
+        SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0, 0.0);
+    clawMech = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0, 0, 255));
+    LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.3, 0.4);
+    pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.1, 90));
+    flat = root.append(new LoggedMechanismLigament2d("flat", 0.2, 0));
     config();
   }
 
@@ -97,18 +110,16 @@ public class ClawSubsystem extends SubsystemBase {
     axisEncoder.getConfigurator().apply(axisEncConfig);
   }
 
-  public Command place() {
-    return runOnce(null);
-  }
-
   public void setAxis(Double pose) {
     axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
-    if(RobotBase.isReal()){lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
-    }else{
+    if (RobotBase.isReal()) {
+      lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
+    } else {
 
       lastKnownAngle = pose;
 
-    }}
+    }
+  }
 
   public double getAxis() {
     return axisMotor.getPosition().getValueAsDouble();
@@ -146,30 +157,25 @@ public class ClawSubsystem extends SubsystemBase {
 
   public boolean acceptableAngle() {
     if ((getAxis() == lastKnownAngle) ||
-        ((getAxis() >= lastKnownAngle - 5) &&
-            (getAxis() <= lastKnownAngle + 5))) {
+        ((getAxis() >= lastKnownAngle - 0.08) &&
+            (getAxis() <= lastKnownAngle + 0.08))) {
       return true;
     } else {
       return false;
     }
   }
 
-  public SingleJointedArmSim sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
-      SingleJointedArmSim.estimateMOI(1, 12), 1, 0, 270, true, 0, 0.0,0.0);
-  public LoggedMechanism2d clawsim = new LoggedMechanism2d(5, 10, new Color8Bit(0,0,255));
-  LoggedMechanismRoot2d root = clawsim.getRoot("cl", 10, 0);
-  LoggedMechanismLigament2d lig = root.append(new LoggedMechanismLigament2d("cl", 10, 90));
-
   public void simulationInit() {
     sim.setInputVoltage(12);
-    sim.getInput(0);
+    sim.setInput(0, 0); // Set simulation input to a default value
+
   }
 
   public void simulationPeriodic() {
     sim.update(0.05);
     sim.setState(lastKnownAngle, 1);
-    lig.setAngle(lastKnownAngle);
-SmartDashboard.putData("cc" , clawsim);
+    pivot.setAngle(lastKnownAngle);
+    SmartDashboard.putData("cc", clawMech);
   }
 
   @Override

@@ -1,7 +1,6 @@
 package frc.robot.commands;
-import frc.robot.subsystems.ClawSubsystem;
-
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Claw.ClawSubsystem;
 
 public class travel extends Command {
     public final ClawSubsystem c;

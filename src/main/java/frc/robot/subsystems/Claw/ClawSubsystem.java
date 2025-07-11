@@ -167,7 +167,7 @@ public class ClawSubsystem extends SubsystemBase {
 
   public void simulationInit() {
     sim.setInputVoltage(12);
-    sim.getInput(0);
+    sim.setInput(0, 0); // Set simulation input to a default value
 
   }
 

@@ -70,8 +70,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         TalonFXSimState simMaster = masterM.getSimState();
         TalonFXSimState simSlave = slaveM.getSimState();
         CANcoderSimState simEncoder = elevatorEncoder.getSimState();
-        elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1, true, 0.0, 0.0, 0.0);
-        carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 1.9, true, 0.0,
+        elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 0.93, true, 0.0, 0.0, 0.0);
+        carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 0.5, 0, 1.8, true, 0.0,
                 0.0, 0.0);
         blue = new Color8Bit(0, 0, 255);
         elevatorMech = new LoggedMechanism2d(20, 50, blue);
@@ -114,7 +114,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
             target = elevatorMotion.Position;
         } else {
-            target = pose;
+            target = pose/2.889;
         }
     }
 

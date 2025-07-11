@@ -29,6 +29,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.commands.Intake;
 import frc.robot.commands.scoreL1;
+import frc.robot.commands.simDemo;
 import frc.robot.commands.L1;
 import frc.robot.commands.L2;
 import frc.robot.commands.L3;
@@ -64,6 +65,7 @@ public class RobotContainer {
         L3 l3;
         L4 l4;
         Zero zero;
+        simDemo demo = new simDemo(elevator, claw);
         Intake intake;
         double finalH = 0;
         double finalX = 0;
@@ -112,12 +114,12 @@ public class RobotContainer {
 
                 drivetrain.registerTelemetry(logger::telemeterize);
                 // coJoystick.a().onChange(zero);
-                coJoystick.b().onChange(Commands.runOnce(() -> claw.setAxis(0.349)));// 20
+                coJoystick.b().onTrue(demo);// 20
                 coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
                 coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.698)));// 40
                 coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(2.61)));// 150
-                coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5)));
+                coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
 
         }
 

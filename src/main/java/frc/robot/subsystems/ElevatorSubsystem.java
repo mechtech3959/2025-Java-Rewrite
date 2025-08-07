@@ -114,7 +114,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
             target = elevatorMotion.Position;
         } else {
-            target = pose / UNIT_CONVERSION_FACTOR;
+            target = pose / 2.889;
         }
     }
 

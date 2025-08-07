@@ -178,11 +178,17 @@ public class ClawSubsystem extends SubsystemBase {
     SmartDashboard.putData("cc", clawMech);
   }
 
+  public void sendData() {
+    Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);
+    Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
+  }
+
   @Override
   public void periodic() {
     hasCoral();
     getAxis();
     acceptableAngle();
+    sendData();
     super.periodic();
   }
 

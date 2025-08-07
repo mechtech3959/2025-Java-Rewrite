@@ -30,8 +30,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-import java.util.logging.Logger;
-
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
@@ -159,6 +158,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     void sendData() {
+        Logger.recordOutput("Real/Elevator/Position", getHeight());
+        Logger.recordOutput("Real/Elevator/Acceleration", elevatorEncoder.getVelocity().getValueAsDouble());
     }
 
     @Override

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.math.util.Units;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -12,11 +13,21 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.pathfinding.*;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.auto.CommandUtil;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,13 +47,15 @@ import frc.robot.commands.L3;
 import frc.robot.commands.L4;
 import frc.robot.commands.Zero;
 
-
 public class RobotContainer {
-        private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed               
-        private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+        private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+                                                                                      // speed
+        private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
+                                                                                          // second
         private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
                         .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
+                                                                                 // motors
         private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
         private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
         private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
@@ -52,20 +65,36 @@ public class RobotContainer {
 
         private final CommandXboxController joystick = new CommandXboxController(0);
         private final CommandXboxController coJoystick = new CommandXboxController(1);
-         
+
         public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
         public final ElevatorSubsystem elevator = new ElevatorSubsystem();
         public final ClawSubsystem claw = new ClawSubsystem();
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
- 
-        scoreL1 scorel1;
+
+        Pose2d targetPose = new Pose2d(1.513, 7.332, Rotation2d.fromDegrees(-53));
+
+        // Create the constraints to use while pathfinding
+        PathConstraints constraints = new PathConstraints(
+                        3.0, 4.0,
+                        Units.degreesToRadians(1000), Units.degreesToRadians(1000));
+
+        // Since AutoBuilder is configured, we can use it to build pathfinding commands
+        Command pathfindingCommand = AutoBuilder.pathfindToPose(
+                        targetPose,
+                        constraints,
+                        0.0 // Goal end velocity in meters/sec
+                            // Rotation delay distance in meters. This is how far the robot should travel
+                            // before attempting to rotate.
+        );
+
+        scoreL1 scorel1 = new scoreL1(elevator, claw);
         L1 l1;
         L2 l2;
         L3 l3;
-        L4 l4;
+        L4 l4 = new L4(elevator, claw);
         Zero zero;
-        //You could technically run the demo on robot but im scared....
+        // You could technically run the demo on robot but im scared....
         simDemo demo = new simDemo(elevator, claw);
         Intake intake;
         double finalH = 0;
@@ -73,7 +102,10 @@ public class RobotContainer {
         double clawAngle = 0;
 
         public RobotContainer() {
-                autoChooser = AutoBuilder.buildAutoChooser("Tests");
+                NamedCommands.registerCommand("Score L1", scorel1);
+                NamedCommands.registerCommand("pathFind", pathfindingCommand);
+                NamedCommands.registerCommand("Score L4", l4);
+                autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();
 
@@ -84,8 +116,9 @@ public class RobotContainer {
                                 drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
                                                 .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative X(counterclockwise)
-                                                ));
+                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
+                                                                                                            // X(counterclockwise)
+                                ));
                 joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(
                                 () -> point.withModuleDirection(
@@ -166,6 +199,7 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 /* Run the path selected from the auto chooser */
-                return autoChooser.getSelected();
+                 return autoChooser.getSelected();               
+
         }
 }

@@ -4,6 +4,7 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -87,6 +88,7 @@ public class ClawSubsystem extends SubsystemBase {
     pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.1, 90));
     flat = root.append(new LoggedMechanismLigament2d("flat", 0.2, 0));
     config();
+    simulationInit();
   }
 
   public void config() {
@@ -154,14 +156,17 @@ public class ClawSubsystem extends SubsystemBase {
       return false;
     }
   }
-
+ 
   public boolean acceptableAngle() {
+  if(Robot.isReal()){
     if ((getAxis() == lastKnownAngle) ||
         ((getAxis() >= lastKnownAngle - 0.08) &&
             (getAxis() <= lastKnownAngle + 0.08))) {
       return true;
     } else {
       return false;
+    }}else{
+      return true;
     }
   }
 
@@ -170,7 +175,7 @@ public class ClawSubsystem extends SubsystemBase {
     sim.setInput(0, 0); // Set simulation input to a default value
 
   }
-
+ @Override
   public void simulationPeriodic() {
     sim.update(0.05);
     sim.setState(lastKnownAngle, 1);

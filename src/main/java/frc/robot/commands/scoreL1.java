@@ -17,7 +17,7 @@ public class scoreL1 extends SequentialCommandGroup {
                 Commands.runOnce(() -> claw.setAxis(0.349)),
                 Commands.runOnce(() -> elevator.setHeight(1.0)).onlyIf(() -> claw.acceptableAngle()),
                 Commands.runOnce(() -> claw.setFeed(-0.2)),
-                Commands.waitUntil(() -> !claw.hasCoral()),
+                Commands.waitUntil(() -> !claw.hasCoral()).andThen(Commands.waitSeconds(1)),
                 Commands.parallel(Commands.runOnce(() -> claw.setFeed(0.0)),
                         Commands.runOnce(() -> elevator.setHeight(0.0))),
                 Commands.runOnce(() -> claw.setAxis(0.0)).onlyIf(() -> elevator.isAtTarget()));

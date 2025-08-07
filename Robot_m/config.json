@@ -1,0 +1,87 @@
+{
+  "name": "2025",
+  "rotations": [
+    {
+      "axis": "x",
+      "degrees": 180
+    },
+    {
+      "axis": "z",
+      "degrees": 90
+    }
+  ],
+  "position": [0, 0, 0.04],
+  "cameras": [
+     
+  ],
+  "components": [
+{
+
+"zeroedRotations": [{
+  "axis": "x",
+  "degrees": 180},
+  {"axis" : "z",
+    "degrees": 90
+}
+  ],
+"zeroedPositions":[
+0,
+0,
+0.040
+
+
+]
+},{
+
+"zeroedRotations": [{
+  "axis": "x",
+  "degrees": 180},
+  {"axis" : "z",
+    "degrees": 90
+}
+  ],
+"zeroedPositions":[
+0,
+0,
+0.041
+]
+},{
+"zeroedRotations": [{
+  "axis": "x",
+  "degrees": 180},
+  {"axis" : "z",
+    "degrees": 90
+}
+  ],
+"zeroedPositions":[
+0,
+0,
+0.038
+
+
+]
+
+},{
+"zeroedRotations": [{
+  "axis": "x",
+  "degrees": 180},
+  {"axis" : "z",
+    "degrees": 90
+}
+  ],
+"zeroedPositions":[
+0,
+0,
+0
+
+
+]
+
+}
+
+
+
+
+
+  ]
+}

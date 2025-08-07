@@ -76,6 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMech = new LoggedMechanism2d(20, 50, blue);
         root = elevatorMech.getRoot("elev", 10, 0);
         elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
+        simulationInit();
 
     }
 
@@ -145,6 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void simSetHeight(double rot) {
     }
 
+    @Override
     public void simulationPeriodic() {
         elevatorLin.setLength(target);
         elevatorSim.setState(target, 1);

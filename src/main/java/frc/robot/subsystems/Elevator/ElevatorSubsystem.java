@@ -165,7 +165,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         isAtTarget();
-
+        getHeight();
+        sendData();
         super.periodic();
     }
 

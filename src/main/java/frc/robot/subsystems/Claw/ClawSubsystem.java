@@ -180,6 +180,7 @@ public class ClawSubsystem extends SubsystemBase {
 
   public void sendData() {
     Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);
+    Logger.recordOutput("Real/Claw/Axis Speed", axisEncoder.getVelocity().getValueAsDouble());
     Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
   }
 

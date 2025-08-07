@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem;
+import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.commands.Intake;
 import frc.robot.commands.scoreL1;
 import frc.robot.commands.simDemo;

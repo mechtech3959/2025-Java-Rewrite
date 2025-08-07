@@ -152,9 +152,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         carriagElevatorSim.setState(target, 1);
         elevatorSim.update(0.05);
         carriagElevatorSim.update(0.05);
-        SmartDashboard.putNumber("Elevator", elevatorSim.getPositionMeters());
+        SmartDashboard.putNumber("Elevator/Sim/poseMeters", elevatorSim.getPositionMeters());
 
-        SmartDashboard.putData("2dev", elevatorMech);
+        SmartDashboard.putData("Elevator/Sim/2Dmech", elevatorMech);
 
     }
 

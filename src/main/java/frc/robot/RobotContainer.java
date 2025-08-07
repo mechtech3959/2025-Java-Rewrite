@@ -65,6 +65,7 @@ public class RobotContainer {
         L3 l3;
         L4 l4;
         Zero zero;
+        //You could technically run the demo on robot but im scared....
         simDemo demo = new simDemo(elevator, claw);
         Intake intake;
         double finalH = 0;
@@ -85,12 +86,10 @@ public class RobotContainer {
                                                 .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
                                                 .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative X(counterclockwise)
                                                 ));
-                                                                                                          
                 joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(
                                 () -> point.withModuleDirection(
                                                 new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
-
                 joystick.pov(0).whileTrue(
                                 drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
                 joystick.pov(180)
@@ -113,7 +112,6 @@ public class RobotContainer {
                 joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
                 drivetrain.registerTelemetry(logger::telemeterize);
-                // coJoystick.a().onChange(zero);
                 coJoystick.b().onTrue(demo);// 20
                 coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
@@ -148,9 +146,9 @@ public class RobotContainer {
                 // 0.466346 / 10.77753;
                 // this was wrong:sob:
 
-                Logger.recordOutput("myPose", new Pose3d(drivetrain.getState().Pose));
-                Logger.recordOutput("mech2d/elevator", elevator.elevatorMech);
-                Logger.recordOutput("final comp", new Pose3d[] {
+                Logger.recordOutput("Sim/Drivetrain Pose", new Pose3d(drivetrain.getState().Pose));
+                Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
+                Logger.recordOutput("Sim/Final Position", new Pose3d[] {
                                 new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
                                                 new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
@@ -158,7 +156,7 @@ public class RobotContainer {
                                 new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() + finalH,
                                                 new Rotation3d(0, claw.sim.getAngleRads(), 0))
                 });
-                Logger.recordOutput("cal", new Pose3d[] {
+                Logger.recordOutput("calc", new Pose3d[] {
                                 new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),

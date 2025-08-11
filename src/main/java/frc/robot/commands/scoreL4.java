@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 
-public class L4 extends SequentialCommandGroup {
+public class scoreL4 extends SequentialCommandGroup {
 
     public final ElevatorSubsystem elevator;
     public final ClawSubsystem claw;
 
-    public L4(ElevatorSubsystem _ElevatorSubsystem, ClawSubsystem _ClawSubsystem) {
+    public scoreL4(ElevatorSubsystem _ElevatorSubsystem, ClawSubsystem _ClawSubsystem) {
         elevator = _ElevatorSubsystem;
         claw = _ClawSubsystem;
         addCommands(

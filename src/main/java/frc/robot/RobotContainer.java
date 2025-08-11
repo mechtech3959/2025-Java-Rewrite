@@ -44,7 +44,7 @@ import frc.robot.commands.simDemo;
 import frc.robot.commands.L1;
 import frc.robot.commands.L2;
 import frc.robot.commands.L3;
-import frc.robot.commands.L4;
+import frc.robot.commands.scoreL4;
 import frc.robot.commands.Zero;
 
 public class RobotContainer {
@@ -92,7 +92,7 @@ public class RobotContainer {
         L1 l1;
         L2 l2;
         L3 l3;
-        L4 l4 = new L4(elevator, claw);
+        scoreL4 scorel4 = new scoreL4(elevator, claw);
         Zero zero;
         // You could technically run the demo on robot but im scared....
         simDemo demo = new simDemo(elevator, claw);
@@ -104,7 +104,7 @@ public class RobotContainer {
         public RobotContainer() {
                 NamedCommands.registerCommand("Score L1", scorel1);
                 NamedCommands.registerCommand("pathFind", pathfindingCommand);
-                NamedCommands.registerCommand("Score L4", l4);
+                NamedCommands.registerCommand("Score L4", scorel4);
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();

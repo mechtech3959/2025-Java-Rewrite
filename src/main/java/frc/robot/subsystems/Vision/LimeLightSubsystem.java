@@ -11,6 +11,7 @@ public class LimeLightSubsystem extends SubsystemBase {
    double TY;
    double TA;
    String pipeLine;
+   LimelightHelpers.PoseEstimate limelightMeasurement;
     public LimeLightSubsystem(String llName) {
         pipeLine = llName;
     }
@@ -23,6 +24,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         TX = LimelightHelpers.getTX(pipeLine);
         TY = LimelightHelpers.getTY(pipeLine);
         TA = LimelightHelpers.getTA(pipeLine);
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(pipeLine);
     
     }
 
@@ -32,6 +34,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateTracking();
         super.periodic();
     }
 }

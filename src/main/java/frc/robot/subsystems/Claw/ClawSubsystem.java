@@ -84,9 +84,9 @@ public class ClawSubsystem extends SubsystemBase {
     sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
         SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0, 0.0);
     clawMech = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0, 0, 255));
-    LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.3, 0.4);
-    pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.1, 90));
-    flat = root.append(new LoggedMechanismLigament2d("flat", 0.2, 0));
+    LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
+    pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
+    flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
     config();
     simulationInit();
   }

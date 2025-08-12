@@ -3,6 +3,7 @@ package frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -46,6 +47,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
@@ -54,29 +56,42 @@ public class ElevatorSubsystem extends SubsystemBase {
     CANcoder elevatorEncoder;
     MotionMagicVoltage elevatorMotion;
     double target = 0;
+    double simPose = 0;
     public ElevatorSim elevatorSim;
     public ElevatorSim carriagElevatorSim;
     Color8Bit blue;
     public LoggedMechanism2d elevatorMech;
     LoggedMechanismRoot2d root;
     LoggedMechanismLigament2d elevatorLin;
+    DCMotorSim elevatorMotorSim;
+TalonFXSimState simMaster;
+        TalonFXSimState simSlave;
+        CANcoderSimState simEncoder;
 
     public ElevatorSubsystem() {
         masterM = new TalonFX(19, "CanBus");
         slaveM = new TalonFX(20, "CanBus");
         elevatorEncoder = new CANcoder(9, "CanBus");
+        
         config();
-        TalonFXSimState simMaster = masterM.getSimState();
-        TalonFXSimState simSlave = slaveM.getSimState();
-        CANcoderSimState simEncoder = elevatorEncoder.getSimState();
-        elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 1, 0, 0.93, true, 0.0, 0.0, 0.0);
-        carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 30, 0.5, 0, 1.8, true, 0.0,
-                0.0, 0.0);
+        
+        elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000, 0.000);
+        carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
+                0.000, 0.000);
         blue = new Color8Bit(0, 0, 255);
         elevatorMech = new LoggedMechanism2d(20, 50, blue);
         root = elevatorMech.getRoot("elev", 10, 0);
         elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
-        simulationInit();
+        
+         elevatorMotorSim = new DCMotorSim(
+               LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2),0.2, 18), DCMotor.getKrakenX60Foc(2));
+            if(Robot.isSimulation()){
+             simMaster = masterM.getSimState();
+             simSlave = slaveM.getSimState();
+             simEncoder = elevatorEncoder.getSimState();
+            }
+       
+               simulationInit();
 
     }
 
@@ -107,15 +122,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         masterM.getConfigurator().apply(elevatorConfig);
         slaveM.getConfigurator().apply(elevatorConfig);
         elevatorEncoder.getConfigurator().apply(elevatorEncConfig);
+        
     }
 
     public void setHeight(double pose) {
-        if (RobotBase.isReal()) {
-            masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
-            target = elevatorMotion.Position;
-        } else {
-            target = pose / 2.889;
-        }
+            
+        if(Robot.isSimulation()){
+            //elevatorMotorSim.setState(pose, 0.02);
+          //  carriagElevatorSim.setState(pose, 0.02);
+          //  elevatorSim.setState(pose, 0.02);
+          //  simPose = elevatorSim.getPositionMeters();
+          target = pose;
+            }else{ masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+                target = pose;}
+
+        
     }
 
     public double getHeight() {
@@ -148,12 +169,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
+        TalonFXSimState simMaster = masterM.getSimState();
+        TalonFXSimState simSlave = slaveM.getSimState();
+        CANcoderSimState simEncoder = elevatorEncoder.getSimState();
+        simMaster.setSupplyVoltage(12);
+        elevatorMotorSim.update(0.05);
         elevatorLin.setLength(target);
-        elevatorSim.setState(target, 1);
-        carriagElevatorSim.setState(target, 1);
+       elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
+        carriagElevatorSim.setState(target, 0.05);
         elevatorSim.update(0.05);
         carriagElevatorSim.update(0.05);
-        SmartDashboard.putNumber("Elevator/Sim/poseMeters", elevatorSim.getPositionMeters());
+        SmartDashboard.putNumber("Elevator/Sim/poseMeters", simPose);
 
         SmartDashboard.putData("Elevator/Sim/2Dmech", elevatorMech);
 

@@ -104,7 +104,7 @@ public class RobotContainer {
         public RobotContainer() {
                 NamedCommands.registerCommand("Score L1", scorel1);
                 NamedCommands.registerCommand("pathFind", pathfindingCommand);
-                NamedCommands.registerCommand("Score L4", scorel4);
+                NamedCommands.registerCommand("Score L4", demo);
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();

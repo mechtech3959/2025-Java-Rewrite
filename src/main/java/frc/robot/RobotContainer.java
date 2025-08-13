@@ -48,6 +48,10 @@ import frc.robot.commands.scoreL4;
 import frc.robot.commands.Zero;
 
 public class RobotContainer {
+        Pose2d blueStartPillar = new Pose2d(8.0,4.6,new Rotation2d(0));
+        Pose2d blueStartMid = new Pose2d(8.0,6.1,new Rotation2d(0));
+        Pose2d blueStartWall = new Pose2d(8.0,7.2,new Rotation2d(0));
+
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                       // speed
         private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per

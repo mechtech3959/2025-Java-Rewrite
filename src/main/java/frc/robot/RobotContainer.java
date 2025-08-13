@@ -48,9 +48,12 @@ import frc.robot.commands.scoreL4;
 import frc.robot.commands.Zero;
 
 public class RobotContainer {
-        Pose2d blueStartPillar = new Pose2d(8.0,4.6,new Rotation2d(0));
-        Pose2d blueStartMid = new Pose2d(8.0,6.1,new Rotation2d(0));
-        Pose2d blueStartWall = new Pose2d(8.0,7.2,new Rotation2d(0));
+        Pose2d blueStartPillar = new Pose2d(8.0,5,new Rotation2d(3.14));
+        Pose2d blueStartMid = new Pose2d(8.0,6.1,new Rotation2d(3.14));
+        Pose2d blueStartWall = new Pose2d(8.0,7.2,new Rotation2d(3.14));
+        Pose2d redStartPillar = new Pose2d(9.5,5,new Rotation2d(0));
+        Pose2d redStartMid = new Pose2d(9.5,6.1,new Rotation2d(0));
+        Pose2d redStartWall = new Pose2d(9.5,7.2,new Rotation2d(0));
 
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                       // speed

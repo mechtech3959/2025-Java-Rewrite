@@ -43,6 +43,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -105,6 +106,7 @@ public class ClawSubsystem extends SubsystemBase {
         .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake))
         .withMotionMagic(motion)
+        .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLimit(10).withSupplyCurrentLimitEnable(true))
         .withSlot0(slot);
     CANcoderConfiguration axisEncConfig = new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
@@ -156,16 +158,17 @@ public class ClawSubsystem extends SubsystemBase {
       return false;
     }
   }
- 
+
   public boolean acceptableAngle() {
-  if(Robot.isReal()){
-    if ((getAxis() == lastKnownAngle) ||
-        ((getAxis() >= lastKnownAngle - 0.08) &&
-            (getAxis() <= lastKnownAngle + 0.08))) {
-      return true;
+    if (Robot.isReal()) {
+      if ((getAxis() == lastKnownAngle) ||
+          ((getAxis() >= lastKnownAngle - 0.08) &&
+              (getAxis() <= lastKnownAngle + 0.08))) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
-    }}else{
       return true;
     }
   }
@@ -175,7 +178,8 @@ public class ClawSubsystem extends SubsystemBase {
     sim.setInput(0, 0); // Set simulation input to a default value
 
   }
- @Override
+
+  @Override
   public void simulationPeriodic() {
     sim.update(0.05);
     sim.setState(lastKnownAngle, 1);

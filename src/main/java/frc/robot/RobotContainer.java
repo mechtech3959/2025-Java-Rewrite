@@ -55,132 +55,170 @@ import frc.robot.commands.scoreL4;
 import frc.robot.commands.Zero;
 
 public class RobotContainer {
-    Pose2d blueStartPillar = new Pose2d(8.0, 5, new Rotation2d(3.14));
-    Pose2d blueStartMid = new Pose2d(8.0, 6.1, new Rotation2d(3.14));
-    Pose2d blueStartWall = new Pose2d(8.0, 7.2, new Rotation2d(3.14));
-    Pose2d redStartPillar = new Pose2d(9.5, 5, new Rotation2d(0));
-    Pose2d redStartMid = new Pose2d(9.5, 6.1, new Rotation2d(0));
-    Pose2d redStartWall = new Pose2d(9.5, 7.2, new Rotation2d(0));
-    public Pose2d blueTargetPose = new Pose2d(1.513, 7.332, Rotation2d.fromDegrees(-53));
-    public Pose2d redTargetPose = new Pose2d(15.965, 0.6, Rotation2d.fromDegrees(53));
-    public Pose2d targetPose = redTargetPose;
-    public Alliance currentAlliance;
+        Pose2d blueStartPillar = new Pose2d(8.0, 5, new Rotation2d(3.14));
+        Pose2d blueStartMid = new Pose2d(8.0, 6.1, new Rotation2d(3.14));
+        Pose2d blueStartWall = new Pose2d(8.0, 7.2, new Rotation2d(3.14));
+        Pose2d redStartPillar = new Pose2d(9.5, 5, new Rotation2d(0));
+        Pose2d redStartMid = new Pose2d(9.5, 6.1, new Rotation2d(0));
+        Pose2d redStartWall = new Pose2d(9.5, 7.2, new Rotation2d(0));
+        public Pose2d blueTargetPose = new Pose2d(1.513, 7.332, Rotation2d.fromDegrees(-53));
+        public Pose2d redTargetPose = new Pose2d(15.965, 0.6, Rotation2d.fromDegrees(53));
+        public Pose2d targetPose = redTargetPose;
+        public Pose2d startingPose;
+        public Alliance currentAlliance;
 
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
-                                                                                  // speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
-                                                                                      // second
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
-                                                                     // motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+                                                                                      // speed
+        private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
+                                                                                          // second
+        private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
+                                                                                 // motors
+        private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+        private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+        private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+        private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController coJoystick = new CommandXboxController(1);
+        private final CommandXboxController joystick = new CommandXboxController(0);
+        private final CommandXboxController coJoystick = new CommandXboxController(1);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
-    public final ClawSubsystem claw = new ClawSubsystem();
-    /* Path follower */
-    private final SendableChooser<Command> autoChooser;
-   // private final SendableChooser<String> poseChooser;
-  //  SendableBuilder poseBuilder;
-   // String _chosenPose;
-    
+        public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+        public final ClawSubsystem claw = new ClawSubsystem();
+        /* Path follower */
+        private final SendableChooser<Command> autoChooser;
+        private final SendableChooser<String> poseChooser = new SendableChooser<String>();
+        // SendableBuilder poseBuilder;
+        String _chosenPose;
 
-    // Create the constraints to use while pathfinding
-    PathConstraints constraints = new PathConstraints(
-            3.0, 4.0,
-            Units.degreesToRadians(1000), Units.degreesToRadians(1000));
+        // Create the constraints to use while pathfinding
+        PathConstraints constraints = new PathConstraints(
+                        3.0, 4.0,
+                        Units.degreesToRadians(1000), Units.degreesToRadians(1000));
 
-    // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    Command pathfindingCommand = AutoBuilder.pathfindToPose(
-            targetPose,
-            constraints,
-            0.0 // Goal end velocity in meters/sec
-                // Rotation delay distance in meters. This is how far the robot should travel
-                // before attempting to rotate.
-    );
+        // Since AutoBuilder is configured, we can use it to build pathfinding commands
+        Command pathfindingCommand = AutoBuilder.pathfindToPose(
+                        targetPose,
+                        constraints,
+                        0.0 // Goal end velocity in meters/sec
+                            // Rotation delay distance in meters. This is how far the robot should travel
+                            // before attempting to rotate.
+        );
 
-    scoreL1 scorel1 = new scoreL1(elevator, claw);
-    L1 l1;
-    L2 l2;
-    L3 l3;
-    scoreL4 scorel4 = new scoreL4(elevator, claw);
-    Zero zero;
-    // You could technically run the demo on robot but im scared....
-    simDemo demo = new simDemo(elevator, claw);
-    Intake intake;
-    double finalH = 0;
-    double finalX = 0;
-    double clawAngle = 0;
+        scoreL1 scorel1 = new scoreL1(elevator, claw);
+        L1 l1;
+        L2 l2;
+        L3 l3;
+        scoreL4 scorel4 = new scoreL4(elevator, claw);
+        Zero zero;
+        // You could technically run the demo on robot but im scared....
+        simDemo demo = new simDemo(elevator, claw);
+        Intake intake;
+        double finalH = 0;
+        double finalX = 0;
+        double clawAngle = 0;
 
-    public RobotContainer() {
-        
-        //poseChooser.addOption("Collum", _chosenPose);
-        NamedCommands.registerCommand("Score L1", scorel1);
-        NamedCommands.registerCommand("pathFind", pathfindingCommand);
-        NamedCommands.registerCommand("Score L4", demo);
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Mode", autoChooser);
-        configureBindings();
+        public RobotContainer() {
 
-    }
+                poseChooser.addOption("Collum", "Collum");
+                poseChooser.addOption("Middle", "Middle");
+                poseChooser.addOption("Wall", "Wall");
+                poseChooser.setDefaultOption("Middle", "Middle");
+                NamedCommands.registerCommand("Score L1", scorel1);
+                NamedCommands.registerCommand("pathFind", pathfindingCommand);
+                NamedCommands.registerCommand("Score L4", demo);
+                autoChooser = AutoBuilder.buildAutoChooser();
+                SmartDashboard.putData("Auto Mode", autoChooser);
+                configureBindings();
 
-    private void configureBindings() {
-       
-        drivetrain.setDefaultCommand(
-                drivetrain.applyRequest(() -> drive
-                        .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                        .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                        .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
-                                                                                    // X(counterclockwise)
-                ));
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(
-                () -> point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
-        joystick.pov(0).whileTrue(
-                drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-        joystick.pov(180)
-                .whileTrue(drivetrain.applyRequest(
-                        () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+        }
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        /*
-         * joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction
-         * .kForward));
-         * joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction
-         * .kReverse));
-         * joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(
-         * Direction.kForward));
-         * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
-         * Direction.kReverse));
-         */
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        private void configureBindings() {
 
-        drivetrain.registerTelemetry(logger::telemeterize);
-        coJoystick.b().onTrue(demo);// 20
-        coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
+                drivetrain.setDefaultCommand(
+                                drivetrain.applyRequest(() -> drive
+                                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
+                                                                                                            // X(counterclockwise)
+                                ));
+                joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+                joystick.b().whileTrue(drivetrain.applyRequest(
+                                () -> point.withModuleDirection(
+                                                new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+                joystick.pov(0).whileTrue(
+                                drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+                joystick.pov(180)
+                                .whileTrue(drivetrain.applyRequest(
+                                                () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-        coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.0698)));// 40
-        coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(2.61)));// 150
-        coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
+                // Run SysId routines when holding back/start and X/Y.
+                // Note that each routine should be run exactly once in a single log.
+                /*
+                 * joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction
+                 * .kForward));
+                 * joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction
+                 * .kReverse));
+                 * joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(
+                 * Direction.kForward));
+                 * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
+                 * Direction.kReverse));
+                 */
+                // reset the field-centric heading on left bumper press
+                joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    }
+                drivetrain.registerTelemetry(logger::telemeterize);
+                coJoystick.b().onTrue(demo);// 20
+                coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
-    public void periodic() {
-        DriverStation.getAlliance().ifPresent(currentAlliance -> {
-            if(currentAlliance == Alliance.Blue) {  targetPose = blueTargetPose;} else{targetPose = redTargetPose;}
-        });
+                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.0698)));// 40
+                coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(2.61)));// 150
+                coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
+
+        }
+
+        public void positionStartup() {
+                _chosenPose = poseChooser.getSelected();
+             
+                
+                switch (_chosenPose) {
+                        case "Wall":
+                                if (currentAlliance == Alliance.Blue) {
+                                        startingPose = blueStartWall;
+                                } else {
+                                        startingPose = redStartWall;
+                                }
+                                break;
+                        case "Middle":
+                        if (currentAlliance == Alliance.Blue) {
+                                startingPose = blueStartMid;
+                        } else {
+                                startingPose = redStartMid;
+                        }
+                                break;
+                        case "Collum":
+                        if (currentAlliance == Alliance.Blue) {
+                                startingPose = blueStartPillar;
+                        } else {
+                                startingPose = redStartPillar;
+                        }
+                                break;
+                        default:
+                                break;
+                }
+        }
+
+        public void periodic() {
+                DriverStation.getAlliance().ifPresent(currentAlliance -> {
+                        if (currentAlliance == Alliance.Blue) {
+                                targetPose = blueTargetPose;
+                        } else {
+                                targetPose = redTargetPose;
+                        }});
+                positionStartup();
                 clawAngle = claw.lastKnownAngle;
                 if (clawAngle == 0) {
                         finalH = 0;
@@ -223,9 +261,9 @@ public class RobotContainer {
 
         }
 
-    public Command getAutonomousCommand() {
-        /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
+        public Command getAutonomousCommand() {
+                /* Run the path selected from the auto chooser */
+                return autoChooser.getSelected();
 
-    }
+        }
 }

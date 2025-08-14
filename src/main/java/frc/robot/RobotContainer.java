@@ -218,7 +218,7 @@ public class RobotContainer {
                         } else {
                                 targetPose = redTargetPose;
                         }});
-                positionStartup();
+                if(DriverStation.isDisabled())  positionStartup();
                 clawAngle = claw.lastKnownAngle;
                 if (clawAngle == 0) {
                         finalH = 0;

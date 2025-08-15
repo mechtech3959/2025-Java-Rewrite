@@ -31,6 +31,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import org.littletonrobotics.junction.Logger;
@@ -102,7 +103,7 @@ public class ClawSubsystem extends SubsystemBase {
     TalonFXConfiguration axisConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
         .withFusedCANcoder(axisEncoder)
         .withRotorToSensorRatio(36)
-        .withSensorToMechanismRatio(1))
+        .withSensorToMechanismRatio(1)).withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03).withReverseSoftLimitEnable(true).withForwardSoftLimitThreshold(3.14).withForwardSoftLimitEnable(true))
         .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake))
         .withMotionMagic(motion)
@@ -115,7 +116,7 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public void setAxis(Double pose) {
-    axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true));
+    axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
     if (RobotBase.isReal()) {
       lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
     } else {
@@ -199,6 +200,8 @@ public class ClawSubsystem extends SubsystemBase {
     getAxis();
     acceptableAngle();
     sendData();
+    SmartDashboard.putBoolean("Accept", acceptableAngle());
+
     super.periodic();
   }
 

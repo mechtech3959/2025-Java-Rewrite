@@ -48,6 +48,7 @@ import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.commands.Intake;
 import frc.robot.commands.scoreL1;
 import frc.robot.commands.simDemo;
+import frc.robot.commands.testL1;
 import frc.robot.commands.L1;
 import frc.robot.commands.L2;
 import frc.robot.commands.L3;
@@ -63,7 +64,7 @@ public class RobotContainer {
         Pose2d redStartWall = new Pose2d(9.5, 7.2, new Rotation2d(0));
         public Pose2d blueTargetPose = new Pose2d(1.513, 7.332, Rotation2d.fromDegrees(-53));
         public Pose2d redTargetPose = new Pose2d(15.965, 0.6, Rotation2d.fromDegrees(53));
-        public Pose2d targetPose = redTargetPose;
+        public Pose2d targetPose;
         public Pose2d startingPose;
         public Alliance currentAlliance;
 
@@ -97,22 +98,32 @@ public class RobotContainer {
         // Create the constraints to use while pathfinding
         PathConstraints constraints = new PathConstraints(
                         3.0, 4.0,
-                        Units.degreesToRadians(1000), Units.degreesToRadians(1000));
+                        Units.degreesToRadians(300), Units.degreesToRadians(300));
+
+                        Command pathfindingCommand;
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindToPose(
-                        targetPose,
+        Command bluePathfindingCommand = AutoBuilder.pathfindToPose(
+                        blueTargetPose,
                         constraints,
                         0.0 // Goal end velocity in meters/sec
                             // Rotation delay distance in meters. This is how far the robot should travel
                             // before attempting to rotate.
         );
+        Command redPathfindingCommand = AutoBuilder.pathfindToPose(
+                redTargetPose,
+                constraints,
+                0.0 // Goal end velocity in meters/sec
+                    // Rotation delay distance in meters. This is how far the robot should travel
+                    // before attempting to rotate.
+);
 
         scoreL1 scorel1 = new scoreL1(elevator, claw);
         L1 l1;
         L2 l2;
         L3 l3;
         scoreL4 scorel4 = new scoreL4(elevator, claw);
+       testL1 test2 = new testL1(elevator, claw);
         Zero zero;
         // You could technically run the demo on robot but im scared....
         simDemo demo = new simDemo(elevator, claw);
@@ -122,14 +133,18 @@ public class RobotContainer {
         double clawAngle = 0;
 
         public RobotContainer() {
-
+                DriverStation.getAlliance().ifPresent(currentAlliance -> {
+                        if (currentAlliance == Alliance.Blue) {
+                                NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
+                        } else {
+                                NamedCommands.registerCommand("pathFind", redPathfindingCommand);
+                        }});
                 poseChooser.addOption("Collum", "Collum");
                 poseChooser.addOption("Middle", "Middle");
                 poseChooser.addOption("Wall", "Wall");
                 poseChooser.setDefaultOption("Middle", "Middle");
                 NamedCommands.registerCommand("Score L1", scorel1);
-                NamedCommands.registerCommand("pathFind", pathfindingCommand);
-                NamedCommands.registerCommand("Score L4", demo);
+                 NamedCommands.registerCommand("Score L4", demo);
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();
@@ -174,8 +189,9 @@ public class RobotContainer {
                 coJoystick.b().onTrue(demo);// 20
                 coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
 
-                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.0698)));// 40
-                coJoystick.a().onChange(Commands.runOnce(() -> claw.setAxis(2.61)));// 150
+                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.1740)));//10 deg 0.174 rads
+                // 40 0.698 
+                coJoystick.a().onChange( test2);// 150
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
 
         }
@@ -212,13 +228,11 @@ public class RobotContainer {
         }
 
         public void periodic() {
-                DriverStation.getAlliance().ifPresent(currentAlliance -> {
-                        if (currentAlliance == Alliance.Blue) {
-                                targetPose = blueTargetPose;
-                        } else {
-                                targetPose = redTargetPose;
-                        }});
-                if(DriverStation.isDisabled())  positionStartup();
+                SmartDashboard.putData(poseChooser);
+                
+                if(DriverStation.isDisabled())  {positionStartup();
+               // drivetrain.resetPose(startingPose);
+                };
                 clawAngle = claw.lastKnownAngle;
                 if (clawAngle == 0) {
                         finalH = 0;

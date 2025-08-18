@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Elevator;
 
 public class ElevatorStates {
- public enum elevatorStates{
+  enum elevatorStates{
     L1,
     L2,
     L3,

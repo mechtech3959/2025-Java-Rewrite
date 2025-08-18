@@ -49,6 +49,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 
+import frc.robot.subsystems.Elevator.ElevatorStates.elevatorStates;
+
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
    
@@ -64,9 +66,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 TalonFXSimState simMaster;
         TalonFXSimState simSlave;
         CANcoderSimState simEncoder;
+    ElevatorIO elevatorIO;
+    elevatorStates elevatorState = elevatorStates.Home; 
 
-    public ElevatorSubsystem() {
-                
+    public ElevatorSubsystem(ElevatorIO elevatorIO) {
+        this.elevatorIO = elevatorIO;
         elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000, 0.000);
         carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
                 0.000, 0.000);
@@ -87,7 +91,9 @@ TalonFXSimState simMaster;
 
     }
 
+  public void setStates(){
   
+  }
 
 
     

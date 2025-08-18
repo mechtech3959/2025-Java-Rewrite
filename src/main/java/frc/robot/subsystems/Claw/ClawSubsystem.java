@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.Claw.ClawSubsystemState.clawStates;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -68,15 +69,7 @@ public class ClawSubsystem extends SubsystemBase {
   public    ClawSubsystemConfig config;
 
 
-  public enum clawState {
-    Intake,
-    Travel,
-    L1,
-    L2,
-    L3,
-    L4,
-    algea;
-  };
+ public clawStates clawState = clawStates.Home;
 
   public ClawSubsystem() {
     axisMotor = new TalonFX(14, "CanBus");
@@ -96,7 +89,7 @@ public class ClawSubsystem extends SubsystemBase {
    if(Robot.isSimulation()){
     simulationInit();}
     }
-
+  public void setStates(){}
   public void config() {
     MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(80)
         .withMotionMagicAcceleration(80)

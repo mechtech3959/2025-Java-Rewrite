@@ -14,11 +14,11 @@ public class testL1 extends SequentialCommandGroup {
     public testL1(ElevatorSubsystem elevator, ClawSubsystem claw) {
     //    elevator = _ElevatorSubsystem;
     //    claw = _ClawSubsystem;
-        addCommands(
-                Commands.runOnce(() -> claw.setAxis(0.174)),
+        addCommands(    
+                Commands.runOnce(() -> {claw.setAxis(0.174);}),
                 Commands.waitUntil(() -> claw.acceptableAngle()).andThen(()->elevator.setHeight(1.0)),
                 Commands.waitSeconds(2.00),
                 Commands.runOnce(() -> elevator.setHeight(0.0)).onlyIf(() -> claw.acceptableAngle()));
-    }
-
+     }
+ 
 }

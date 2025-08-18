@@ -2,10 +2,11 @@ package frc.robot.subsystems.Claw;
 
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.Claw.ClawSubsystemState.clawStates;
+import frc.robot.subsystems.Claw.ClawStates.clawStates;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -66,10 +67,9 @@ public class ClawSubsystem extends SubsystemBase {
   public LoggedMechanism2d clawMech;
   public LoggedMechanismLigament2d pivot;
   public LoggedMechanismLigament2d flat;
-  public    ClawSubsystemConfig config;
+  public ClawConfig config;
 
-
- public clawStates clawState = clawStates.Home;
+  public clawStates clawState = clawStates.Home;
 
   public ClawSubsystem() {
     axisMotor = new TalonFX(14, "CanBus");
@@ -84,12 +84,42 @@ public class ClawSubsystem extends SubsystemBase {
     LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
     pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
     flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
-    axisMotor.getConfigurator().apply( config.AxisMotorConfig(14));
-   axisEncoder.getConfigurator().apply(config.encoderConfig());
-   if(Robot.isSimulation()){
-    simulationInit();}
+    axisMotor.getConfigurator().apply(config.AxisMotorConfig(14));
+    axisEncoder.getConfigurator().apply(config.encoderConfig());
+    if (Robot.isSimulation()) {
+      simulationInit();
     }
-  public void setStates(){}
+  }
+
+  public void setStates() {
+    switch (clawState) {
+      case L1:
+        setAxis(0.4);
+        break;
+      case L2:
+        setAxis(1.4);
+        break;
+      case L3:
+        break;
+      case L4:
+        break;
+      case Algea:
+        break;
+      case Home:
+        break;
+      case Travel:
+        break;
+      default:
+        break;
+    }
+  }
+
+  public Command moveAxis(double pose) {
+    return runOnce(() -> {
+      axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+    });
+  }
+
   public void config() {
     MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(80)
         .withMotionMagicAcceleration(80)
@@ -100,7 +130,9 @@ public class ClawSubsystem extends SubsystemBase {
     TalonFXConfiguration axisConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
         .withFusedCANcoder(axisEncoder)
         .withRotorToSensorRatio(36)
-        .withSensorToMechanismRatio(1)).withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03).withReverseSoftLimitEnable(true).withForwardSoftLimitThreshold(3.14).withForwardSoftLimitEnable(true))
+        .withSensorToMechanismRatio(1))
+        .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03)
+            .withReverseSoftLimitEnable(true).withForwardSoftLimitThreshold(3.14).withForwardSoftLimitEnable(true))
         .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake))
         .withMotionMagic(motion)

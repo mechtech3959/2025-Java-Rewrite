@@ -1,6 +1,6 @@
 package frc.robot.subsystems.Claw;
 
-public class ClawSubsystemState {
+public class ClawStates {
     enum clawStates{
         L1,
         L2,

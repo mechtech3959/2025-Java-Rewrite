@@ -3,7 +3,7 @@ package frc.robot.subsystems.Claw;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-public interface ClawSubsystemIO {
+public interface ClawIO {
 
     default void setAxis(double angle) {
     }

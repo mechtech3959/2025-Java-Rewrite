@@ -17,7 +17,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
-public class ClawSubsystemConfig {
+public class ClawConfig {
     public static final FeedbackSensorSourceValue fused = FeedbackSensorSourceValue.FusedCANcoder;
     public TalonFXConfiguration AxisMotorConfig(int encoder){
   MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(80)

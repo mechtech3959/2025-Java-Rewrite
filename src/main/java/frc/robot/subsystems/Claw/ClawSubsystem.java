@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Claw.ClawStates.clawStates;
+import frc.robot.subsystems.Claw.feed.FeedIO;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -57,12 +58,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 @SuppressWarnings("unused")
 public class ClawSubsystem extends SubsystemBase {
-  TalonFX axisMotor;
-  CANcoder axisEncoder;
-  SparkMax feedMotor;
-  MotionMagicVoltage axisMotion;
-  MotionMagicVoltage zeroAxis;
-  public double lastKnownAngle;
+  
+public final ClawIO clawIO;
+public final FeedIO feedIO;
+
   public SingleJointedArmSim sim;
   public LoggedMechanism2d clawMech;
   public LoggedMechanismLigament2d pivot;
@@ -71,21 +70,16 @@ public class ClawSubsystem extends SubsystemBase {
 
   public clawStates clawState = clawStates.Home;
 
-  public ClawSubsystem() {
-    axisMotor = new TalonFX(14, "CanBus");
-    axisEncoder = new CANcoder(15, "CanBus");
-    feedMotor = new SparkMax(30, MotorType.kBrushless);
-    axisMotion = new MotionMagicVoltage(0);
-    zeroAxis = new MotionMagicVoltage(0);
-    lastKnownAngle = 0;
+  public ClawSubsystem(ClawIO clawIO,FeedIO feedIO) {
+    this.clawIO = clawIO;
+    this.feedIO = feedIO;
+
     sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
         SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0, 0.0);
     clawMech = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0, 0, 255));
     LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
     pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
     flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
-    axisMotor.getConfigurator().apply(config.AxisMotorConfig(14));
-    axisEncoder.getConfigurator().apply(config.encoderConfig());
     if (Robot.isSimulation()) {
       simulationInit();
     }
@@ -94,114 +88,41 @@ public class ClawSubsystem extends SubsystemBase {
   public void setStates() {
     switch (clawState) {
       case L1:
-        setAxis(0.4);
+        clawIO.setAxis(0.349066);//20 deg
         break;
       case L2:
-        setAxis(1.4);
+      clawIO.setAxis(0.349066);
         break;
       case L3:
+      clawIO.setAxis(0.349066);
         break;
       case L4:
+      clawIO.setAxis(0.349066);
+
         break;
       case Algea:
+      clawIO.setAxis(2.617);//150 deg
+
         break;
       case Home:
+      clawIO.setAxis(0.0);
+
         break;
       case Travel:
+      clawIO.setAxis(0.174);//10 deg
+
         break;
       default:
         break;
     }
   }
 
-  public Command moveAxis(double pose) {
-    return runOnce(() -> {
-      axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
-    });
-  }
+   
+  
 
-  public void config() {
-    MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(80)
-        .withMotionMagicAcceleration(80)
-        .withMotionMagicJerk(1600);
-    Slot0Configs slot = new Slot0Configs().withGravityType(GravityTypeValue.Arm_Cosine).withKP(12).withKI(2).withKD(0.1)
-        .withKS(0.3).withKV(0.1).withKA(0).withKG(0.3)
-        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-    TalonFXConfiguration axisConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
-        .withFusedCANcoder(axisEncoder)
-        .withRotorToSensorRatio(36)
-        .withSensorToMechanismRatio(1))
-        .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03)
-            .withReverseSoftLimitEnable(true).withForwardSoftLimitThreshold(3.14).withForwardSoftLimitEnable(true))
-        .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
-            .withNeutralMode(NeutralModeValue.Brake))
-        .withMotionMagic(motion)
-        .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLimit(10).withSupplyCurrentLimitEnable(true))
-        .withSlot0(slot);
-    CANcoderConfiguration axisEncConfig = new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs()
-        .withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
-    axisMotor.getConfigurator().apply(axisConfig);
-    axisEncoder.getConfigurator().apply(axisEncConfig);
-  }
+ 
 
-  public void setAxis(Double pose) {
-    axisMotor.setControl(axisMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
-    if (RobotBase.isReal()) {
-      lastKnownAngle = axisMotor.getPosition().getValueAsDouble();
-    } else {
-
-      lastKnownAngle = pose;
-
-    }
-  }
-
-  public double getAxis() {
-    return axisMotor.getPosition().getValueAsDouble();
-  }
-
-  public void setIntake() {
-    if (hasCoral()) {
-      feedMotor.set(0);
-    } else {
-      feedMotor.set(-0.2);
-    }
-  }
-
-  public void setFeed(double output) {
-    feedMotor.set(output);
-  }
-
-  public void setFeedStop() {
-    feedMotor.set(0);
-  }
-
-  public void setStaticIntake() {
-  }
-
-  public void setStaticOutake() {
-  }
-
-  public boolean hasCoral() {
-    if (feedMotor.getAnalog().getVoltage() >= 2.9) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean acceptableAngle() {
-    if (Robot.isReal()) {
-      if ((getAxis() == lastKnownAngle) ||
-          ((getAxis() >= lastKnownAngle - 0.08) &&
-              (getAxis() <= lastKnownAngle + 0.08))) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  }
+ 
 
   public void simulationInit() {
     sim.setInputVoltage(12);
@@ -212,25 +133,21 @@ public class ClawSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     sim.update(0.05);
-    sim.setState(lastKnownAngle, 1);
-    pivot.setAngle(lastKnownAngle);
+  //  sim.setState(lastKnownAngle, 1);
+   // pivot.setAngle(lastKnownAngle);
     SmartDashboard.putData("cc", clawMech);
   }
 
   public void sendData() {
-    Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);
-    Logger.recordOutput("Real/Claw/Axis Speed", axisEncoder.getVelocity().getValueAsDouble());
-    Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
+    //Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);
+    //Logger.recordOutput("Real/Claw/Axis Speed", axisEncoder.getVelocity().getValueAsDouble());
+   // Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
   }
 
   @Override
   public void periodic() {
-    hasCoral();
-    getAxis();
-    acceptableAngle();
+    
     sendData();
-    SmartDashboard.putBoolean("Accept", acceptableAngle());
-
     super.periodic();
   }
 

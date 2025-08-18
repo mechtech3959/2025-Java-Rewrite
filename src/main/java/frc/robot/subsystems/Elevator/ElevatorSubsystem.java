@@ -51,10 +51,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
-    TalonFX masterM;
-    TalonFX slaveM;
-    CANcoder elevatorEncoder;
-    MotionMagicVoltage elevatorMotion;
+   
     double target = 0;
     double simPose = 0;
     public ElevatorSim elevatorSim;
@@ -69,12 +66,7 @@ TalonFXSimState simMaster;
         CANcoderSimState simEncoder;
 
     public ElevatorSubsystem() {
-        masterM = new TalonFX(19, "CanBus");
-        slaveM = new TalonFX(20, "CanBus");
-        elevatorEncoder = new CANcoder(9, "CanBus");
-        
-        config();
-        
+                
         elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000, 0.000);
         carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
                 0.000, 0.000);
@@ -86,77 +78,20 @@ TalonFXSimState simMaster;
          elevatorMotorSim = new DCMotorSim(
                LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2),0.2, 18), DCMotor.getKrakenX60Foc(2));
             if(Robot.isSimulation()){
-             simMaster = masterM.getSimState();
-             simSlave = slaveM.getSimState();
-             simEncoder = elevatorEncoder.getSimState();
+           //  simMaster = masterM.getSimState();
+           //  simSlave = slaveM.getSimState();
+          //   simEncoder = elevatorEncoder.getSimState();
             }
        
                simulationInit();
 
     }
 
-    public Command place() {
-        return runOnce(null);
-    }
+  
 
-    public void config() {
-        MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(40)
-                .withMotionMagicAcceleration(40)
-                .withMotionMagicJerk(2000).withMotionMagicExpo_kA(0.3);
-        Slot0Configs slot = new Slot0Configs().withGravityType(GravityTypeValue.Elevator_Static).withKP(7).withKI(0.8)
-                .withKD(0.1).withKS(0.4).withKV(0.001).withKA(0).withKG(0.3)
-                .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-        TalonFXConfiguration elevatorConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
-                .withFusedCANcoder(elevatorEncoder)
-                .withRotorToSensorRatio(1)
-                .withSensorToMechanismRatio(18))
-                .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
-                        .withNeutralMode(NeutralModeValue.Brake))
-                .withMotionMagic(motion)
-                .withSlot0(slot)
-                .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLowerLimit(30).withSupplyCurrentLimit(60)
-                        .withSupplyCurrentLowerTime(1));
-        CANcoderConfiguration elevatorEncConfig = new CANcoderConfiguration()
-                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-                        .withAbsoluteSensorDiscontinuityPoint(0.5));
-        masterM.getConfigurator().apply(elevatorConfig);
-        slaveM.getConfigurator().apply(elevatorConfig);
-        elevatorEncoder.getConfigurator().apply(elevatorEncConfig);
-        
-    }
 
-    public void setHeight(double pose) {
-            
-        if(Robot.isSimulation()){
-            //elevatorMotorSim.setState(pose, 0.02);
-          //  carriagElevatorSim.setState(pose, 0.02);
-          //  elevatorSim.setState(pose, 0.02);
-          //  simPose = elevatorSim.getPositionMeters();
-          target = pose;
-            }else{ masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
-                target = pose;}
-
-        
-    }
-
-    public double getHeight() {
-        masterM.getPosition().getValueAsDouble();
-        slaveM.getPosition().getValueAsDouble();
-        return elevatorEncoder.getPosition().getValueAsDouble();
-    }
-
-    public void coastOut() {
-
-    }
-
-    public boolean isAtTarget() {
-        if (masterM.getPosition().getValueAsDouble() == target) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    
+  
     public void simulationInit() {
         elevatorSim.setInputVoltage(12);
         elevatorSim.setInput(0);
@@ -169,10 +104,10 @@ TalonFXSimState simMaster;
 
     @Override
     public void simulationPeriodic() {
-        TalonFXSimState simMaster = masterM.getSimState();
-        TalonFXSimState simSlave = slaveM.getSimState();
-        CANcoderSimState simEncoder = elevatorEncoder.getSimState();
-        simMaster.setSupplyVoltage(12);
+       // TalonFXSimState simMaster = masterM.getSimState();
+    //    TalonFXSimState simSlave = slaveM.getSimState();
+      //  CANcoderSimState simEncoder = elevatorEncoder.getSimState();
+     //   simMaster.setSupplyVoltage(12);
         elevatorMotorSim.update(0.05);
         elevatorLin.setLength(target);
        elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
@@ -186,14 +121,13 @@ TalonFXSimState simMaster;
     }
 
     void sendData() {
-        Logger.recordOutput("Real/Elevator/Position", getHeight());
-        Logger.recordOutput("Real/Elevator/Acceleration", elevatorEncoder.getVelocity().getValueAsDouble());
+       // Logger.recordOutput("Real/Elevator/Position", getHeight());
+       // Logger.recordOutput("Real/Elevator/Acceleration", elevatorEncoder.getVelocity().getValueAsDouble());
     }
 
     @Override
     public void periodic() {
-        isAtTarget();
-        getHeight();
+      
         sendData();
         super.periodic();
     }

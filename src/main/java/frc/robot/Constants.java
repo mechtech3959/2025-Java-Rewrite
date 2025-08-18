@@ -29,6 +29,12 @@ public final class Constants {
   public static final int clawAxisMotorId = 14;
   public static final int clawAxisEncoderId = 15;
   public static final int clawIntakeMotorId = 30;
+  public static final int ElevatorMMotorId = 19;
+  public static final int ElevatorSMotorId = 20;
+  public static final int ElevatorEncoderId = 9;
+
+
+
   
 
 

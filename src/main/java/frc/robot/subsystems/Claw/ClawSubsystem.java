@@ -65,6 +65,8 @@ public class ClawSubsystem extends SubsystemBase {
   public LoggedMechanism2d clawMech;
   public LoggedMechanismLigament2d pivot;
   public LoggedMechanismLigament2d flat;
+  public    ClawSubsystemConfig config;
+
 
   public enum clawState {
     Intake,
@@ -89,9 +91,11 @@ public class ClawSubsystem extends SubsystemBase {
     LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
     pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
     flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
-    config();
-    simulationInit();
-  }
+    axisMotor.getConfigurator().apply( config.AxisMotorConfig(14));
+   axisEncoder.getConfigurator().apply(config.encoderConfig());
+   if(Robot.isSimulation()){
+    simulationInit();}
+    }
 
   public void config() {
     MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(80)

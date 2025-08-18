@@ -146,6 +146,9 @@ public final FeedIO feedIO;
 
   @Override
   public void periodic() {
+    clawIO.acceptableAngle();
+    clawIO.getAxis();
+    feedIO.hasCoral();
     
     sendData();
     super.periodic();

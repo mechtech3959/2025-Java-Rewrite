@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 public class ClawSubsystemConfig {
+    public static final FeedbackSensorSourceValue fused = FeedbackSensorSourceValue.FusedCANcoder;
     public TalonFXConfiguration AxisMotorConfig(int encoder){
   MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(80)
         .withMotionMagicAcceleration(80)
@@ -27,7 +28,7 @@ public class ClawSubsystemConfig {
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     TalonFXConfiguration axisConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
         .withFeedbackRemoteSensorID(encoder)
-        .withFeedbackSensorSource()
+        .withFeedbackSensorSource(fused)
         .withRotorToSensorRatio(36)
         .withSensorToMechanismRatio(1)).withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03).withReverseSoftLimitEnable(true).withForwardSoftLimitThreshold(3.14).withForwardSoftLimitEnable(true))
         .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
@@ -35,10 +36,14 @@ public class ClawSubsystemConfig {
         .withMotionMagic(motion)
         .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLimit(10).withSupplyCurrentLimitEnable(true))
         .withSlot0(slot);
-    CANcoderConfiguration axisEncConfig = new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs()
-        .withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
-
-
+    return axisConfig;
     }
+    public CANcoderConfiguration encoderConfig(){
+        CANcoderConfiguration axisEncConfig = new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs()
+        .withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
+    return axisEncConfig;
+    }
+
+    
     
 }

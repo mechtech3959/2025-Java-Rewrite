@@ -84,8 +84,9 @@ public final FeedIO feedIO;
       simulationInit();
     }
   }
-
-  public void setStates() {
+  
+  public void setStates(clawStates changeState) {
+    clawState = changeState;
     switch (clawState) {
       case L1:
         clawIO.setAxis(0.349066);//20 deg

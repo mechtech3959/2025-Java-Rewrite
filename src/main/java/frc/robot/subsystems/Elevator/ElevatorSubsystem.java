@@ -91,7 +91,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    public void setStates() {
+    public void setStates(elevatorStates changeState) {
+        elevatorState = changeState;
         switch (elevatorState) {
             case Home:
                 elevatorIO.setHeight(0);

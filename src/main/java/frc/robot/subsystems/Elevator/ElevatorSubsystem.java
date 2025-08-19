@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.Claw.ClawIO;
+import frc.robot.subsystems.Elevator.ElevatorIO.elevatorData;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -78,6 +80,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     TalonFXSimState simSlave;
     CANcoderSimState simEncoder;
   private final ElevatorIO elevatorIO;
+  public elevatorData data;
     public ElevatorStates elevatorState = ElevatorStates.Home;
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
@@ -97,9 +100,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             // simMaster = masterM.getSimState();
             // simSlave = slaveM.getSimState();
             // simEncoder = elevatorEncoder.getSimState();
-        }
+              simulationInit();
+  }
 
-        simulationInit();
 
     }
 
@@ -172,6 +175,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     void sendData() {
+       elevatorIO.updateData(data);
         // Logger.recordOutput("Real/Elevator/Position", getHeight());
         // Logger.recordOutput("Real/Elevator/Acceleration",
         // elevatorEncoder.getVelocity().getValueAsDouble());

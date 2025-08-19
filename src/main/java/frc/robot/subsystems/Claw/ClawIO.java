@@ -1,8 +1,5 @@
 package frc.robot.subsystems.Claw;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -20,12 +17,13 @@ public interface ClawIO {
 
     default void configure() {
     }
+
     default Command moveAxis(double pose) {
         return Commands.none();
     }
+
     default boolean acceptableAngle() {
         return true;
     }
-
 
 }

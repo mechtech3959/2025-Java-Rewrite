@@ -57,28 +57,29 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 @SuppressWarnings("unused")
 public class ClawSubsystem extends SubsystemBase {
-  
-public final ClawIO clawIO;
-public final FeedIO feedIO;
-public enum ClawStates{
-  L1,
-  L2,
-  L3,
-  L4,
-  Travel,
-  Home,
-  Algea,
-  Intake}
+
+  public final ClawIO clawIO;
+  public final FeedIO feedIO;
+
+  public enum ClawStates {
+    L1,
+    L2,
+    L3,
+    L4,
+    Travel,
+    Home,
+    Algea,
+    Intake
+  }
 
   public SingleJointedArmSim sim;
   public LoggedMechanism2d clawMech;
   public LoggedMechanismLigament2d pivot;
   public LoggedMechanismLigament2d flat;
-  public ClawConfig config;
 
   public ClawStates clawState = ClawStates.Home;
 
-  public ClawSubsystem(ClawIO clawIO,FeedIO feedIO) {
+  public ClawSubsystem(ClawIO clawIO, FeedIO feedIO) {
     clawIO.configure();
 
     this.clawIO = clawIO;
@@ -94,32 +95,32 @@ public enum ClawStates{
       simulationInit();
     }
   }
-  
+
   public void setStates() {
     switch (clawState) {
       case L1:
-        clawIO.setAxis(0.349066);//20 deg
+        clawIO.setAxis(0.349066);// 20 deg
         break;
       case L2:
-      clawIO.setAxis(0.349066);
+        clawIO.setAxis(0.349066);
         break;
       case L3:
-      clawIO.setAxis(0.349066);
+        clawIO.setAxis(0.349066);
         break;
       case L4:
-      clawIO.setAxis(0.349066);
+        clawIO.setAxis(0.349066);
 
         break;
       case Algea:
-      clawIO.setAxis(2.617);//150 deg
+        clawIO.setAxis(2.617);// 150 deg
 
         break;
       case Home:
-      clawIO.setAxis(0.0);
+        clawIO.setAxis(0.0);
 
         break;
       case Travel:
-      clawIO.setAxis(0.174);//10 deg
+        clawIO.setAxis(0.174);// 10 deg
 
         break;
       case Intake:
@@ -130,13 +131,6 @@ public enum ClawStates{
     }
   }
 
-   
-  
-
- 
-
- 
-
   public void simulationInit() {
     sim.setInputVoltage(12);
     sim.setInput(0, 0); // Set simulation input to a default value
@@ -146,15 +140,16 @@ public enum ClawStates{
   @Override
   public void simulationPeriodic() {
     sim.update(0.05);
-  //  sim.setState(lastKnownAngle, 1);
-   // pivot.setAngle(lastKnownAngle);
+    // sim.setState(lastKnownAngle, 1);
+    // pivot.setAngle(lastKnownAngle);
     SmartDashboard.putData("cc", clawMech);
   }
 
   public void sendData() {
-    //Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);
-    //Logger.recordOutput("Real/Claw/Axis Speed", axisEncoder.getVelocity().getValueAsDouble());
-   // Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
+    // Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);
+    // Logger.recordOutput("Real/Claw/Axis Speed",
+    // axisEncoder.getVelocity().getValueAsDouble());
+    // Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
   }
 
   @Override
@@ -162,7 +157,7 @@ public enum ClawStates{
     clawIO.acceptableAngle();
     clawIO.getAxis();
     feedIO.hasCoral();
-    
+
     sendData();
     super.periodic();
   }

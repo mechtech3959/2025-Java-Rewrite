@@ -89,6 +89,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             break;
             case Intake:
                 elevator.elevatorState = elevator.elevatorState.Home;
+                while(!claw.feedIO.hasCoral())
                 claw.clawState = claw.clawState.Intake;
                 if(claw.feedIO.hasCoral())claw.clawState = claw.clawState.L1;
                 break;
@@ -99,6 +100,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         setState();
     }
 

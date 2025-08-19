@@ -14,6 +14,8 @@ public class ElevatorTalonFXIO implements ElevatorIO {
     private ElevatorConfig config = new ElevatorConfig();
     private MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0);
     private double target = 0.0;
+    
+    
 
     @Override
     public void configure() {
@@ -41,5 +43,20 @@ public class ElevatorTalonFXIO implements ElevatorIO {
         } else {
             return false;
         }
+    }
+    @Override 
+    public void updateData(elevatorData data){
+          data.masterMPosition = masterM.getPosition().getValueAsDouble();
+          data.masterMVelocity = masterM.getVelocity().getValueAsDouble();
+          data.MasterMinputVolts = masterM.getMotorVoltage().getValueAsDouble();
+          data.slaveMPosition = slaveM.getPosition().getValueAsDouble();
+          data.slaveMVelocity = slaveM.getPosition().getValueAsDouble();
+          data.targetPose = target;
+          
+
+    }
+    @Override 
+    public void  periodic(){
+
     }
 }

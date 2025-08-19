@@ -1,37 +1,37 @@
 package frc.robot.subsystems.Claw.feed;
 
-import java.io.ObjectInputFilter.Config;
-import java.util.function.BooleanSupplier;
-
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Constants;
 
 public class FeedRevMaxIO implements FeedIO {
-      SparkMax feedMotor= new SparkMax(Constants.CanIdConstants.clawIntakeMotorId, MotorType.kBrushless);
-      
-    @Override 
-    public void setIntake(double percentOut){
+    SparkMax feedMotor = new SparkMax(Constants.CanIdConstants.clawIntakeMotorId, MotorType.kBrushless);
+
+    @Override
+    public void setIntake(double percentOut) {
         feedMotor.set(percentOut);
     }
-    @Override 
-    public void stdIntake(){
+
+    @Override
+    public void stdIntake() {
         feedMotor.set(-0.2);
     }
-    @Override 
-    public boolean hasCoral(){
+
+    @Override
+    public boolean hasCoral() {
         if (feedMotor.getAnalog().getVoltage() >= 2.9) {
             return true;
-          } else {
+        } else {
             return false;
-          }
+        }
     }
-    @Override 
-    public void intakeProcess(){
+
+    @Override
+    public void intakeProcess() {
         if (hasCoral() == false) {
             stdIntake();
-        }else{
+        } else {
             setIntake(0);
         }
     }

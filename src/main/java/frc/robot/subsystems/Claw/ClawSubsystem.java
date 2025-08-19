@@ -67,7 +67,8 @@ public enum ClawStates{
   L4,
   Travel,
   Home,
-  Algea}
+  Algea,
+  Intake}
 
   public SingleJointedArmSim sim;
   public LoggedMechanism2d clawMech;
@@ -121,6 +122,9 @@ public enum ClawStates{
       clawIO.setAxis(0.174);//10 deg
 
         break;
+      case Intake:
+        clawIO.setAxis(0);
+        feedIO.intakeProcess();
       default:
         break;
     }

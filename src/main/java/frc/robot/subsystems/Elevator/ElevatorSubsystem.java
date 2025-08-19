@@ -53,7 +53,7 @@ import frc.robot.subsystems.Elevator.ElevatorStates.elevatorStates;
 
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
-   
+
     double target = 0;
     double simPose = 0;
     public ElevatorSim elevatorSim;
@@ -63,11 +63,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     LoggedMechanismRoot2d root;
     LoggedMechanismLigament2d elevatorLin;
     DCMotorSim elevatorMotorSim;
-TalonFXSimState simMaster;
-        TalonFXSimState simSlave;
-        CANcoderSimState simEncoder;
+    TalonFXSimState simMaster;
+    TalonFXSimState simSlave;
+    CANcoderSimState simEncoder;
     ElevatorIO elevatorIO;
-    elevatorStates elevatorState = elevatorStates.Home; 
+    elevatorStates elevatorState = elevatorStates.Home;
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
@@ -78,26 +78,59 @@ TalonFXSimState simMaster;
         elevatorMech = new LoggedMechanism2d(20, 50, blue);
         root = elevatorMech.getRoot("elev", 10, 0);
         elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
-        
-         elevatorMotorSim = new DCMotorSim(
-               LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2),0.2, 18), DCMotor.getKrakenX60Foc(2));
-            if(Robot.isSimulation()){
-           //  simMaster = masterM.getSimState();
-           //  simSlave = slaveM.getSimState();
-          //   simEncoder = elevatorEncoder.getSimState();
-            }
-       
-               simulationInit();
+
+        elevatorMotorSim = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.2, 18), DCMotor.getKrakenX60Foc(2));
+        if (Robot.isSimulation()) {
+            // simMaster = masterM.getSimState();
+            // simSlave = slaveM.getSimState();
+            // simEncoder = elevatorEncoder.getSimState();
+        }
+
+        simulationInit();
 
     }
 
-  public void setStates(){
-  
-  }
+    public void setStates() {
+        switch (elevatorState) {
+            case Home:
+                elevatorIO.setHeight(0);
+                break;
+            case L1:
+                elevatorIO.setHeight(0.5);// check this
+                break;
+            case L2:
+                elevatorIO.setHeight(1);
 
+                break;
+            case L3:
+                elevatorIO.setHeight(2.3);
 
-    
-  
+                break;
+            case L4:
+                elevatorIO.setHeight(4.35);
+
+                break;
+            case DeAlgea_L2:
+                elevatorIO.setHeight(1.9);
+
+                break;
+            case DeAlgea_L3:
+                elevatorIO.setHeight(3.8);
+
+                break;
+            case Net:
+                elevatorIO.setHeight(5.2);
+
+                break;
+            case Travel:
+                break;
+            default:
+                break;
+        }
+
+    }
+
     public void simulationInit() {
         elevatorSim.setInputVoltage(12);
         elevatorSim.setInput(0);
@@ -110,13 +143,13 @@ TalonFXSimState simMaster;
 
     @Override
     public void simulationPeriodic() {
-       // TalonFXSimState simMaster = masterM.getSimState();
-    //    TalonFXSimState simSlave = slaveM.getSimState();
-      //  CANcoderSimState simEncoder = elevatorEncoder.getSimState();
-     //   simMaster.setSupplyVoltage(12);
+        // TalonFXSimState simMaster = masterM.getSimState();
+        // TalonFXSimState simSlave = slaveM.getSimState();
+        // CANcoderSimState simEncoder = elevatorEncoder.getSimState();
+        // simMaster.setSupplyVoltage(12);
         elevatorMotorSim.update(0.05);
         elevatorLin.setLength(target);
-       elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
+        elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
         carriagElevatorSim.setState(target, 0.05);
         elevatorSim.update(0.05);
         carriagElevatorSim.update(0.05);
@@ -127,13 +160,14 @@ TalonFXSimState simMaster;
     }
 
     void sendData() {
-       // Logger.recordOutput("Real/Elevator/Position", getHeight());
-       // Logger.recordOutput("Real/Elevator/Acceleration", elevatorEncoder.getVelocity().getValueAsDouble());
+        // Logger.recordOutput("Real/Elevator/Position", getHeight());
+        // Logger.recordOutput("Real/Elevator/Acceleration",
+        // elevatorEncoder.getVelocity().getValueAsDouble());
     }
 
     @Override
     public void periodic() {
-      
+        setStates();
         sendData();
         super.periodic();
     }

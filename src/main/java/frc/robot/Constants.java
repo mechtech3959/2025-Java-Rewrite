@@ -4,8 +4,7 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide

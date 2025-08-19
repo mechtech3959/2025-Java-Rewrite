@@ -28,6 +28,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
  * this project, you must also update the Main.java file in the project.
  */
 
+@SuppressWarnings("unused")
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
@@ -41,7 +42,7 @@ public class Robot extends LoggedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    Logger.recordMetadata("3959-2025 Java Rewrite", "3959-2025 Java Rewrite"); // Set a metadata value
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")

@@ -54,6 +54,7 @@ import frc.robot.subsystems.Elevator.ElevatorTalonFXIO;
 import frc.robot.subsystems.SuperStructureSubsystem.superState;
 
 
+@SuppressWarnings("unused")
 public class RobotContainer {
         Pose2d blueStartPillar = new Pose2d(8.0, 5, new Rotation2d(3.14));
         Pose2d blueStartMid = new Pose2d(8.0, 6.1, new Rotation2d(3.14));

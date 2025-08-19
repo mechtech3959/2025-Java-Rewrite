@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 
+@SuppressWarnings("unused")
 public class scoreL4 extends SequentialCommandGroup {
 
     public final ElevatorSubsystem elevator;

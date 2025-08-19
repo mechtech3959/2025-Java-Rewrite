@@ -85,9 +85,9 @@ public class RobotContainer {
         private final CommandXboxController joystick = new CommandXboxController(0);
         private final CommandXboxController coJoystick = new CommandXboxController(1);
 
-        public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-        public final ElevatorSubsystem elevator = new ElevatorSubsystem();
-        public final ClawSubsystem claw = new ClawSubsystem();
+     //   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+      //  public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    //    public final ClawSubsystem claw = new ClawSubsystem();
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
         private final SendableChooser<String> poseChooser = new SendableChooser<String>();
@@ -116,7 +116,7 @@ public class RobotContainer {
                     // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
 );
-
+/* 
         scoreL1 scorel1 = new scoreL1(elevator, claw);
         L1 l1;
         L2 l2;
@@ -126,6 +126,7 @@ public class RobotContainer {
         Zero zero;
         // You could technically run the demo on robot but im scared....
         simDemo demo = new simDemo(elevator, claw);
+        */
         Intake intake;
         double finalH = 0;
         double finalX = 0;
@@ -142,8 +143,8 @@ public class RobotContainer {
                 poseChooser.addOption("Middle", "Middle");
                 poseChooser.addOption("Wall", "Wall");
                 poseChooser.setDefaultOption("Middle", "Middle");
-                NamedCommands.registerCommand("Score L1", scorel1);
-                 NamedCommands.registerCommand("Score L4", demo);
+              //  NamedCommands.registerCommand("Score L1", scorel1);
+             //    NamedCommands.registerCommand("Score L4", demo);
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();
@@ -151,7 +152,7 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
-
+/* 
                 drivetrain.setDefaultCommand(
                                 drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
@@ -180,7 +181,7 @@ public class RobotContainer {
                  * Direction.kForward));
                  * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
                  * Direction.kReverse));
-                 */
+                 
                 // reset the field-centric heading on left bumper press
                 joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -192,6 +193,7 @@ public class RobotContainer {
                 // 40 0.698 
                 coJoystick.a().onChange( test2);// 150
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
+        */
 
         }
 
@@ -232,7 +234,7 @@ public class RobotContainer {
                 if(DriverStation.isDisabled())  {positionStartup();
                // drivetrain.resetPose(startingPose);
                 };
-                clawAngle = claw.lastKnownAngle;
+               /*  clawAngle = claw.lastKnownAngle;
                 if (clawAngle == 0) {
                         finalH = 0;
                         finalX = 0;
@@ -249,7 +251,7 @@ public class RobotContainer {
                         finalX = 0.31;
 
                 }
-                // using a sin reggression model translation should be
+               // using a sin reggression model translation should be
                 // double modelY = 0.547343 * Math.sin((10.77753 * claw.sim.getAngleRads()) -
                 // 0.466346) + 0.821554;
                 // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
@@ -271,7 +273,7 @@ public class RobotContainer {
                                 new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
                                 new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
                 });
-
+*/
         }
 
         public Command getAutonomousCommand() {

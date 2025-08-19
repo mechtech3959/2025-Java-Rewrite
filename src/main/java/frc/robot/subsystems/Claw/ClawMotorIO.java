@@ -16,7 +16,7 @@ import frc.robot.Robot;
 public class ClawMotorIO implements ClawIO {
     private TalonFX axisMotor= new TalonFX(Constants.CanIdConstants.clawAxisMotorId, Constants.CanIdConstants.canbus);
     private CANcoder axisEncoder = new CANcoder(Constants.CanIdConstants.clawAxisEncoderId, Constants.CanIdConstants.canbus);
-    private ClawConfig config;
+    private ClawConfig config = new ClawConfig();
     private double lastKnownAngle = 0.0;
     MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0).withSlot(0);
     @Override
@@ -29,7 +29,7 @@ public class ClawMotorIO implements ClawIO {
         return axisMotor.getPosition().getValueAsDouble();
     }
     @Override
-    public void configure(TalonFXConfiguration talonConfig,CANcoderConfiguration cancoderConfig){
+    public void configure(){
         axisMotor.getConfigurator().apply(config.AxisMotorConfig(Constants.CanIdConstants.clawAxisMotorId));
         axisEncoder.getConfigurator().apply(config.encoderConfig());
 

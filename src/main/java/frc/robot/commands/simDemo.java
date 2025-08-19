@@ -13,7 +13,7 @@ public class simDemo extends SequentialCommandGroup {
     public simDemo(ElevatorSubsystem _ElevatorSubsystem, ClawSubsystem _ClawSubsystem) {
         elevator = _ElevatorSubsystem;
         claw = _ClawSubsystem;
-        addCommands(
+        /*addCommands(
                 Commands.runOnce(() -> claw.setAxis(0.349)),
                 Commands.runOnce(() -> elevator.setHeight(1)),
                 Commands.waitSeconds(1.0),
@@ -37,6 +37,6 @@ public class simDemo extends SequentialCommandGroup {
                 Commands.waitSeconds(1.0),
                 Commands.runOnce(() -> elevator.setHeight(0.0)),
                 Commands.runOnce(() -> claw.setAxis(0.0)).onlyIf(() -> elevator.isAtTarget()));
-    }
+   */ }
 
 }

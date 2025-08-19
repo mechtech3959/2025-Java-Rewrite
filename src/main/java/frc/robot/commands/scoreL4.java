@@ -13,7 +13,8 @@ public class scoreL4 extends SequentialCommandGroup {
     public scoreL4(ElevatorSubsystem _ElevatorSubsystem, ClawSubsystem _ClawSubsystem) {
         elevator = _ElevatorSubsystem;
         claw = _ClawSubsystem;
-        addCommands(
+      /*   addCommands(
+            
                 Commands.runOnce(() -> claw.setAxis(0.689)),
                 Commands.runOnce(() -> elevator.setHeight(4.5)).onlyIf(() -> claw.acceptableAngle()),
                 Commands.runOnce(() -> claw.setFeed(-0.2)),
@@ -21,7 +22,7 @@ public class scoreL4 extends SequentialCommandGroup {
                 Commands.parallel(Commands.runOnce(() -> claw.setFeed(0.0)),
                         Commands.runOnce(() -> elevator.setHeight(0.0))),
                 Commands.runOnce(() -> claw.setAxis(0.0)).onlyIf(() -> elevator.isAtTarget()));
-    }
+  */  }
 
 }
 

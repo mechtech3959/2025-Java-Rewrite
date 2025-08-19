@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.Claw.ClawStates.clawStates;
 import frc.robot.subsystems.Claw.feed.FeedIO;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
@@ -61,6 +60,14 @@ public class ClawSubsystem extends SubsystemBase {
   
 public final ClawIO clawIO;
 public final FeedIO feedIO;
+public enum ClawStates{
+  L1,
+  L2,
+  L3,
+  L4,
+  Travel,
+  Home,
+  Algea}
 
   public SingleJointedArmSim sim;
   public LoggedMechanism2d clawMech;
@@ -68,9 +75,11 @@ public final FeedIO feedIO;
   public LoggedMechanismLigament2d flat;
   public ClawConfig config;
 
-  public clawStates clawState = clawStates.Home;
+  public ClawStates clawState = ClawStates.Home;
 
   public ClawSubsystem(ClawIO clawIO,FeedIO feedIO) {
+    clawIO.configure();
+
     this.clawIO = clawIO;
     this.feedIO = feedIO;
 
@@ -85,8 +94,7 @@ public final FeedIO feedIO;
     }
   }
   
-  public void setStates(clawStates changeState) {
-    clawState = changeState;
+  public void setStates() {
     switch (clawState) {
       case L1:
         clawIO.setAxis(0.349066);//20 deg

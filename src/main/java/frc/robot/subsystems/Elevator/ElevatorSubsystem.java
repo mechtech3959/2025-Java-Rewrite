@@ -49,11 +49,22 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 
-import frc.robot.subsystems.Elevator.ElevatorStates.elevatorStates;
 
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
-
+  public enum ElevatorStates{
+        L1,
+        L2,
+        L3,
+        L4,
+        Net,
+        Travel,
+        Home,
+        DeAlgea_L2,
+        DeAlgea_L3
+    
+    
+     }   
     double target = 0;
     double simPose = 0;
     public ElevatorSim elevatorSim;
@@ -66,10 +77,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     TalonFXSimState simMaster;
     TalonFXSimState simSlave;
     CANcoderSimState simEncoder;
-    ElevatorIO elevatorIO;
-    elevatorStates elevatorState = elevatorStates.Home;
+  private final ElevatorIO elevatorIO;
+    public ElevatorStates elevatorState = ElevatorStates.Home;
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
+        elevatorIO.configure();
         this.elevatorIO = elevatorIO;
         elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000, 0.000);
         carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
@@ -91,8 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    public void setStates(elevatorStates changeState) {
-        elevatorState = changeState;
+    public void setStates() {
         switch (elevatorState) {
             case Home:
                 elevatorIO.setHeight(0);

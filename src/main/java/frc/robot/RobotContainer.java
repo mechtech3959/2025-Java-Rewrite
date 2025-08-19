@@ -42,17 +42,17 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem;
+import frc.robot.subsystems.Claw.feed.FeedIO;
+import frc.robot.subsystems.Claw.feed.FeedRevMaxIO;
+import frc.robot.subsystems.Claw.ClawIO;
+import frc.robot.subsystems.Claw.ClawMotorIO;
+import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
-import frc.robot.commands.Intake;
-import frc.robot.commands.scoreL1;
-import frc.robot.commands.simDemo;
-import frc.robot.commands.testL1;
-import frc.robot.commands.L1;
-import frc.robot.commands.L2;
-import frc.robot.commands.L3;
-import frc.robot.commands.scoreL4;
-import frc.robot.commands.Zero;
+import frc.robot.subsystems.Elevator.ElevatorTalonFXIO;
+import frc.robot.subsystems.SuperStructureSubsystem.superState;
+
 
 public class RobotContainer {
         Pose2d blueStartPillar = new Pose2d(8.0, 5, new Rotation2d(3.14));
@@ -81,13 +81,16 @@ public class RobotContainer {
                         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
         private final Telemetry logger = new Telemetry(MaxSpeed);
-
         private final CommandXboxController joystick = new CommandXboxController(0);
         private final CommandXboxController coJoystick = new CommandXboxController(1);
 
-     //   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-      //  public final ElevatorSubsystem elevator = new ElevatorSubsystem();
-    //    public final ClawSubsystem claw = new ClawSubsystem();
+       public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+     
+      public superState state= superState.Home;
+        public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
+     public final ClawSubsystem claw = new ClawSubsystem(new ClawMotorIO(),new FeedRevMaxIO());
+     private final SuperStructureSubsystem superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain, state);
+
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
         private final SendableChooser<String> poseChooser = new SendableChooser<String>();
@@ -127,12 +130,12 @@ public class RobotContainer {
         // You could technically run the demo on robot but im scared....
         simDemo demo = new simDemo(elevator, claw);
         */
-        Intake intake;
         double finalH = 0;
         double finalX = 0;
         double clawAngle = 0;
 
         public RobotContainer() {
+
                 DriverStation.getAlliance().ifPresent(currentAlliance -> {
                         if (currentAlliance == Alliance.Blue) {
                                 NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
@@ -194,7 +197,7 @@ public class RobotContainer {
                 coJoystick.a().onChange( test2);// 150
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
         */
-
+                coJoystick.a().onChange(Commands.runOnce(()->{state = superState.L1;}, superStruct));
         }
 
         public void positionStartup() {
@@ -231,9 +234,9 @@ public class RobotContainer {
         public void periodic() {
                 SmartDashboard.putData(poseChooser);
                 
-                if(DriverStation.isDisabled())  {positionStartup();
+             //   if(DriverStation.isDisabled())  {positionStartup();
                // drivetrain.resetPose(startingPose);
-                };
+              //  };
                /*  clawAngle = claw.lastKnownAngle;
                 if (clawAngle == 0) {
                         finalH = 0;

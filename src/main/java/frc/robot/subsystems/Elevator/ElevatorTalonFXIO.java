@@ -11,8 +11,8 @@ public class ElevatorTalonFXIO implements ElevatorIO {
     private TalonFX slaveM = new TalonFX(Constants.CanIdConstants.ElevatorMMotorId, Constants.CanIdConstants.canbus);
     private CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
             Constants.CanIdConstants.canbus);
-    private ElevatorConfig config;
-    private MotionMagicVoltage elevatorMotion;
+    private ElevatorConfig config = new ElevatorConfig();
+    private MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0);
     private double target = 0.0;
 
     @Override

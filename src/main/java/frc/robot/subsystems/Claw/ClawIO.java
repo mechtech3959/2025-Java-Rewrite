@@ -18,7 +18,7 @@ public interface ClawIO {
     default void resetAxis() {
     }
 
-    default void configure(TalonFXConfiguration talonConfig,CANcoderConfiguration cancoderConfig) {
+    default void configure() {
     }
     default Command moveAxis(double pose) {
         return Commands.none();

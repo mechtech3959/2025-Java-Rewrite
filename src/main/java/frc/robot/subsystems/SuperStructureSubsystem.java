@@ -36,14 +36,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         Processor
     }
 
-    private final superState setSuperState;
+    private superState setSuperState= superState.Home;
 
-    public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain,
-            superState setSuperState) {
+    public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain) {
         this.elevator = elevator;
         this.claw = claw;
         this.drivetrain = drivetrain;
-        this.setSuperState = setSuperState;
         drivetrain = TunerConstants.createDrivetrain();
 
     }
@@ -112,7 +110,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         drivetrain.registerTelemetry(logger::telemeterize);
         Logger.recordOutput("/3D/Elevator/1stStage", new Pose3d(0.0,elevator.visualizeElevatorOutput(),0.0,new Rotation3d()));
         Logger.recordOutput("/3D/Elevator/Carrige", elevator.data.encoderPosition);        
-
+        Logger.recordOutput("accept", claw.clawIO.acceptableAngle());
+        Logger.recordOutput("state", setSuperState);
+    }
+    public void changeState(superState state){
+        setSuperState = state;
     }
     @Override
     public void periodic() {

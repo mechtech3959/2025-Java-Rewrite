@@ -80,7 +80,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     TalonFXSimState simSlave;
     CANcoderSimState simEncoder;
   private final ElevatorIO elevatorIO;
-  public elevatorData data;
+  public elevatorData data = new elevatorData();
     public ElevatorStates elevatorState = ElevatorStates.Home;
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {

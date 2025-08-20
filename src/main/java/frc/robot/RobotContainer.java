@@ -90,7 +90,7 @@ public class RobotContainer {
       public superState state= superState.Home;
         public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
      public final ClawSubsystem claw = new ClawSubsystem(new ClawMotorIO(),new FeedRevMaxIO());
-     private final SuperStructureSubsystem superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain, state);
+     private final SuperStructureSubsystem superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
 
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
@@ -147,8 +147,8 @@ public class RobotContainer {
                 poseChooser.addOption("Middle", "Middle");
                 poseChooser.addOption("Wall", "Wall");
                 poseChooser.setDefaultOption("Middle", "Middle");
-              //  NamedCommands.registerCommand("Score L1", scorel1);
-             //    NamedCommands.registerCommand("Score L4", demo);
+               NamedCommands.registerCommand("Score L1", Commands.none());
+            NamedCommands.registerCommand("Score L4", Commands.none());
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();
@@ -198,6 +198,7 @@ public class RobotContainer {
                 coJoystick.a().onChange( test2);// 150
                 coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
         */
+        
                 coJoystick.a().onChange(Commands.runOnce(()->{state = superState.L1;}, superStruct));
         }
 
@@ -234,8 +235,9 @@ public class RobotContainer {
 
         public void periodic() {
                 SmartDashboard.putData(poseChooser);
-                
-             //   if(DriverStation.isDisabled())  {positionStartup();
+                Logger.recordOutput("containstate", state);
+                superStruct.changeState(state);
+                //   if(DriverStation.isDisabled())  {positionStartup();
                // drivetrain.resetPose(startingPose);
               //  };
                /*  clawAngle = claw.lastKnownAngle;

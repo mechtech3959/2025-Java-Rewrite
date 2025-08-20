@@ -91,6 +91,7 @@ public class ClawSubsystem extends SubsystemBase {
     LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
     pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
     flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
+  
     if (Robot.isSimulation()) {
       simulationInit();
     }

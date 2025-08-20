@@ -14,6 +14,7 @@ import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Elevator.ElevatorSubsystem.ElevatorStates;
 
 public class SuperStructureSubsystem extends SubsystemBase {
     private final ElevatorSubsystem elevator;
@@ -21,7 +22,6 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final CommandSwerveDrivetrain drivetrain;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
     private final Telemetry logger = new Telemetry(MaxSpeed);
-
 
     public enum superState {
         Home,
@@ -33,10 +33,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         Intake,
         DeAlgea_L2,
         DeAlgea_L3,
-        Processor
+        Processor,
+        Test
     }
 
-    private superState setSuperState= superState.Home;
+    private superState setSuperState = superState.Home;
 
     public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain) {
         this.elevator = elevator;
@@ -53,27 +54,27 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
             case Home:
                 elevator.elevatorState = elevator.elevatorState.Home;
-                claw.clawState = claw.clawState.Home;
+                elevator.changeState(elevator.elevatorState.Home);
                 break;
             case L1:
                 claw.clawState = claw.clawState.L1;
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.L1;
+                elevator.changeState(elevator.elevatorState.L1);
                 break;
             case L2:
                 claw.clawState = claw.clawState.L2;
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.L2;
+                elevator.changeState(elevator.elevatorState.L2);
                 break;
             case L3:
                 claw.clawState = claw.clawState.L3;
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.L3;
+                elevator.changeState(elevator.elevatorState.L3);
                 break;
             case L4:
                 claw.clawState = claw.clawState.L4;
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.L4;
+                elevator.changeState(elevator.elevatorState.L4);
                 break;
             case Net:
                 break;
@@ -81,19 +82,19 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 claw.clawState = claw.clawState.Algea;
 
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.DeAlgea_L2;
+                elevator.changeState(elevator.elevatorState.DeAlgea_L2);
                 break;
             case DeAlgea_L3:
                 claw.clawState = claw.clawState.Algea;
 
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.DeAlgea_L3;
+                    elevator.changeState(elevator.elevatorState.DeAlgea_L3);
                 break;
             case Processor:
                 claw.clawState = claw.clawState.Algea;
 
                 if (claw.clawIO.acceptableAngle() == true)
-                    elevator.elevatorState = elevator.elevatorState.L1;// check
+                elevator.changeState(ElevatorStates.L1);//check
                 break;
             case Intake:
                 elevator.elevatorState = elevator.elevatorState.Home;
@@ -102,20 +103,32 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 if (claw.feedIO.hasCoral())
                     claw.clawState = claw.clawState.L1;
                 break;
+            case Test:
+                claw.clawState = claw.clawState.L1;
+                break;
             default:
                 break;
         }
     }
-    public void SubTelemetry(){
+
+    public void SubTelemetry() {
         drivetrain.registerTelemetry(logger::telemeterize);
-        Logger.recordOutput("/3D/Elevator/1stStage", new Pose3d(0.0,elevator.visualizeElevatorOutput(),0.0,new Rotation3d()));
-        Logger.recordOutput("/3D/Elevator/Carrige", elevator.data.encoderPosition);        
+        Logger.recordOutput("/3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
+        Logger.recordOutput("/3D/Elevator/1stStage",
+                new Pose3d(0.0, elevator.visualizeElevatorOutput(), 0.0, new Rotation3d()));
+        Logger.recordOutput("/3D/Elevator/Carrige",
+                new Pose3d(0.0, elevator.data.encoderPosition, 0.0, new Rotation3d()));
         Logger.recordOutput("accept", claw.clawIO.acceptableAngle());
-        Logger.recordOutput("state", setSuperState);
+        Logger.recordOutput("State/Super", setSuperState);
+        Logger.recordOutput("State/Claw", claw.clawState);
+        Logger.recordOutput("State/Elevator", elevator.elevatorState);
+
     }
-    public void changeState(superState state){
+
+    public void changeState(superState state) {
         setSuperState = state;
     }
+
     @Override
     public void periodic() {
         SubTelemetry();

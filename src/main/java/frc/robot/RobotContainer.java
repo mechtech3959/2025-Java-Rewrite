@@ -53,7 +53,6 @@ import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorTalonFXIO;
 import frc.robot.subsystems.SuperStructureSubsystem.superState;
 
-
 @SuppressWarnings("unused")
 public class RobotContainer {
         Pose2d blueStartPillar = new Pose2d(8.0, 5, new Rotation2d(3.14));
@@ -85,12 +84,12 @@ public class RobotContainer {
         private final CommandXboxController joystick = new CommandXboxController(0);
         private final CommandXboxController coJoystick = new CommandXboxController(1);
 
-       public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-     
-      public superState state= superState.Home;
-        public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
-     public final ClawSubsystem claw = new ClawSubsystem(new ClawMotorIO(),new FeedRevMaxIO());
-     private final SuperStructureSubsystem superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
+        public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+        public superState state;
+        public final ElevatorSubsystem elevator;
+        public final ClawSubsystem claw;
+        private final SuperStructureSubsystem superStruct;
 
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
@@ -103,7 +102,7 @@ public class RobotContainer {
                         3.0, 4.0,
                         Units.degreesToRadians(300), Units.degreesToRadians(300));
 
-                        Command pathfindingCommand;
+        Command pathfindingCommand;
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command bluePathfindingCommand = AutoBuilder.pathfindToPose(
@@ -114,23 +113,23 @@ public class RobotContainer {
                             // before attempting to rotate.
         );
         Command redPathfindingCommand = AutoBuilder.pathfindToPose(
-                redTargetPose,
-                constraints,
-                0.0 // Goal end velocity in meters/sec
-                    // Rotation delay distance in meters. This is how far the robot should travel
-                    // before attempting to rotate.
-);
-/* 
-        scoreL1 scorel1 = new scoreL1(elevator, claw);
-        L1 l1;
-        L2 l2;
-        L3 l3;
-        scoreL4 scorel4 = new scoreL4(elevator, claw);
-       testL1 test2 = new testL1(elevator, claw);
-        Zero zero;
-        // You could technically run the demo on robot but im scared....
-        simDemo demo = new simDemo(elevator, claw);
-        */
+                        redTargetPose,
+                        constraints,
+                        0.0 // Goal end velocity in meters/sec
+                            // Rotation delay distance in meters. This is how far the robot should travel
+                            // before attempting to rotate.
+        );
+        /*
+         * scoreL1 scorel1 = new scoreL1(elevator, claw);
+         * L1 l1;
+         * L2 l2;
+         * L3 l3;
+         * scoreL4 scorel4 = new scoreL4(elevator, claw);
+         * testL1 test2 = new testL1(elevator, claw);
+         * Zero zero;
+         * // You could technically run the demo on robot but im scared....
+         * simDemo demo = new simDemo(elevator, claw);
+         */
         double finalH = 0;
         double finalX = 0;
         double clawAngle = 0;
@@ -142,41 +141,48 @@ public class RobotContainer {
                                 NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
                         } else {
                                 NamedCommands.registerCommand("pathFind", redPathfindingCommand);
-                        }});
+                        }
+                });
                 poseChooser.addOption("Collum", "Collum");
                 poseChooser.addOption("Middle", "Middle");
                 poseChooser.addOption("Wall", "Wall");
                 poseChooser.setDefaultOption("Middle", "Middle");
-               NamedCommands.registerCommand("Score L1", Commands.none());
-            NamedCommands.registerCommand("Score L4", Commands.none());
+                NamedCommands.registerCommand("Score L1", Commands.none());
+                NamedCommands.registerCommand("Score L4", Commands.none());
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
+                
+                state = superState.Home;
+                elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
+                claw = new ClawSubsystem(new ClawMotorIO(), new FeedRevMaxIO());
+                superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
                 configureBindings();
 
         }
 
         private void configureBindings() {
-/* 
-                drivetrain.setDefaultCommand(
-                                drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
-                                                                                                            // X(counterclockwise)
-                                ));
-                joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-                joystick.b().whileTrue(drivetrain.applyRequest(
-                                () -> point.withModuleDirection(
-                                                new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
-                joystick.pov(0).whileTrue(
-                                drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-                joystick.pov(180)
-                                .whileTrue(drivetrain.applyRequest(
-                                                () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
-
-                // Run SysId routines when holding back/start and X/Y.
-                // Note that each routine should be run exactly once in a single log.
                 /*
+                 * drivetrain.setDefaultCommand(
+                 * drivetrain.applyRequest(() -> drive
+                 * .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+                 * .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+                 * .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
+                 * // X(counterclockwise)
+                 * ));
+                 * joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+                 * joystick.b().whileTrue(drivetrain.applyRequest(
+                 * () -> point.withModuleDirection(
+                 * new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+                 * joystick.pov(0).whileTrue(
+                 * drivetrain.applyRequest(() ->
+                 * forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+                 * joystick.pov(180)
+                 * .whileTrue(drivetrain.applyRequest(
+                 * () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+                 * 
+                 * // Run SysId routines when holding back/start and X/Y.
+                 * // Note that each routine should be run exactly once in a single log.
+                 * /*
                  * joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction
                  * .kForward));
                  * joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction
@@ -185,27 +191,30 @@ public class RobotContainer {
                  * Direction.kForward));
                  * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
                  * Direction.kReverse));
-                 
-                // reset the field-centric heading on left bumper press
-                joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+                 * 
+                 * // reset the field-centric heading on left bumper press
+                 * joystick.leftBumper().onTrue(drivetrain.runOnce(() ->
+                 * drivetrain.seedFieldCentric()));
+                 * 
+                 * drivetrain.registerTelemetry(logger::telemeterize);
+                 * coJoystick.b().onTrue(demo);// 20
+                 * coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
+                 * 
+                 * coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.1740)));//10
+                 * deg 0.174 rads
+                 * // 40 0.698
+                 * coJoystick.a().onChange( test2);// 150
+                 * coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
+                 */
 
-                drivetrain.registerTelemetry(logger::telemeterize);
-                coJoystick.b().onTrue(demo);// 20
-                coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
-
-                coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.1740)));//10 deg 0.174 rads
-                // 40 0.698 
-                coJoystick.a().onChange( test2);// 150
-                coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
-        */
-        
-                coJoystick.a().onChange(Commands.runOnce(()->{state = superState.L1;}, superStruct));
+                coJoystick.a().onChange(Commands.runOnce(() -> {
+                        state = superState.Test;
+                }, superStruct));
         }
 
         public void positionStartup() {
                 _chosenPose = poseChooser.getSelected();
-             
-                
+
                 switch (_chosenPose) {
                         case "Wall":
                                 if (currentAlliance == Alliance.Blue) {
@@ -215,18 +224,18 @@ public class RobotContainer {
                                 }
                                 break;
                         case "Middle":
-                        if (currentAlliance == Alliance.Blue) {
-                                startingPose = blueStartMid;
-                        } else {
-                                startingPose = redStartMid;
-                        }
+                                if (currentAlliance == Alliance.Blue) {
+                                        startingPose = blueStartMid;
+                                } else {
+                                        startingPose = redStartMid;
+                                }
                                 break;
                         case "Collum":
-                        if (currentAlliance == Alliance.Blue) {
-                                startingPose = blueStartPillar;
-                        } else {
-                                startingPose = redStartPillar;
-                        }
+                                if (currentAlliance == Alliance.Blue) {
+                                        startingPose = blueStartPillar;
+                                } else {
+                                        startingPose = redStartPillar;
+                                }
                                 break;
                         default:
                                 break;
@@ -237,49 +246,54 @@ public class RobotContainer {
                 SmartDashboard.putData(poseChooser);
                 Logger.recordOutput("containstate", state);
                 superStruct.changeState(state);
-                //   if(DriverStation.isDisabled())  {positionStartup();
-               // drivetrain.resetPose(startingPose);
-              //  };
-               /*  clawAngle = claw.lastKnownAngle;
-                if (clawAngle == 0) {
-                        finalH = 0;
-                        finalX = 0;
-                } else if (clawAngle == 0.349) {
-                        finalH = 0.115;// 0.1415;
-                        finalX = -0.11;// -0.13;
 
-                } else if (clawAngle == 0.698) {
-                        finalH = 0.259;
-                        finalX = -0.1755;
+                // if(DriverStation.isDisabled()) {positionStartup();
+                // drivetrain.resetPose(startingPose);
+                // };
+                /*
+                 * clawAngle = claw.lastKnownAngle;
+                 * if (clawAngle == 0) {
+                 * finalH = 0;
+                 * finalX = 0;
+                 * } else if (clawAngle == 0.349) {
+                 * finalH = 0.115;// 0.1415;
+                 * finalX = -0.11;// -0.13;
+                 * 
+                 * } else if (clawAngle == 0.698) {
+                 * finalH = 0.259;
+                 * finalX = -0.1755;
+                 * 
+                 * } else if (clawAngle == 2.61) {
+                 * finalH = 0.825;// 0.72;
+                 * finalX = 0.31;
+                 * 
+                 * }
+                 * // using a sin reggression model translation should be
+                 * // double modelY = 0.547343 * Math.sin((10.77753 * claw.sim.getAngleRads()) -
+                 * // 0.466346) + 0.821554;
+                 * // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
+                 * // 0.466346 / 10.77753;
+                 * // this was wrong:sob:
+                 * 
+                 * Logger.recordOutput("Sim/Drivetrain Pose", new
+                 * Pose3d(drivetrain.getState().Pose));
+                 * Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
+                 * Logger.recordOutput("Sim/Final Position", new Pose3d[] {
+                 * new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
+                 * new Rotation3d(0, 0, 0)),
+                 * new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
+                 * new Rotation3d(0, 0, 0)),
+                 * new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() +
+                 * finalH,
+                 * new Rotation3d(0, claw.sim.getAngleRads(), 0))
+                 * });
+                 * Logger.recordOutput("calc", new Pose3d[] {
+                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
+                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
+                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
+                 * });
+                 */
 
-                } else if (clawAngle == 2.61) {
-                        finalH = 0.825;// 0.72;
-                        finalX = 0.31;
-
-                }
-               // using a sin reggression model translation should be
-                // double modelY = 0.547343 * Math.sin((10.77753 * claw.sim.getAngleRads()) -
-                // 0.466346) + 0.821554;
-                // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
-                // 0.466346 / 10.77753;
-                // this was wrong:sob:
-
-                Logger.recordOutput("Sim/Drivetrain Pose", new Pose3d(drivetrain.getState().Pose));
-                Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
-                Logger.recordOutput("Sim/Final Position", new Pose3d[] {
-                                new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
-                                                new Rotation3d(0, 0, 0)),
-                                new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
-                                                new Rotation3d(0, 0, 0)),
-                                new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() + finalH,
-                                                new Rotation3d(0, claw.sim.getAngleRads(), 0))
-                });
-                Logger.recordOutput("calc", new Pose3d[] {
-                                new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                                new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                                new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                });
-*/
         }
 
         public Command getAutonomousCommand() {

@@ -22,6 +22,9 @@ public class ElevatorTalonFXIO implements ElevatorIO {
         masterM.getConfigurator().apply(config.ElevatorMotorConfig());
         slaveM.getConfigurator().apply(config.ElevatorMotorConfig());
         elevatorEncoder.getConfigurator().apply(config.elevatorEncoderConfig());
+        masterM.setPosition(0.0);
+        slaveM.setPosition(0.0);
+        elevatorEncoder.setPosition(0.0);
     }
 
     @Override
@@ -55,8 +58,5 @@ public class ElevatorTalonFXIO implements ElevatorIO {
           
 
     }
-    @Override 
-    public void  periodic(){
-
-    }
+   
 }

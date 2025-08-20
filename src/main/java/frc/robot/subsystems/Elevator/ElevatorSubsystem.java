@@ -177,14 +177,17 @@ public class ElevatorSubsystem extends SubsystemBase {
             return 0.93;
         }else{return data.encoderPosition;}
     }
+    public void changeState(ElevatorStates state){
+        elevatorState = state;
+    }
     void sendData() {
-       elevatorIO.updateData(data);
         // Logger.recordOutput("Real/Elevator/Position", getHeight());
         // Logger.recordOutput("Real/Elevator/Acceleration",
         // elevatorEncoder.getVelocity().getValueAsDouble());
     }
     @Override
     public void periodic() {
+        elevatorIO.updateData(data);
         setStates();
         sendData();
         super.periodic();

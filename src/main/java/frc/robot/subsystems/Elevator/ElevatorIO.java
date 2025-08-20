@@ -28,7 +28,6 @@ public interface ElevatorIO {
     default void configure() {
     }
 
-    default void periodic() {
+    default void updateData(elevatorData data) {
     }
-    default void updateData(elevatorData data){}
 }

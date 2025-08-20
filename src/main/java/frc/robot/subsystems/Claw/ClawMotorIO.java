@@ -15,7 +15,7 @@ public class ClawMotorIO implements ClawIO {
       Constants.CanIdConstants.canbus);
   private ClawConfig config = new ClawConfig();
   private double lastKnownAngle = 0.0;
-  MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0).withSlot(0);
+  MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0);
 
   @Override
   public void setAxis(double angle) {
@@ -32,6 +32,8 @@ public class ClawMotorIO implements ClawIO {
   public void configure() {
     axisMotor.getConfigurator().apply(config.AxisMotorConfig(Constants.CanIdConstants.clawAxisMotorId));
     axisEncoder.getConfigurator().apply(config.encoderConfig());
+    axisMotor.setPosition(0.0);
+    axisEncoder.setPosition(0.0);
 
   }
 

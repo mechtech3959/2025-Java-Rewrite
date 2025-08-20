@@ -95,7 +95,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
 
         elevatorMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.2, 18), DCMotor.getKrakenX60Foc(2));
+                LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getKrakenX60Foc(2));
         if (Robot.isSimulation()) {
             // simMaster = masterM.getSimState();
             // simSlave = slaveM.getSimState();
@@ -162,18 +162,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         // TalonFXSimState simSlave = slaveM.getSimState();
         // CANcoderSimState simEncoder = elevatorEncoder.getSimState();
         // simMaster.setSupplyVoltage(12);
-        elevatorMotorSim.update(0.05);
-        elevatorLin.setLength(target);
+        elevatorMotorSim.update(0.02);
         elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
-        carriagElevatorSim.setState(target, 0.05);
-        elevatorSim.update(0.05);
-        carriagElevatorSim.update(0.05);
+        carriagElevatorSim.setInput(target);
+        elevatorSim.update(0.02);
+        carriagElevatorSim.update(0.02);
         SmartDashboard.putNumber("Elevator/Sim/poseMeters", simPose);
 
         SmartDashboard.putData("Elevator/Sim/2Dmech", elevatorMech);
 
     }
-
+    public double visualizeElevatorOutput(){
+        if(data.encoderPosition > 0.93){
+            return 0.93;
+        }else{return data.encoderPosition;}
+    }
     void sendData() {
        elevatorIO.updateData(data);
         // Logger.recordOutput("Real/Elevator/Position", getHeight());

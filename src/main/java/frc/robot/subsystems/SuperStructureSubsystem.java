@@ -1,6 +1,16 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.units.LinearVelocityUnit;
+import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
@@ -9,6 +19,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final ElevatorSubsystem elevator;
     private final ClawSubsystem claw;
     private final CommandSwerveDrivetrain drivetrain;
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+    private final Telemetry logger = new Telemetry(MaxSpeed);
+
 
     public enum superState {
         Home,
@@ -95,11 +108,17 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
         }
     }
+    public void SubTelemetry(){
+        drivetrain.registerTelemetry(logger::telemeterize);
+        Logger.recordOutput("/3D/Elevator/1stStage", new Pose3d(0.0,elevator.visualizeElevatorOutput(),0.0,new Rotation3d()));
+        Logger.recordOutput("/3D/Elevator/Carrige", elevator.data.encoderPosition);        
 
+    }
     @Override
     public void periodic() {
-
+        SubTelemetry();
         setState();
+        super.periodic();
     }
 
 }

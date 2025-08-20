@@ -28,7 +28,7 @@ public class ElevatorConfig {
                 .withFeedbackSensorSource(fused).withFeedbackRemoteSensorID(9)
                 .withRotorToSensorRatio(1)
                 .withSensorToMechanismRatio(18))
-                .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
+                .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Brake))
                 .withMotionMagic(motion)
                 .withSlot0(slot)
@@ -39,8 +39,7 @@ public class ElevatorConfig {
                     }
     public CANcoderConfiguration elevatorEncoderConfig(){
         CANcoderConfiguration elevatorEncConfig = new CANcoderConfiguration()
-        .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-                .withAbsoluteSensorDiscontinuityPoint(0.5));
+        .withMagnetSensor(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(0.5));
                 return elevatorEncConfig;
     }
 }

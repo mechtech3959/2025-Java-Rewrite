@@ -154,6 +154,7 @@ public class ClawSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    setStates();
     clawIO.acceptableAngle();
     clawIO.getAxis();
     feedIO.hasCoral();

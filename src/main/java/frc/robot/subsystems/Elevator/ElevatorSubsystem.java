@@ -183,7 +183,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Logger.recordOutput("Real/Elevator/Acceleration",
         // elevatorEncoder.getVelocity().getValueAsDouble());
     }
-
     @Override
     public void periodic() {
         setStates();

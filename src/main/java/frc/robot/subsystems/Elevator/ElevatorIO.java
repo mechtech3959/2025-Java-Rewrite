@@ -1,6 +1,9 @@
 package frc.robot.subsystems.Elevator;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface ElevatorIO {
+    @AutoLog
     class elevatorData {
         public double masterMPosition;
         public double masterMVelocity;
@@ -11,6 +14,7 @@ public interface ElevatorIO {
         public double targetPose;
         public double MasterMinputVolts;
         public double MasterMinputCurrentDraw;
+        public String getAppliedControl;
 
     }
 

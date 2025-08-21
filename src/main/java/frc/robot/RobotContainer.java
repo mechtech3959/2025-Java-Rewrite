@@ -208,7 +208,7 @@ public class RobotContainer {
                  */
 
                 coJoystick.a().onChange(Commands.runOnce(() -> {
-                        state = superState.Test;
+                       state = superState.Test;
                 }, superStruct));
         }
 

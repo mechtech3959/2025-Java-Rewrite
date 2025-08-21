@@ -1,9 +1,19 @@
 package frc.robot.subsystems.Claw;
 
+import org.littletonrobotics.junction.AutoLog;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public interface ClawIO {
+    @AutoLog
+    class clawData {
+        public double clawAxis;
+        public double clawMotorPose;
+        public double clawMotorVelocity;
+        public boolean acceptableAngle;
+
+    }
 
     default void setAxis(double angle) {
     }
@@ -24,6 +34,9 @@ public interface ClawIO {
 
     default boolean acceptableAngle() {
         return true;
+    }
+    default void updateInput(clawData data){
+    
     }
 
 }

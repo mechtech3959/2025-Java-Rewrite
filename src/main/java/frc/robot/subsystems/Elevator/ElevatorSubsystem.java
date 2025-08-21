@@ -109,7 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setStates() {
         switch (elevatorState) {
             case Home:
-                elevatorIO.setHeight(0);
+                elevatorIO.setHeight(0.0);
                 break;
             case L1:
                 elevatorIO.setHeight(0.5);// check this
@@ -188,8 +188,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorIO.updateData(data);
-        setStates();
+       setStates();
         sendData();
+        SmartDashboard.putString("applied",data.getAppliedControl);
         super.periodic();
     }
 

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.Claw.ClawIO.clawData;
 import frc.robot.subsystems.Claw.feed.FeedIO;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Units;
@@ -58,9 +59,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 @SuppressWarnings("unused")
 public class ClawSubsystem extends SubsystemBase {
 
-  public final ClawIO clawIO;
-  public final FeedIO feedIO;
-
+  private final ClawIO clawIO;
+  private final FeedIO feedIO;
+  public clawData data= new clawData();
   public enum ClawStates {
     L1,
     L2,
@@ -152,15 +153,18 @@ public class ClawSubsystem extends SubsystemBase {
     // axisEncoder.getVelocity().getValueAsDouble());
     // Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
   }
-
+  public void changeState(ClawStates state){
+    clawState = state;
+  }
   @Override
   public void periodic() {
-    setStates();
+    clawIO.updateInput(data);
     clawIO.acceptableAngle();
     clawIO.getAxis();
     feedIO.hasCoral();
-
+    setStates();
     sendData();
+
     super.periodic();
   }
 

@@ -12,7 +12,7 @@ public class ElevatorTalonFXIO implements ElevatorIO {
     private CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
             Constants.CanIdConstants.canbus);
     private ElevatorConfig config = new ElevatorConfig();
-    private MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0);
+    private MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0.0).withSlot(0);
     private double target = 0.0;
     
     
@@ -29,8 +29,9 @@ public class ElevatorTalonFXIO implements ElevatorIO {
 
     @Override
     public void setHeight(double pose) {
-        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
-        target = pose;
+        if(pose != target){
+        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(false).withUseTimesync(true));
+        target = pose;} 
     }
 
     @Override
@@ -55,6 +56,7 @@ public class ElevatorTalonFXIO implements ElevatorIO {
           data.slaveMPosition = slaveM.getPosition().getValueAsDouble();
           data.slaveMVelocity = slaveM.getPosition().getValueAsDouble();
           data.targetPose = target;
+          data.getAppliedControl = masterM.getAppliedControl().toString();
           
 
     }

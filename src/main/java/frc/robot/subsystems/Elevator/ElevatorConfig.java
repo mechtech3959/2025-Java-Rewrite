@@ -32,7 +32,7 @@ public class ElevatorConfig {
                 .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Brake))
                 .withMotionMagic(motion)
-                .withSlot0(slot).withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03).withForwardSoftLimitEnable(true))
+                .withSlot0(slot).withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03).withForwardSoftLimitEnable(false))
                 .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLowerLimit(30).withSupplyCurrentLimit(60).withSupplyCurrentLimitEnable(true));
      
                 return elevatorConfig;

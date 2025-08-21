@@ -13,6 +13,7 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
+import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem.ElevatorStates;
 
@@ -47,7 +48,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     }
 
-    @SuppressWarnings("static-access")
+    //@SuppressWarnings("static-access")
     void setState() {
 
         switch (setSuperState) {
@@ -58,22 +59,22 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
             case L1:
                 claw.clawState = claw.clawState.L1;
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                 elevator.changeState(elevator.elevatorState.L1);
                 break;
             case L2:
                 claw.clawState = claw.clawState.L2;
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                 elevator.changeState(elevator.elevatorState.L2);
                 break;
             case L3:
                 claw.clawState = claw.clawState.L3;
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                 elevator.changeState(elevator.elevatorState.L3);
                 break;
             case L4:
                 claw.clawState = claw.clawState.L4;
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                 elevator.changeState(elevator.elevatorState.L4);
                 break;
             case Net:
@@ -81,30 +82,32 @@ public class SuperStructureSubsystem extends SubsystemBase {
             case DeAlgea_L2:
                 claw.clawState = claw.clawState.Algea;
 
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                 elevator.changeState(elevator.elevatorState.DeAlgea_L2);
                 break;
             case DeAlgea_L3:
                 claw.clawState = claw.clawState.Algea;
 
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                     elevator.changeState(elevator.elevatorState.DeAlgea_L3);
                 break;
             case Processor:
                 claw.clawState = claw.clawState.Algea;
 
-                if (claw.clawIO.acceptableAngle() == true)
+                if (claw.data.acceptableAngle == true)
                 elevator.changeState(ElevatorStates.L1);//check
                 break;
             case Intake:
                 elevator.elevatorState = elevator.elevatorState.Home;
-                while (!claw.feedIO.hasCoral())
-                    claw.clawState = claw.clawState.Intake;
-                if (claw.feedIO.hasCoral())
-                    claw.clawState = claw.clawState.L1;
+              //  while (!claw.feedIO.hasCoral())
+              //      claw.clawState = claw.clawState.Intake;
+              //  if ()
+              //      claw.clawState = claw.clawState.L1;
                 break;
             case Test:
-                claw.clawState = claw.clawState.L1;
+               // claw.clawState = ClawStates.L1;
+                 claw.clawState = claw.clawState.L1;
+
                 break;
             default:
                 break;
@@ -118,7 +121,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 new Pose3d(0.0, elevator.visualizeElevatorOutput(), 0.0, new Rotation3d()));
         Logger.recordOutput("/3D/Elevator/Carrige",
                 new Pose3d(0.0, elevator.data.encoderPosition, 0.0, new Rotation3d()));
-        Logger.recordOutput("accept", claw.clawIO.acceptableAngle());
+        Logger.recordOutput("accept", claw.data.acceptableAngle);
         Logger.recordOutput("State/Super", setSuperState);
         Logger.recordOutput("State/Claw", claw.clawState);
         Logger.recordOutput("State/Elevator", elevator.elevatorState);

@@ -28,7 +28,7 @@ public class ClawConfig {
                 .withKS(0.3).withKV(0.1).withKA(0).withKG(0.3)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         TalonFXConfiguration axisConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
-                .withFeedbackRemoteSensorID(encoder)
+                .withFeedbackRemoteSensorID(15)
                 .withFeedbackSensorSource(fused)
                 .withRotorToSensorRatio(36)
                 .withSensorToMechanismRatio(1))

@@ -4,6 +4,9 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -20,8 +23,11 @@ public class ClawTalonFXIO implements ClawIO {
   // uses motion profile to go to set position
   @Override
   public void setAxis(double angle) {
-    axisMotor.setControl(positionVoltage.withPosition(angle).withEnableFOC(true).withUseTimesync(true));
-    lastKnownAngle = angle;
+    if (angle != lastKnownAngle) {
+      axisMotor.setControl(
+          positionVoltage.withPosition(Units.radiansToRotations(angle)).withEnableFOC(true).withUseTimesync(true));
+      lastKnownAngle = angle;
+    }
   }
 
   @Override

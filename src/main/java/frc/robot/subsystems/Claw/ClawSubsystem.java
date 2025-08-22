@@ -60,7 +60,7 @@ public class ClawSubsystem extends SubsystemBase {
   public void setStates() {
     switch (clawState) {
       case L1:
-        clawIO.setAxis(0.349066);// 20 deg
+        clawIO.setAxis(0.087);// 20 deg 0.349066
         break;
       case L2:
         clawIO.setAxis(0.349066);

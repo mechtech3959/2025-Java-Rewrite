@@ -11,7 +11,9 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.Unit;
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
@@ -120,6 +122,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         Logger.recordOutput("/3D/Elevator/Carrige",
                 new Pose3d(0.0, elevator.data.encoderPosition, 0.0, new Rotation3d()));
         Logger.recordOutput("accept", claw.data.acceptableAngle);
+        Logger.recordOutput("Claw/EncPose", Units.radiansToDegrees(claw.data.clawAxis));
         Logger.recordOutput("State/Super", setSuperState);
         Logger.recordOutput("State/Claw", claw.clawState);
         Logger.recordOutput("State/Elevator", elevator.elevatorState);

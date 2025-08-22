@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.lang.annotation.ElementType;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -54,51 +56,48 @@ public class SuperStructureSubsystem extends SubsystemBase {
         switch (setSuperState) {
 
             case Home:
-                elevator.elevatorState = elevator.elevatorState.Home;
-                elevator.changeState(elevator.elevatorState.Home);
+            claw.changeState(ClawStates.Home);
+            elevator.changeState(ElevatorStates.Home);
                 break;
             case L1:
-                claw.clawState = claw.clawState.L1;
+                claw.clawState = ClawStates.L1;
                 if (claw.data.acceptableAngle == true)
-                elevator.changeState(elevator.elevatorState.L1);
+                elevator.changeState(ElevatorStates.L1);
                 break;
             case L2:
-                claw.clawState = claw.clawState.L2;
-                if (claw.data.acceptableAngle == true)
-                elevator.changeState(elevator.elevatorState.L2);
+            claw.changeState(ClawStates.L2);
+            if (claw.data.acceptableAngle == true)
+            elevator.changeState(ElevatorStates.L2);
                 break;
             case L3:
-                claw.clawState = claw.clawState.L3;
-                if (claw.data.acceptableAngle == true)
-                elevator.changeState(elevator.elevatorState.L3);
+            claw.changeState(ClawStates.L3);
+            if (claw.data.acceptableAngle == true)
+            elevator.changeState(ElevatorStates.L3);
                 break;
             case L4:
-                claw.clawState = claw.clawState.L4;
-                if (claw.data.acceptableAngle == true)
-                elevator.changeState(elevator.elevatorState.L4);
+            claw.changeState(ClawStates.L4);
+            if (claw.data.acceptableAngle == true)
+            elevator.changeState(ElevatorStates.L4);
                 break;
             case Net:
                 break;
             case DeAlgea_L2:
-                claw.clawState = claw.clawState.Algea;
-
-                if (claw.data.acceptableAngle == true)
-                elevator.changeState(elevator.elevatorState.DeAlgea_L2);
+            claw.changeState(ClawStates.Algea);
+            if (claw.data.acceptableAngle == true)
+            elevator.changeState(ElevatorStates.DeAlgea_L2);
                 break;
             case DeAlgea_L3:
-                claw.clawState = claw.clawState.Algea;
-
-                if (claw.data.acceptableAngle == true)
-                    elevator.changeState(elevator.elevatorState.DeAlgea_L3);
+            claw.changeState(ClawStates.Algea);;
+            if (claw.data.acceptableAngle == true)
+            elevator.changeState(ElevatorStates.DeAlgea_L3);
                 break;
             case Processor:
-                claw.clawState = claw.clawState.Algea;
-
-                if (claw.data.acceptableAngle == true)
-                elevator.changeState(ElevatorStates.L1);//check
+            claw.changeState(ClawStates.Algea);
+            if (claw.data.acceptableAngle == true)
+            elevator.changeState(ElevatorStates.L1);// check??
                 break;
             case Intake:
-                elevator.elevatorState = elevator.elevatorState.Home;
+                elevator.changeState(ElevatorStates.Home);
               //  while (!claw.feedIO.hasCoral())
               //      claw.clawState = claw.clawState.Intake;
               //  if ()
@@ -106,8 +105,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
             case Test:
                // claw.clawState = ClawStates.L1;
-                 claw.clawState = claw.clawState.L1;
-
+                 claw.changeState(ClawStates.L1);
                 break;
             default:
                 break;

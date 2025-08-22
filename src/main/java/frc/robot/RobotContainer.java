@@ -208,8 +208,13 @@ public class RobotContainer {
                  */
 
                 coJoystick.a().onChange(Commands.runOnce(() -> {
-                       state = superState.Test;
+                       state = superState.L1;
                 }, superStruct));
+                coJoystick.b().onChange(Commands.runOnce(() -> {
+                        state = superState.Test2;
+                 }, superStruct));coJoystick.x().onChange(Commands.runOnce(() -> {
+                        state = superState.Test3;
+                 }, superStruct));
         }
 
         public void positionStartup() {

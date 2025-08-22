@@ -39,7 +39,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
         DeAlgea_L2,
         DeAlgea_L3,
         Processor,
-        Test
+        Test,
+        Test2,
+        Test3
     }
 
     private superState setSuperState = superState.Home;
@@ -109,6 +111,13 @@ public class SuperStructureSubsystem extends SubsystemBase {
                // claw.clawState = ClawStates.L1;
                  claw.changeState(ClawStates.L1);
                 break;
+                case Test2:
+                // claw.clawState = ClawStates.L1;
+                  claw.changeState(ClawStates.L4);
+                 break;case Test3:
+                 // claw.clawState = ClawStates.L1;
+                   claw.changeState(ClawStates.Home);
+                  break;
             default:
                 break;
         }

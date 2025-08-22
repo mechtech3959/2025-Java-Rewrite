@@ -5,6 +5,8 @@ import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+ import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import frc.robot.Constants;
 
 public class ElevatorTalonFXIO implements ElevatorIO {
@@ -28,14 +30,14 @@ public class ElevatorTalonFXIO implements ElevatorIO {
         slaveM.setPosition(0.0);
         elevatorEncoder.setPosition(0.0);
         //slave follows master to ensure motors arent fighting each other when following motion profiles
-        slaveM.setControl(new StrictFollower(Constants.CanIdConstants.ElevatorMMotorId));
+       slaveM.setControl(new StrictFollower(masterM.getDeviceID()));
     }
 //set position only if target has changed 
 // if changed motion profile moves elevator to set position 
     @Override
     public void setHeight(double pose) {
         if(pose != target){
-        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(false).withUseTimesync(true));
+        masterM.setControl(elevatorMotion.withPosition(Units.radiansToRotations(pose)).withEnableFOC(false).withUseTimesync(true));
         target = pose;} 
     }
 

@@ -12,6 +12,8 @@ public interface ClawIO {
         public double clawMotorPose;
         public double clawMotorVelocity;
         public boolean acceptableAngle;
+        public double currentDraw;
+        public double targetPose;
 
     }
 

@@ -47,7 +47,7 @@ import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.feed.FeedIO;
 import frc.robot.subsystems.Claw.feed.FeedRevMaxIO;
 import frc.robot.subsystems.Claw.ClawIO;
-import frc.robot.subsystems.Claw.ClawMotorIO;
+import frc.robot.subsystems.Claw.ClawTalonFXIO;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorTalonFXIO;
@@ -154,7 +154,7 @@ public class RobotContainer {
                 
                 state = superState.Home;
                 elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
-                claw = new ClawSubsystem(new ClawMotorIO(), new FeedRevMaxIO());
+                claw = new ClawSubsystem(new ClawTalonFXIO(), new FeedRevMaxIO());
                 superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
                 configureBindings();
 

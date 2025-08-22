@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
-public class ClawMotorIO implements ClawIO {
+public class ClawTalonFXIO implements ClawIO {
   private TalonFX axisMotor = new TalonFX(Constants.CanIdConstants.clawAxisMotorId, Constants.CanIdConstants.canbus);
   private CANcoder axisEncoder = new CANcoder(Constants.CanIdConstants.clawAxisEncoderId,
       Constants.CanIdConstants.canbus);
   private ClawConfig config = new ClawConfig();
   private double lastKnownAngle = 0.0;
-  MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withSlot(0);
+  private MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withSlot(0);
 
   @Override
   public void setAxis(double angle) {
@@ -58,8 +58,12 @@ public class ClawMotorIO implements ClawIO {
       axisMotor.setControl(positionVoltage.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
     });
   }
-  @Override 
+   @Override 
   public void updateInput(clawData data){
     data.acceptableAngle = acceptableAngle();
+    data.clawAxis =  axisEncoder.getPosition().getValueAsDouble();
+    data.clawMotorPose = axisMotor.getPosition().getValueAsDouble();
+    data.clawMotorVelocity = axisMotor.getVelocity().getValueAsDouble();
+    data.currentDraw = axisMotor.getBridgeOutput().getValueAsDouble();//i have no idea what this is
   }
 }

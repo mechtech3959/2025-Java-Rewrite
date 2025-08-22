@@ -91,7 +91,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             elevator.changeState(ElevatorStates.DeAlgea_L2);
                 break;
             case DeAlgea_L3:
-            claw.changeState(ClawStates.Algea);;
+            claw.changeState(ClawStates.Algea);
             if (claw.data.acceptableAngle == true)
             elevator.changeState(ElevatorStates.DeAlgea_L3);
                 break;

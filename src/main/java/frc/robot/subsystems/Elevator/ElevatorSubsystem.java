@@ -1,60 +1,25 @@
 package frc.robot.subsystems.Elevator;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.Claw.ClawIO;
 import frc.robot.subsystems.Elevator.ElevatorIO.elevatorData;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import edu.wpi.first.hal.simulation.*;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 
-
-@SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
-  public enum ElevatorStates{
+    public enum ElevatorStates {
         L1,
         L2,
         L3,
@@ -64,9 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         Home,
         DeAlgea_L2,
         DeAlgea_L3
-    
-    
-     }   
+    }
+
     double target = 0;
     double simPose = 0;
     public ElevatorSim elevatorSim;
@@ -79,13 +43,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     TalonFXSimState simMaster;
     TalonFXSimState simSlave;
     CANcoderSimState simEncoder;
-  private final ElevatorIO elevatorIO;
-  public elevatorData data = new elevatorData();
+    private final ElevatorIO elevatorIO;
+    public elevatorData data = new elevatorData();
     public ElevatorStates elevatorState = ElevatorStates.Home;
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
         elevatorIO.configure();
         this.elevatorIO = elevatorIO;
+
         elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000, 0.000);
         carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
                 0.000, 0.000);
@@ -93,19 +58,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMech = new LoggedMechanism2d(20, 50, blue);
         root = elevatorMech.getRoot("elev", 10, 0);
         elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
-
         elevatorMotorSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getKrakenX60Foc(2));
         if (Robot.isSimulation()) {
             // simMaster = masterM.getSimState();
             // simSlave = slaveM.getSimState();
             // simEncoder = elevatorEncoder.getSimState();
-              simulationInit();
-  }
-
+            simulationInit();
+        }
 
     }
 
+    // Elevators Finite State Machine
     public void setStates() {
         switch (elevatorState) {
             case Home:
@@ -167,30 +131,37 @@ public class ElevatorSubsystem extends SubsystemBase {
         carriagElevatorSim.setInput(target);
         elevatorSim.update(0.02);
         carriagElevatorSim.update(0.02);
-        SmartDashboard.putNumber("Elevator/Sim/poseMeters", simPose);
-
-        SmartDashboard.putData("Elevator/Sim/2Dmech", elevatorMech);
-
     }
-    public double visualizeElevatorOutput(){
-        if(data.encoderPosition > 0.93){
+
+    // Elevator is a 2 stage cascade so the 1st stage can only physically reach 0.93
+    // meters;
+    // this just makes sure the robot is properly visualized during replay or live
+    // visualization
+    public double visualizeElevatorOutput() {
+        if (data.encoderPosition > 0.93) {
             return 0.93;
-        }else{return data.encoderPosition;}
+        } else {
+            return data.encoderPosition;
+        }
     }
-    public void changeState(ElevatorStates state){
+
+    // Function to alter the State Machine outside of the subsystem
+    public void changeState(ElevatorStates state) {
         elevatorState = state;
     }
+
     void sendData() {
         // Logger.recordOutput("Real/Elevator/Position", getHeight());
         // Logger.recordOutput("Real/Elevator/Acceleration",
         // elevatorEncoder.getVelocity().getValueAsDouble());
     }
+
     @Override
     public void periodic() {
         elevatorIO.updateData(data);
-       setStates();
+        setStates();
         sendData();
-        SmartDashboard.putString("applied",data.getAppliedControl);
+        SmartDashboard.putString("applied", data.getAppliedControl);
         super.periodic();
     }
 

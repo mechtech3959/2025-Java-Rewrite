@@ -1,67 +1,26 @@
 package frc.robot.subsystems.Claw;
 
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Claw.ClawIO.clawData;
 import frc.robot.subsystems.Claw.feed.FeedIO;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.hal.simulation.*;
+
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
-import static edu.wpi.first.units.Units.Degrees;
-
-import java.util.function.BooleanSupplier;
-
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-@SuppressWarnings("unused")
 public class ClawSubsystem extends SubsystemBase {
 
   private final ClawIO clawIO;
   private final FeedIO feedIO;
-  public clawData data= new clawData();
+  public clawData data = new clawData();
+
   public enum ClawStates {
     L1,
     L2,
@@ -82,7 +41,6 @@ public class ClawSubsystem extends SubsystemBase {
 
   public ClawSubsystem(ClawIO clawIO, FeedIO feedIO) {
     clawIO.configure();
-
     this.clawIO = clawIO;
     this.feedIO = feedIO;
 
@@ -92,12 +50,13 @@ public class ClawSubsystem extends SubsystemBase {
     LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
     pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
     flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
-  
+
     if (Robot.isSimulation()) {
       simulationInit();
     }
   }
 
+  // Finite State Machine
   public void setStates() {
     switch (clawState) {
       case L1:
@@ -153,9 +112,12 @@ public class ClawSubsystem extends SubsystemBase {
     // axisEncoder.getVelocity().getValueAsDouble());
     // Logger.recordOutput("Real/Claw/Indexer Speed", feedMotor.get());
   }
-  public void changeState(ClawStates state){
+
+  // Function to change the state of claw outside of this subsystem
+  public void changeState(ClawStates state) {
     clawState = state;
   }
+
   @Override
   public void periodic() {
     clawIO.updateInput(data);

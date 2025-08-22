@@ -17,6 +17,7 @@ public class ClawTalonFXIO implements ClawIO {
   private double lastKnownAngle = 0.0;
   private MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withSlot(0);
 
+  // uses motion profile to go to set position
   @Override
   public void setAxis(double angle) {
     axisMotor.setControl(positionVoltage.withPosition(angle).withEnableFOC(true).withUseTimesync(true));
@@ -28,6 +29,8 @@ public class ClawTalonFXIO implements ClawIO {
     return axisMotor.getPosition().getValueAsDouble();
   }
 
+  // Make sure configs are applied on startup and not retained.
+  // Make sure poses are set to zero on startus
   @Override
   public void configure() {
     axisMotor.getConfigurator().apply(config.AxisMotorConfig(Constants.CanIdConstants.clawAxisMotorId));
@@ -37,6 +40,8 @@ public class ClawTalonFXIO implements ClawIO {
 
   }
 
+  // if claw is in tolerance of setpoint. this is used to prevent collison with
+  // elevator
   @Override
   public boolean acceptableAngle() {
     if (Robot.isReal()) {
@@ -52,18 +57,21 @@ public class ClawTalonFXIO implements ClawIO {
     }
   }
 
+  // Command test, same as setAxis but in command format
   @Override
   public Command moveAxis(double pose) {
     return Commands.runOnce(() -> {
       axisMotor.setControl(positionVoltage.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
     });
   }
-   @Override 
-  public void updateInput(clawData data){
+
+  // this makes sure log outputs are up to date(when called periodically)
+  @Override
+  public void updateInput(clawData data) {
     data.acceptableAngle = acceptableAngle();
-    data.clawAxis =  axisEncoder.getPosition().getValueAsDouble();
+    data.clawAxis = axisEncoder.getPosition().getValueAsDouble();
     data.clawMotorPose = axisMotor.getPosition().getValueAsDouble();
     data.clawMotorVelocity = axisMotor.getVelocity().getValueAsDouble();
-    data.currentDraw = axisMotor.getBridgeOutput().getValueAsDouble();//i have no idea what this is
+    data.currentDraw = axisMotor.getBridgeOutput().getValueAsDouble();// i have no idea what this is
   }
 }

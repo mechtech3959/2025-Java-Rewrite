@@ -54,99 +54,136 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     }
 
-    //@SuppressWarnings("static-access")
+    // @SuppressWarnings("static-access")
     void setState() {
 
         switch (setSuperState) {
 
             case Home:
-            claw.changeState(ClawStates.Home);
-            elevator.changeState(ElevatorStates.Home);
+                Home();
                 break;
             case L1:
-                claw.clawState = ClawStates.L1;
-                if (claw.data.acceptableAngle == true)
-                elevator.changeState(ElevatorStates.L1);
+                L1();
                 break;
             case L2:
-            claw.changeState(ClawStates.L2);
-            if (claw.data.acceptableAngle == true)
-            elevator.changeState(ElevatorStates.L2);
+                L2();
                 break;
             case L3:
-            claw.changeState(ClawStates.L3);
-            if (claw.data.acceptableAngle == true)
-            elevator.changeState(ElevatorStates.L3);
+                L3();
                 break;
             case L4:
-            claw.changeState(ClawStates.L4);
-            if (claw.data.acceptableAngle == true)
-            elevator.changeState(ElevatorStates.L4);
+                L4();
                 break;
             case Net:
                 break;
             case DeAlgea_L2:
-            claw.changeState(ClawStates.Algea);
-            if (claw.data.acceptableAngle == true)
-            elevator.changeState(ElevatorStates.DeAlgea_L2);
+                claw.changeState(ClawStates.Algea);
+                if (claw.data.acceptableAngle == true)
+                    elevator.changeState(ElevatorStates.DeAlgea_L2);
                 break;
             case DeAlgea_L3:
-            claw.changeState(ClawStates.Algea);
-            if (claw.data.acceptableAngle == true)
-            elevator.changeState(ElevatorStates.DeAlgea_L3);
+                claw.changeState(ClawStates.Algea);
+                if (claw.data.acceptableAngle == true)
+                    elevator.changeState(ElevatorStates.DeAlgea_L3);
                 break;
             case Processor:
-            claw.changeState(ClawStates.Algea);
-            if (claw.data.acceptableAngle == true)
-            elevator.changeState(ElevatorStates.L1);// check??
+                claw.changeState(ClawStates.Algea);
+                if (claw.data.acceptableAngle == true)
+                    elevator.changeState(ElevatorStates.L1);// check??
                 break;
             case Intake:
                 elevator.changeState(ElevatorStates.Home);
-              //  while (!claw.feedIO.hasCoral())
-              //      claw.clawState = claw.clawState.Intake;
-              //  if ()
-              //      claw.clawState = claw.clawState.L1;
+                // while (!claw.feedIO.hasCoral())
+                // claw.clawState = claw.clawState.Intake;
+                // if ()
+                // claw.clawState = claw.clawState.L1;
                 break;
             case Test:
-               // claw.clawState = ClawStates.L1;
+                // claw.clawState = ClawStates.L1;
                 elevator.changeState(ElevatorStates.L3);
-               break;
-                case Test2:
+                break;
+            case Test2:
                 // claw.clawState = ClawStates.L1;
                 elevator.changeState(ElevatorStates.L4);
-                 break;case Test3:
-                 // claw.clawState = ClawStates.L1;
-                 elevator.changeState(ElevatorStates.Home);
-                 break;
+                break;
+            case Test3:
+                // claw.clawState = ClawStates.L1;
+                elevator.changeState(ElevatorStates.Home);
+                break;
             default:
                 break;
         }
     }
-    private void L1(){
-        claw.clawState = ClawStates.L1;
-         if(claw.data.acceptableAngle == true){
-        elevator.changeState(ElevatorStates.L1);} else{ L1();}
-    }
-    private void L2(){ claw.clawState = ClawStates.L2;
-        if(claw.data.acceptableAngle == true){
-       elevator.changeState(ElevatorStates.L2);} else{ L2();}}
-    private void L3(){
-        claw.clawState = ClawStates.L3;
-        if(claw.data.acceptableAngle == true){
-       elevator.changeState(ElevatorStates.L3);} else{ L3();}
-    }
-    private void L4(){
-        claw.clawState = ClawStates.L4;
-        if(claw.data.acceptableAngle == true){
-       elevator.changeState(ElevatorStates.L4);} else{ L4();}
-    }
-    private void Home(){}
-    private void DeAlgea_L2(){}
-    private void DeAlgea_L3(){}
-    private void Intake(){}
-    private void Processor(){}
 
-    
+    private void L1() {
+        claw.clawState = ClawStates.L1;
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.L1);
+        } else {
+            L1();
+        }
+    }
+
+    private void L2() {
+        claw.clawState = ClawStates.L2;
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.L2);
+        } else {
+            L2();
+        }
+    }
+
+    private void L3() {
+        claw.clawState = ClawStates.L3;
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.L3);
+        } else {
+            L3();
+        }
+    }
+
+    private void L4() {
+        claw.clawState = ClawStates.L4;
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.L4);
+        } else {
+            L4();
+        }
+    }
+
+    private void Home() {
+        claw.clawState = ClawStates.Travel;
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.Home);
+        } else {
+            Home();
+        }
+    }
+
+    private void DeAlgea_L2() {
+        claw.changeState(ClawStates.Algea);
+                if (claw.data.acceptableAngle){
+                    elevator.changeState(ElevatorStates.DeAlgea_L2);}else{DeAlgea_L2();}
+    }
+
+    private void DeAlgea_L3() {
+        claw.changeState(ClawStates.Algea);
+        if (claw.data.acceptableAngle){
+            elevator.changeState(ElevatorStates.DeAlgea_L2);}else{DeAlgea_L2();}
+    }
+
+    private void Intake() {
+    }
+
+    private void Processor() {
+        claw.changeState(ClawStates.Algea);
+        if (claw.data.acceptableAngle){
+            elevator.changeState(ElevatorStates.L1);}else{Processor();}
+    }
+
+    private void Net() {
+    }
+
     public void SubTelemetry() {
         drivetrain.registerTelemetry(logger::telemeterize);
         Logger.recordOutput("/3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));

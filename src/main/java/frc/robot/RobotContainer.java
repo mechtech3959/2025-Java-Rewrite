@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Optional;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 import org.littletonrobotics.junction.Logger;
@@ -208,14 +209,17 @@ public class RobotContainer {
                  */
 
                 coJoystick.a().onChange(Commands.runOnce(() -> {
-                       state = superState.L1;
+                       state = superState.Home;
                 }, superStruct));
                 coJoystick.b().onChange(Commands.runOnce(() -> {
-                        state = superState.Test2;
+                        state = superState.L2;
                  }, superStruct));coJoystick.x().onChange(Commands.runOnce(() -> {
-                        state = superState.Test3;
+                        state = superState.L3;
                  }, superStruct));
-        }
+                 coJoystick.y().onChange(Commands.runOnce(() -> {
+                        state = superState.L4;
+                 }, superStruct));
+                }
 
         public void positionStartup() {
                 _chosenPose = poseChooser.getSelected();
@@ -251,6 +255,27 @@ public class RobotContainer {
                 SmartDashboard.putData(poseChooser);
                 Logger.recordOutput("containstate", state);
                 superStruct.changeState(state);
+                /* 
+                SmartDashboard.putData("Swerve Drive", new Sendable() {
+                        public void initSendable(SendableBuilder builder) {
+                          builder.setSmartDashboardType("SwerveDrive");
+                      
+                          builder.addDoubleProperty("Front Left Angle", () -> drivetrain.getModule(0).getPosition(true).angle.getRadians(), null);
+                          builder.addDoubleProperty("Front Left Velocity", () -> drivetrain.getModule(0).getCurrentState().speedMetersPerSecond, null);
+                      
+                          builder.addDoubleProperty("Front Right Angle", () -> drivetrain.getModule(1).getCurrentState().angle.getRadians(), null);
+                          builder.addDoubleProperty("Front Right Velocity", () -> drivetrain.getModule(1).getCurrentState().speedMetersPerSecond, null);
+                      
+                          builder.addDoubleProperty("Back Left Angle", () -> drivetrain.getModule(2).getCurrentState().angle.getRadians(), null);
+                          builder.addDoubleProperty("Back Left Velocity", () -> drivetrain.getModule(2).getCurrentState().speedMetersPerSecond, null);
+                      
+                          builder.addDoubleProperty("Back Right Angle", () -> drivetrain.getModule(3).getCurrentState().angle.getRadians(), null);
+                          builder.addDoubleProperty("Back Right Velocity", () -> drivetrain.getModule(3).getCurrentState().speedMetersPerSecond, null);
+                      
+                          builder.addDoubleProperty("Robot Angle", () -> drivetrain.getState().RawHeading.getRadians(), null);
+                        }
+                      });
+               */
 
                 // if(DriverStation.isDisabled()) {positionStartup();
                 // drivetrain.resetPose(startingPose);

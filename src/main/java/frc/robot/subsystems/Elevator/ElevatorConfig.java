@@ -21,25 +21,25 @@ public class ElevatorConfig {
     public TalonFXConfiguration ElevatorMotorConfig(){
          MotionMagicConfigs motion = new MotionMagicConfigs().withMotionMagicCruiseVelocity(40)
                 .withMotionMagicAcceleration(40)
-                .withMotionMagicJerk(2000).withMotionMagicExpo_kA(0.3);
-        Slot0Configs slot = new Slot0Configs().withGravityType(GravityTypeValue.Elevator_Static).withKP(7).withKI(0.8)
-                .withKD(0.1).withKS(0.4).withKV(0.001).withKA(0).withKG(0.3)
+                .withMotionMagicJerk(1600).withMotionMagicExpo_kA(0.3);
+        Slot0Configs slot = new Slot0Configs().withGravityType(GravityTypeValue.Elevator_Static).withKP(7).withKI(1.2)
+                .withKD(0.1).withKS(0.4).withKV(0.001).withKA(0).withKG(0.75)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         TalonFXConfiguration elevatorConfig = new TalonFXConfiguration().withFeedback(new FeedbackConfigs()
                 .withFeedbackSensorSource(fused).withFeedbackRemoteSensorID(9)
-                .withRotorToSensorRatio(1)
-                .withSensorToMechanismRatio(18))
+                .withRotorToSensorRatio(18)
+                .withSensorToMechanismRatio(1))
                 .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Brake))
                 .withMotionMagic(motion)
                 .withSlot0(slot).withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withReverseSoftLimitThreshold(0.03).withForwardSoftLimitEnable(false))
-                .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLowerLimit(30).withSupplyCurrentLimit(60).withSupplyCurrentLimitEnable(true));
+                .withCurrentLimits(new CurrentLimitsConfigs().withSupplyCurrentLowerLimit(20).withSupplyCurrentLimit(50).withSupplyCurrentLimitEnable(true));
      
                 return elevatorConfig;
                     }
     public CANcoderConfiguration elevatorEncoderConfig(){
         CANcoderConfiguration elevatorEncConfig = new CANcoderConfiguration()
-        .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.CounterClockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
+        .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive).withAbsoluteSensorDiscontinuityPoint(0.5));
                 return elevatorEncConfig;
     }
 }

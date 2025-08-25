@@ -109,20 +109,44 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
             case Test:
                // claw.clawState = ClawStates.L1;
-                 claw.changeState(ClawStates.L1);
-                break;
+                elevator.changeState(ElevatorStates.L3);
+               break;
                 case Test2:
                 // claw.clawState = ClawStates.L1;
-                  claw.changeState(ClawStates.L4);
+                elevator.changeState(ElevatorStates.L4);
                  break;case Test3:
                  // claw.clawState = ClawStates.L1;
-                   claw.changeState(ClawStates.Home);
-                  break;
+                 elevator.changeState(ElevatorStates.Home);
+                 break;
             default:
                 break;
         }
     }
+    private void L1(){
+        claw.clawState = ClawStates.L1;
+         if(claw.data.acceptableAngle == true){
+        elevator.changeState(ElevatorStates.L1);} else{ L1();}
+    }
+    private void L2(){ claw.clawState = ClawStates.L2;
+        if(claw.data.acceptableAngle == true){
+       elevator.changeState(ElevatorStates.L2);} else{ L2();}}
+    private void L3()
+        claw.clawState = ClawStates.L3;
+        if(claw.data.acceptableAngle == true){
+       elevator.changeState(ElevatorStates.L3);} else{ L3();}
+    }
+    private void L4(){
+        claw.clawState = ClawStates.L4;
+        if(claw.data.acceptableAngle == true){
+       elevator.changeState(ElevatorStates.L4);} else{ L4();}
+    }
+    private void Home(){}
+    private void DeAlgea_L2(){}
+    private void DeAlgea_L3(){}
+    private void Intake(){}
+    private void Processor(){}
 
+    
     public void SubTelemetry() {
         drivetrain.registerTelemetry(logger::telemeterize);
         Logger.recordOutput("/3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));

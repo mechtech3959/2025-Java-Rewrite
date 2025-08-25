@@ -36,9 +36,9 @@ public class ElevatorTalonFXIO implements ElevatorIO {
 // if changed motion profile moves elevator to set position 
     @Override
     public void setHeight(double pose) {
-        if(pose != target){
-        masterM.setControl(elevatorMotion.withPosition(Units.radiansToRotations(pose)).withEnableFOC(false).withUseTimesync(true));
-        target = pose;} 
+       // if(pose != target){
+        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+       // target = pose;} 
     }
 
     @Override

@@ -76,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 elevatorIO.setHeight(0.0);
                 break;
             case L1:
-                elevatorIO.setHeight(0.5);// check this
+                elevatorIO.setHeight(0);// check this
                 break;
             case L2:
                 elevatorIO.setHeight(1);

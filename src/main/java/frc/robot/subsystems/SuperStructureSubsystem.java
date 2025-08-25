@@ -103,7 +103,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private void L1() {
-        claw.clawState = ClawStates.L1;
+        claw.changeState(ClawStates.L1);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L1);
         } else {
@@ -112,7 +112,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private void L2() {
-        claw.clawState = ClawStates.L2;
+        claw.changeState(ClawStates.L2);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L2);
         } else {
@@ -121,7 +121,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private void L3() {
-        claw.clawState = ClawStates.L3;
+        claw.changeState(ClawStates.L3);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L3);
         } else {
@@ -130,20 +130,20 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private void L4() {
-        claw.clawState = ClawStates.L4;
+        claw.changeState(ClawStates.L4);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L4);
         } else {
-            L4();
+           // L4();
         }
     }
 
     private void Home() {
-        claw.clawState = ClawStates.Travel;
+        claw.changeState(ClawStates.Travel);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.Home);
         } else {
-            Home();
+          //  Home();
         }
     }
 
@@ -194,7 +194,8 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 new Pose3d(0.0, elevator.visualizeElevatorOutput(), 0.0, new Rotation3d()));
         Logger.recordOutput("/3D/Elevator/Carrige",
                 new Pose3d(0.0, elevator.data.encoderPosition, 0.0, new Rotation3d()));
-        Logger.recordOutput("accept", claw.data.acceptableAngle);
+        Logger.recordOutput("Claw/accept", claw.data.acceptableAngle);
+        Logger.recordOutput("Claw/Target pose", claw.data.targetPose);
         Logger.recordOutput("Claw/EncPose", Units.radiansToDegrees(claw.data.clawAxis));
         Logger.recordOutput("State/Super", setSuperState);
         Logger.recordOutput("State/Claw", claw.clawState);

@@ -209,16 +209,18 @@ public class RobotContainer {
                  */
 
                 coJoystick.a().onChange(Commands.runOnce(() -> {
-                       state = superState.Home;
+                       superStruct.changeState(superState.Home);
                 }, superStruct));
                 coJoystick.b().onChange(Commands.runOnce(() -> {
-                        state = superState.L2;
-                 }, superStruct));coJoystick.x().onChange(Commands.runOnce(() -> {
-                        state = superState.L3;
-                 }, superStruct));
+                        superStruct.changeState(superState.L1);
+
+                }, superStruct));coJoystick.x().onChange(Commands.runOnce(() -> {
+                        superStruct.changeState(superState.L3);
+
+                }, superStruct));
                  coJoystick.y().onChange(Commands.runOnce(() -> {
-                        state = superState.L4;
-                 }, superStruct));
+                        superStruct.changeState(superState.L4);
+                }, superStruct));
                 }
 
         public void positionStartup() {
@@ -254,7 +256,7 @@ public class RobotContainer {
         public void periodic() {
                 SmartDashboard.putData(poseChooser);
                 Logger.recordOutput("containstate", state);
-                superStruct.changeState(state);
+                //superStruct.changeState(state);
                 
              
 

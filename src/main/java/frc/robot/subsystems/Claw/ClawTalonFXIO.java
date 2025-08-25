@@ -24,7 +24,7 @@ public class ClawTalonFXIO implements ClawIO {
     if (angle != lastKnownAngle) {
       axisMotor.setControl(
           positionVoltage.withPosition(Units.radiansToRotations(angle)).withEnableFOC(true).withUseTimesync(true));
-      lastKnownAngle = angle;
+      lastKnownAngle = Units.radiansToRotations(angle);
     }
   }
 
@@ -77,5 +77,6 @@ public class ClawTalonFXIO implements ClawIO {
     data.clawMotorPose = axisMotor.getPosition().getValueAsDouble();
     data.clawMotorVelocity = axisMotor.getVelocity().getValueAsDouble();
     data.currentDraw = axisMotor.getBridgeOutput().getValueAsDouble();// i have no idea what this is
+    data.targetPose = lastKnownAngle;
   }
 }

@@ -123,7 +123,7 @@ public class ClawSubsystem extends SubsystemBase {
   public void periodic() {
     clawIO.updateInput(data);
     feedIO.updateInput(dataF);
-    clawIO.acceptableAngle();
+   // clawIO.acceptableAngle();
     clawIO.getAxis();
     feedIO.hasCoral();
     setStates();

@@ -130,7 +130,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private void L2(){ claw.clawState = ClawStates.L2;
         if(claw.data.acceptableAngle == true){
        elevator.changeState(ElevatorStates.L2);} else{ L2();}}
-    private void L3()
+    private void L3(){
         claw.clawState = ClawStates.L3;
         if(claw.data.acceptableAngle == true){
        elevator.changeState(ElevatorStates.L3);} else{ L3();}

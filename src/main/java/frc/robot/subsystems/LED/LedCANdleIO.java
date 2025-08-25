@@ -1,7 +1,7 @@
 package frc.robot.subsystems.LED;
 
-import com.ctre.phoenix6.controls.EmptyAnimation;
-import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix.led.Animation;
+import com.ctre.phoenix.led.CANdle;
 
 public class LedCANdleIO implements LedIO{
    CANdle leds = new CANdle(25, "CanBus");
@@ -12,7 +12,13 @@ public class LedCANdleIO implements LedIO{
    }
    @Override
    public void Stop(){
-    leds.setControl(new EmptyAnimation(0));
+    
+   }
+
+   @Override
+   //ONLY PUT IN CTRE ANIMATION TYPES
+   public void changeAnimation(Animation type){
+    leds.animate(type);
    }
     
 }

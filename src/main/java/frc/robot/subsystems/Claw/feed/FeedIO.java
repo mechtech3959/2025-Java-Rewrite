@@ -1,8 +1,11 @@
 package frc.robot.subsystems.Claw.feed;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface FeedIO {
-    public class feedData{
-        boolean hasCoral;
+    @AutoLog
+  class feedData {
+      public boolean hasCoral;
 
     }
     default void setIntake(double percentOut) {
@@ -17,5 +20,6 @@ public interface FeedIO {
     default boolean hasCoral() {
         return false;
     }
+    default void updateInput(feedData data){}
 
 }

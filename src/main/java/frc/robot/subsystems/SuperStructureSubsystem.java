@@ -18,6 +18,7 @@ import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
+import frc.robot.subsystems.Claw.feed.FeedIO.feedData;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem.ElevatorStates;
 
@@ -77,26 +78,16 @@ public class SuperStructureSubsystem extends SubsystemBase {
             case Net:
                 break;
             case DeAlgea_L2:
-                claw.changeState(ClawStates.Algea);
-                if (claw.data.acceptableAngle == true)
-                    elevator.changeState(ElevatorStates.DeAlgea_L2);
+                DeAlgea_L2();
                 break;
             case DeAlgea_L3:
-                claw.changeState(ClawStates.Algea);
-                if (claw.data.acceptableAngle == true)
-                    elevator.changeState(ElevatorStates.DeAlgea_L3);
+                DeAlgea_L3();
                 break;
             case Processor:
-                claw.changeState(ClawStates.Algea);
-                if (claw.data.acceptableAngle == true)
-                    elevator.changeState(ElevatorStates.L1);// check??
+                Processor();
                 break;
             case Intake:
-                elevator.changeState(ElevatorStates.Home);
-                // while (!claw.feedIO.hasCoral())
-                // claw.clawState = claw.clawState.Intake;
-                // if ()
-                // claw.clawState = claw.clawState.L1;
+                Intake();
                 break;
             case Test:
                 // claw.clawState = ClawStates.L1;
@@ -162,23 +153,38 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     private void DeAlgea_L2() {
         claw.changeState(ClawStates.Algea);
-                if (claw.data.acceptableAngle){
-                    elevator.changeState(ElevatorStates.DeAlgea_L2);}else{DeAlgea_L2();}
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.DeAlgea_L2);
+        } else {
+            DeAlgea_L2();
+        }
     }
 
     private void DeAlgea_L3() {
         claw.changeState(ClawStates.Algea);
-        if (claw.data.acceptableAngle){
-            elevator.changeState(ElevatorStates.DeAlgea_L2);}else{DeAlgea_L2();}
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.DeAlgea_L3);
+        } else {
+            DeAlgea_L3();
+        }
     }
 
     private void Intake() {
+        elevator.changeState(ElevatorStates.Home);
+        if (!claw.dataF.hasCoral) {
+            claw.clawState = claw.clawState.Intake;
+        } else {
+            claw.changeState(ClawStates.Travel);
+        }
     }
 
     private void Processor() {
         claw.changeState(ClawStates.Algea);
-        if (claw.data.acceptableAngle){
-            elevator.changeState(ElevatorStates.L1);}else{Processor();}
+        if (claw.data.acceptableAngle) {
+            elevator.changeState(ElevatorStates.L1);
+        } else {
+            Processor();
+        }
     }
 
     private void Net() {

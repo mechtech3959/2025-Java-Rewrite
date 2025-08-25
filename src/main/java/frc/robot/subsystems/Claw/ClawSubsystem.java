@@ -3,6 +3,7 @@ package frc.robot.subsystems.Claw;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Claw.ClawIO.clawData;
+import frc.robot.subsystems.Claw.feed.FeedIO.feedData;
 import frc.robot.subsystems.Claw.feed.FeedIO;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -20,7 +21,7 @@ public class ClawSubsystem extends SubsystemBase {
   private final ClawIO clawIO;
   private final FeedIO feedIO;
   public clawData data = new clawData();
-
+  public feedData dataF = new feedData();
   public enum ClawStates {
     L1,
     L2,
@@ -121,6 +122,7 @@ public class ClawSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     clawIO.updateInput(data);
+    feedIO.updateInput(dataF);
     clawIO.acceptableAngle();
     clawIO.getAxis();
     feedIO.hasCoral();

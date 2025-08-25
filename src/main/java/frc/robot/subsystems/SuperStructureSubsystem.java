@@ -4,21 +4,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.lang.annotation.ElementType;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.LinearVelocityUnit;
-import edu.wpi.first.units.Unit;
+
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
-import frc.robot.subsystems.Claw.feed.FeedIO.feedData;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem.ElevatorStates;
 
@@ -76,6 +71,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 L4();
                 break;
             case Net:
+            Net();
                 break;
             case DeAlgea_L2:
                 DeAlgea_L2();
@@ -172,7 +168,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private void Intake() {
         elevator.changeState(ElevatorStates.Home);
         if (!claw.dataF.hasCoral) {
-            claw.clawState = claw.clawState.Intake;
+            claw.changeState(ClawStates.Intake);
         } else {
             claw.changeState(ClawStates.Travel);
         }
@@ -188,6 +184,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private void Net() {
+        
     }
 
     public void SubTelemetry() {

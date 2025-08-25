@@ -5,8 +5,6 @@ import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
- import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import frc.robot.Constants;
 
 public class ElevatorTalonFXIO implements ElevatorIO {

@@ -40,7 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SuperStructureSubsystem;
@@ -152,7 +152,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Score L4", Commands.none());
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Mode", autoChooser);
-                
+
                 state = superState.Home;
                 elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
                 claw = new ClawSubsystem(new ClawTalonFXIO(), new FeedRevMaxIO());
@@ -162,28 +162,27 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
+
+                drivetrain.setDefaultCommand(
+                                drivetrain.applyRequest(() -> drive
+                                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
+                                // X(counterclockwise)
+                                ));
+                joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+                joystick.b().whileTrue(drivetrain.applyRequest(
+                                () -> point.withModuleDirection(
+                                                new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+                joystick.pov(0).whileTrue(
+                                drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+                joystick.pov(180)
+                                .whileTrue(drivetrain.applyRequest(
+                                                () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+
+                // Run SysId routines when holding back/start and X/Y.
+                // Note that each routine should be run exactly once in a single log.
                 /*
-                 * drivetrain.setDefaultCommand(
-                 * drivetrain.applyRequest(() -> drive
-                 * .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                 * .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                 * .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
-                 * // X(counterclockwise)
-                 * ));
-                 * joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-                 * joystick.b().whileTrue(drivetrain.applyRequest(
-                 * () -> point.withModuleDirection(
-                 * new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
-                 * joystick.pov(0).whileTrue(
-                 * drivetrain.applyRequest(() ->
-                 * forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-                 * joystick.pov(180)
-                 * .whileTrue(drivetrain.applyRequest(
-                 * () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
-                 * 
-                 * // Run SysId routines when holding back/start and X/Y.
-                 * // Note that each routine should be run exactly once in a single log.
-                 * /*
                  * joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction
                  * .kForward));
                  * joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction
@@ -192,36 +191,25 @@ public class RobotContainer {
                  * Direction.kForward));
                  * joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(
                  * Direction.kReverse));
-                 * 
-                 * // reset the field-centric heading on left bumper press
-                 * joystick.leftBumper().onTrue(drivetrain.runOnce(() ->
-                 * drivetrain.seedFieldCentric()));
-                 * 
-                 * drivetrain.registerTelemetry(logger::telemeterize);
-                 * coJoystick.b().onTrue(demo);// 20
-                 * coJoystick.back().onChange(Commands.runOnce(() -> claw.setAxis(0.0)));
-                 * 
-                 * coJoystick.x().onChange(Commands.runOnce(() -> claw.setAxis(0.1740)));//10
-                 * deg 0.174 rads
-                 * // 40 0.698
-                 * coJoystick.a().onChange( test2);// 150
-                 * coJoystick.y().onChange(Commands.runOnce(() -> elevator.setHeight(5.3)));
                  */
+                // reset the field-centric heading on left bumper press
+                joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
                 coJoystick.a().onChange(Commands.runOnce(() -> {
-                       superStruct.changeState(superState.Home);
+                        superStruct.changeState(superState.Home);
                 }, superStruct));
                 coJoystick.b().onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.L1);
 
-                }, superStruct));coJoystick.x().onChange(Commands.runOnce(() -> {
+                }, superStruct));
+                coJoystick.x().onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.L3);
 
                 }, superStruct));
-                 coJoystick.y().onChange(Commands.runOnce(() -> {
+                coJoystick.y().onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.L4);
                 }, superStruct));
-                }
+        }
 
         public void positionStartup() {
                 _chosenPose = poseChooser.getSelected();
@@ -256,9 +244,6 @@ public class RobotContainer {
         public void periodic() {
                 SmartDashboard.putData(poseChooser);
                 Logger.recordOutput("containstate", state);
-                //superStruct.changeState(state);
-                
-             
 
                 // if(DriverStation.isDisabled()) {positionStartup();
                 // drivetrain.resetPose(startingPose);

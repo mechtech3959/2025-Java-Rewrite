@@ -134,7 +134,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L4);
         } else {
-           // L4();
+           L4();
         }
     }
 
@@ -143,7 +143,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.Home);
         } else {
-          //  Home();
+            Home();
         }
     }
 

@@ -171,6 +171,11 @@ public class ClawSubsystem extends SubsystemBase {
     percentOut = percent;
 
   }
+  public void changeState(FeedStates feed, double percent) {
+    feedState = feed;
+    percentOut = percent;
+
+  }
 
   @Override
   public void periodic() {

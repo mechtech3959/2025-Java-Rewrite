@@ -50,6 +50,7 @@ import frc.robot.subsystems.Claw.feed.FeedIO;
 import frc.robot.subsystems.Claw.feed.FeedRevMaxIO;
 import frc.robot.subsystems.Claw.ClawIO;
 import frc.robot.subsystems.Claw.ClawTalonFXIO;
+import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorTalonFXIO;
@@ -212,6 +213,11 @@ public class RobotContainer {
                 }, superStruct));
                 coJoystick.start().onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.Intake);
+                }, superStruct));
+                coJoystick.rightBumper().onTrue(Commands.runOnce(() -> {
+                        superStruct.changeState(FeedStates.Outake);
+                }, superStruct)).onFalse(Commands.runOnce(() -> {
+                        superStruct.changeState(FeedStates.PercentOut,0.0);
                 }, superStruct));
         }
 

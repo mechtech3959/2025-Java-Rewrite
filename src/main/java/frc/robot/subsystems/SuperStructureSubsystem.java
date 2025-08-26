@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Percent;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -12,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Claw.ClawIO;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
@@ -43,7 +45,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     private superState setSuperState = superState.Home;
     private FeedStates setFeed = FeedStates.Home;
-
+    private double clawSetOut = 0.0;
     public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain) {
         // external extries of subsystems are equal to local declarations
         this.elevator = elevator;
@@ -99,6 +101,19 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 // claw.clawState = ClawStates.L1;
                 elevator.changeState(ElevatorStates.Home);
                 break;
+            default:
+                break;
+        }
+        switch (setFeed) {
+            case Intake:
+                claw.changeState(setFeed);
+                break;
+            case Outake:
+            claw.changeState(setFeed);
+            break;
+            case PercentOut:
+            claw.changeState(setFeed, clawSetOut);
+            break;
             default:
                 break;
         }
@@ -189,7 +204,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             Processor();
         }
     }
-
+    
     private void Net() {
 
     }
@@ -218,7 +233,24 @@ public class SuperStructureSubsystem extends SubsystemBase {
         setSuperState = state;
 
     }
+    public void changeState(superState state, FeedStates feed) {
+        setSuperState = state;
+        setFeed = feed;
 
+    }
+    public void changeState(superState state, FeedStates feed, double percent) {
+        setSuperState = state;
+        setFeed = feed;
+        clawSetOut = percent;
+    }
+    public void changeState(FeedStates feed, double percent) {
+        setFeed = feed;
+        clawSetOut = percent;
+    }  
+     public void changeState(FeedStates feed) {
+        setFeed = feed;
+    }
+// fix ABOVE REDUNDANT
     @Override
     public void periodic() {
         SubTelemetry();

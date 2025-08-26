@@ -39,8 +39,7 @@ public class ClawTalonFXIO implements ClawIO {
   public void configure() {
     axisMotor.getConfigurator().apply(config.AxisMotorConfig(Constants.CanIdConstants.clawAxisMotorId));
     axisEncoder.getConfigurator().apply(config.encoderConfig());
-    axisMotor.setPosition(0.0);
-    axisEncoder.setPosition(0.0);
+    resetAxis();
 
   }
 
@@ -60,7 +59,11 @@ public class ClawTalonFXIO implements ClawIO {
       return true;
     }
   }
-
+  @Override
+  public void resetAxis(){
+    axisMotor.setPosition(0.0);
+    axisEncoder.setPosition(0.0);
+  }
   // Command test, same as setAxis but in command format
   @Override
   public Command moveAxis(double pose) {

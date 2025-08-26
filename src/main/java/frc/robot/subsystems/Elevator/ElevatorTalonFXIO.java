@@ -24,11 +24,15 @@ public class ElevatorTalonFXIO implements ElevatorIO {
         masterM.getConfigurator().apply(config.ElevatorMotorConfig());
         slaveM.getConfigurator().apply(config.ElevatorMotorConfig());
         elevatorEncoder.getConfigurator().apply(config.elevatorEncoderConfig());
+        resetAxis();
+        //slave follows master to ensure motors arent fighting each other when following motion profiles
+       slaveM.setControl(new StrictFollower(masterM.getDeviceID()));
+    }
+    @Override
+    public void resetAxis(){
         masterM.setPosition(0.0);
         slaveM.setPosition(0.0);
         elevatorEncoder.setPosition(0.0);
-        //slave follows master to ensure motors arent fighting each other when following motion profiles
-       slaveM.setControl(new StrictFollower(masterM.getDeviceID()));
     }
 //set position only if target has changed 
 // if changed motion profile moves elevator to set position 

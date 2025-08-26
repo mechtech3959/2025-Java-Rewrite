@@ -17,7 +17,7 @@ public interface ElevatorIO {
         public String getAppliedControl;
 
     }
-
+    default void resetAxis(){}
     default void setHeight(double pose) {
     }
 

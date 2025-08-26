@@ -14,6 +14,7 @@ import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
+import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem.ElevatorStates;
 
@@ -23,7 +24,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final CommandSwerveDrivetrain drivetrain;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
     private final Telemetry logger = new Telemetry(MaxSpeed);
-    
+
     public enum superState {
         Home,
         L1,
@@ -39,11 +40,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         Test2,
         Test3
     }
-    
+
     private superState setSuperState = superState.Home;
+    private FeedStates setFeed = FeedStates.Home;
 
     public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain) {
-        //external extries of subsystems are equal to local declarations 
+        // external extries of subsystems are equal to local declarations
         this.elevator = elevator;
         this.claw = claw;
         this.drivetrain = drivetrain;
@@ -71,7 +73,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 L4();
                 break;
             case Net:
-            Net();
+                Net();
                 break;
             case DeAlgea_L2:
                 DeAlgea_L2();
@@ -101,9 +103,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
         }
     }
-    // Almost all of these are recursive statements(meaning they call themselves in the definitions)
-    //this is done because the funtion is only called once and if the claw is not where it is supposed to be
-    // the elevator will not move 
+
+    // Almost all of these are recursive statements(meaning they call themselves in
+    // the definitions)
+    // this is done because the function is only called once and if the claw is not
+    // where it is supposed to be
+    // the elevator will not move
     private void L1() {
         claw.changeState(ClawStates.L1);
         if (claw.data.acceptableAngle) {
@@ -136,7 +141,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L4);
         } else {
-           L4();
+            L4();
         }
     }
 
@@ -186,18 +191,19 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private void Net() {
-        
+
     }
-    // data collection for subsystems 
+
+    // data collection for subsystems
     public void SubTelemetry() {
         drivetrain.registerTelemetry(logger::telemeterize);
         // The 3d allows visualization of the robot
-        Logger.recordOutput("/3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
-        Logger.recordOutput("/3D/Elevator/1stStage",
+        Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
+        Logger.recordOutput("3D/Elevator/1stStage",
                 new Pose3d(0.0, elevator.visualizeElevatorOutput(), 0.0, new Rotation3d()));
-        Logger.recordOutput("/3D/Elevator/Carrige",
+        Logger.recordOutput("3D/Elevator/Carrige",
                 new Pose3d(0.0, elevator.data.encoderPosition, 0.0, new Rotation3d()));
-        //keep outputs logged for diagnosis
+        // keep outputs logged for diagnosis
         Logger.recordOutput("Claw/accept", claw.data.acceptableAngle);
         Logger.recordOutput("Claw/Target pose", claw.data.targetPose);
         Logger.recordOutput("Claw/EncPose", Units.radiansToDegrees(claw.data.clawAxis));
@@ -206,9 +212,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         Logger.recordOutput("State/Elevator", elevator.elevatorState);
 
     }
-    //Function for external alterations of the state
+
+    // Function for external alterations of the state
     public void changeState(superState state) {
         setSuperState = state;
+
     }
 
     @Override

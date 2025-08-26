@@ -7,7 +7,10 @@ import frc.robot.Constants;
 
 public class FeedRevMaxIO implements FeedIO {
     SparkMax feedMotor = new SparkMax(Constants.CanIdConstants.clawIntakeMotorId, MotorType.kBrushless);
-
+    @Override
+    public void Stop(){
+        feedMotor.set(0);
+    }
     @Override
     public void setIntake(double percentOut) {
         feedMotor.set(percentOut);

@@ -22,6 +22,7 @@ public class ClawSubsystem extends SubsystemBase {
   private final FeedIO feedIO;
   public clawData data = new clawData();
   public feedData dataF = new feedData();
+
   public enum ClawStates {
     L1,
     L2,
@@ -30,7 +31,16 @@ public class ClawSubsystem extends SubsystemBase {
     Travel,
     Home,
     Algea,
-    Intake
+    Intake,
+    Zero
+  }
+
+  public enum FeedStates {
+    Home,
+    Outake,
+    Intake,
+    PercentOut,
+    Algea
   }
 
   public SingleJointedArmSim sim;
@@ -39,6 +49,8 @@ public class ClawSubsystem extends SubsystemBase {
   public LoggedMechanismLigament2d flat;
 
   public ClawStates clawState = ClawStates.Home;
+  public FeedStates feedState = FeedStates.Home;
+  public double percentOut = 0.0;
 
   public ClawSubsystem(ClawIO clawIO, FeedIO feedIO) {
     clawIO.configure();
@@ -87,7 +99,30 @@ public class ClawSubsystem extends SubsystemBase {
         break;
       case Intake:
         clawIO.setAxis(0);
-        feedIO.intakeProcess();
+        changeState(FeedStates.Intake);
+        break;
+      case Zero:
+        clawIO.resetAxis();
+        break;
+      default:
+        break;
+    }
+
+    switch (feedState) {
+      case Intake:
+        if (!feedIO.hasCoral()) {
+          feedIO.stdIntake();
+        } else {
+          feedIO.Stop();
+        }
+
+        break;
+      case Outake:
+        feedIO.stdIntake();
+        break;
+      case PercentOut:
+        feedIO.setIntake(percentOut);
+        break;
       default:
         break;
     }
@@ -117,15 +152,33 @@ public class ClawSubsystem extends SubsystemBase {
   // Function to change the state of claw outside of this subsystem
   public void changeState(ClawStates state) {
     clawState = state;
+
+  }
+
+  public void changeState(FeedStates feed) {
+    feedState = feed;
+  }
+
+  public void changeState(ClawStates state, FeedStates feed) {
+    clawState = state;
+    feedState = feed;
+
+  }
+
+  public void changeState(ClawStates state, FeedStates feed, double percent) {
+    clawState = state;
+    feedState = feed;
+    percentOut = percent;
+
   }
 
   @Override
   public void periodic() {
     clawIO.updateInput(data);
     feedIO.updateInput(dataF);
-   // clawIO.acceptableAngle();
-    clawIO.getAxis();
-    feedIO.hasCoral();
+    // clawIO.acceptableAngle();
+    // clawIO.getAxis();
+    // feedIO.hasCoral();
     setStates();
     sendData();
 

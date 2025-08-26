@@ -13,6 +13,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -199,7 +200,7 @@ public class RobotContainer {
                         superStruct.changeState(superState.Home);
                 }, superStruct));
                 coJoystick.b().onChange(Commands.runOnce(() -> {
-                        superStruct.changeState(superState.L1);
+                        superStruct.changeState(superState.L2);
 
                 }, superStruct));
                 coJoystick.x().onChange(Commands.runOnce(() -> {
@@ -209,11 +210,14 @@ public class RobotContainer {
                 coJoystick.y().onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.L4);
                 }, superStruct));
+                coJoystick.start().onChange(Commands.runOnce(() -> {
+                        superStruct.changeState(superState.Intake);
+                }, superStruct));
         }
 
         public void positionStartup() {
                 _chosenPose = poseChooser.getSelected();
-
+                
                 switch (_chosenPose) {
                         case "Wall":
                                 if (currentAlliance == Alliance.Blue) {

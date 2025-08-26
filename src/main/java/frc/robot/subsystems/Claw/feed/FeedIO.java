@@ -8,6 +8,7 @@ public interface FeedIO {
       public boolean hasCoral;
 
     }
+    default void Stop(){}
     default void setIntake(double percentOut) {
     }
 

@@ -114,6 +114,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
             case PercentOut:
             claw.changeState(setFeed, clawSetOut);
             break;
+            case Algea:
+            claw.changeState(setFeed);
+            break;
             default:
                 break;
         }
@@ -215,9 +218,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
         // The 3d allows visualization of the robot
         Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
         Logger.recordOutput("3D/Elevator/1stStage",
-                new Pose3d(0.0, elevator.visualizeElevatorOutput(), 0.0, new Rotation3d()));
+                new Pose3d(0.0,0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0,0,0)));
         Logger.recordOutput("3D/Elevator/Carrige",
-                new Pose3d(0.0, elevator.data.encoderPosition, 0.0, new Rotation3d()));
+                new Pose3d(0.0,0.0, elevator.data.encoderPosition, new Rotation3d(0,0,0)));
         // keep outputs logged for diagnosis
         Logger.recordOutput("Claw/accept", claw.data.acceptableAngle);
         Logger.recordOutput("Claw/Target pose", claw.data.targetPose);

@@ -123,6 +123,10 @@ public class ClawSubsystem extends SubsystemBase {
       case PercentOut:
         feedIO.setIntake(percentOut);
         break;
+      case Algea:
+      //check what is needed for static intake of algea
+      feedIO.setIntake(-0.1);
+      break;
       default:
         break;
     }

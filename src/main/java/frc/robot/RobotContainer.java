@@ -36,6 +36,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -122,6 +123,17 @@ public class RobotContainer {
                             // Rotation delay distance in meters. This is how far the robot should travel
                             // before attempting to rotate.
         );
+         private Command controllerRumbleCommand() {
+    return Commands.startEnd(
+        () -> {
+          joystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+          coJoystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+        },
+        () -> {
+          joystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+          coJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+        });
+  }
         /*
          * scoreL1 scorel1 = new scoreL1(elevator, claw);
          * L1 l1;
@@ -197,33 +209,41 @@ public class RobotContainer {
                 // reset the field-centric heading on left bumper press
                 joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-                coJoystick.a().onChange(Commands.runOnce(() -> {
-                        superStruct.changeState(superState.Home);
-                }, superStruct));
-                coJoystick.b().onChange(Commands.runOnce(() -> {
-                        superStruct.changeState(superState.L2);
+                coJoystick.a()
+                                .onChange(Commands.runOnce(() -> {
+                                        superStruct.changeState(superState.Home);
+                                }, superStruct));
+                coJoystick.b()
+                                .onChange(Commands.runOnce(() -> {
+                                        superStruct.changeState(superState.L2);
 
-                }, superStruct));
-                coJoystick.x().onChange(Commands.runOnce(() -> {
-                        superStruct.changeState(superState.L3);
+                                }, superStruct));
+                coJoystick.x()
+                                .onChange(Commands.runOnce(() -> {
+                                        superStruct.changeState(superState.L3);
 
-                }, superStruct));
-                coJoystick.y().onChange(Commands.runOnce(() -> {
-                        superStruct.changeState(superState.L4);
-                }, superStruct));
-                coJoystick.start().onChange(Commands.runOnce(() -> {
-                        superStruct.changeState(superState.Intake);
-                }, superStruct));
-                coJoystick.rightBumper().onTrue(Commands.runOnce(() -> {
-                        superStruct.changeState(FeedStates.Outake);
-                }, superStruct)).onFalse(Commands.runOnce(() -> {
-                        superStruct.changeState(FeedStates.PercentOut,0.0);
-                }, superStruct));
+                                }, superStruct));
+                coJoystick.y()
+                                .onChange(Commands.runOnce(() -> {
+                                        superStruct.changeState(superState.L4);
+                                }, superStruct));
+                coJoystick.start()
+                                .toggleOnTrue(Commands.runOnce(() -> {
+                                        superStruct.changeState(superState.Intake);
+                                }, superStruct)).toggleOnFalse(Commands.runOnce(() -> {
+                                        superStruct.changeState(superState.Home);
+                                }, superStruct)).debounce(0.5);
+                coJoystick.rightBumper()
+                                .onTrue(Commands.runOnce(() -> {
+                                        superStruct.changeState(FeedStates.Outake);
+                                }, superStruct)).onFalse(Commands.runOnce(() -> {
+                                        superStruct.changeState(FeedStates.PercentOut, 0.0);
+                                }, superStruct));
         }
 
         public void positionStartup() {
                 _chosenPose = poseChooser.getSelected();
-                
+
                 switch (_chosenPose) {
                         case "Wall":
                                 if (currentAlliance == Alliance.Blue) {
@@ -252,6 +272,7 @@ public class RobotContainer {
         }
 
         public void periodic() {
+                
                 SmartDashboard.putData(poseChooser);
                 Logger.recordOutput("containstate", state);
 

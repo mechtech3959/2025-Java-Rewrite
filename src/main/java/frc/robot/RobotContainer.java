@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
@@ -69,6 +70,8 @@ public class RobotContainer {
         public Pose2d redTargetPose = new Pose2d(15.965, 0.6, Rotation2d.fromDegrees(53));
         public Pose2d targetPose;
         public Pose2d startingPose;
+        
+
         public Alliance currentAlliance;
 
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
@@ -123,17 +126,19 @@ public class RobotContainer {
                             // Rotation delay distance in meters. This is how far the robot should travel
                             // before attempting to rotate.
         );
-         private Command controllerRumbleCommand() {
-    return Commands.startEnd(
-        () -> {
-          joystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);
-          coJoystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);
-        },
-        () -> {
-          joystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
-          coJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
-        });
-  }
+
+        private Command controllerRumbleCommand() {
+                return Commands.startEnd(
+                                () -> {
+                                        joystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                                        coJoystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                                },
+                                () -> {
+                                        joystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                                        coJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                                });
+        }
+
         /*
          * scoreL1 scorel1 = new scoreL1(elevator, claw);
          * L1 l1;
@@ -236,7 +241,8 @@ public class RobotContainer {
                 coJoystick.rightBumper()
                                 .onTrue(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.Outake);
-                                }, superStruct)).onFalse(Commands.runOnce(() -> {
+                                }, superStruct).alongWith(controllerRumbleCommand().withTimeout(0.5)))
+                                .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
         }
@@ -272,13 +278,12 @@ public class RobotContainer {
         }
 
         public void periodic() {
-                
+
                 SmartDashboard.putData(poseChooser);
                 Logger.recordOutput("containstate", state);
-
-                // if(DriverStation.isDisabled()) {positionStartup();
-                // drivetrain.resetPose(startingPose);
-                // };
+                 if(DriverStation.isDisabled()&& _chosenPose != poseChooser.getSelected()) {positionStartup();
+                 drivetrain.resetPose(startingPose);
+                 };
                 /*
                  * clawAngle = claw.lastKnownAngle;
                  * if (clawAngle == 0) {

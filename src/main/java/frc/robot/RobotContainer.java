@@ -242,39 +242,38 @@ public class RobotContainer {
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
-                                coJoystick.leftBumper()
+                coJoystick.leftBumper()
                                 .onTrue(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.2);
                                 }, superStruct).alongWith(controllerRumbleCommand().withTimeout(0.5)))
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
-                coJoystick.povRight().toggleOnTrue(new InstantCommand(() -> {
-                        algeaMode = true;
-                })).toggleOnFalse(new InstantCommand(() -> {
-                        algeaMode = false;
-                }));
+                coJoystick.povRight().onChange(Commands.runOnce(()-> {
+                        superStruct.changeState(superState.DeAlgea_L2);
+                } , superStruct));
+                coJoystick.povLeft().onChange(Commands.runOnce(()-> {
+                        superStruct.changeState(superState.DeAlgea_L3);
+                } , superStruct));
+                coJoystick.povDown().onChange(Commands.runOnce(()-> {
+                        superStruct.changeState(superState.Processor);
+                } , superStruct));
                 coJoystick.x().onChange(Commands.runOnce(() -> {
-                        if (algeaMode)
-                                superStruct.changeState(superState.DeAlgea_L3);
-                        else {
-                                superStruct.changeState(superState.L3);
-                        }
+
+                        superStruct.changeState(superState.L3);
+
                 }, superStruct));
                 coJoystick.b().onChange(Commands.runOnce(() -> {
-                        if (algeaMode)
-                                superStruct.changeState(superState.DeAlgea_L3);
-                        else {
-                                superStruct.changeState(superState.L2);
-                        }
+
+                        superStruct.changeState(superState.L2);
+
                 }, superStruct));
                 coJoystick.a().onChange(Commands.runOnce(() -> {
-                        if (algeaMode)
-                                superStruct.changeState(superState.Processor);
-                        else {
-                                superStruct.changeState(superState.Home);
-                        }
+
+                        superStruct.changeState(superState.Home);
+
                 }, superStruct));
+
         }
 
         public void positionStartup() {

@@ -31,12 +31,13 @@ public class ClawSubsystem extends SubsystemBase {
     Travel,
     Home,
     Algea,
+    Process,
     Intake,
     Zero
   }
 
   public enum FeedStates {
-    Home,
+    Off,
     Outake,
     Intake,
     PercentOut,
@@ -49,7 +50,7 @@ public class ClawSubsystem extends SubsystemBase {
   public LoggedMechanismLigament2d flat;
 
   public ClawStates clawState = ClawStates.Home;
-  public FeedStates feedState = FeedStates.Home;
+  public FeedStates feedState = FeedStates.Off;
   public double percentOut = 0.0;
 
   public ClawSubsystem(ClawIO clawIO, FeedIO feedIO) {
@@ -88,6 +89,9 @@ public class ClawSubsystem extends SubsystemBase {
       case Algea:
         clawIO.setAxis(2.617);// 150 deg
 
+        break;
+        case Process:
+        clawIO.setAxis(2.0944);
         break;
       case Home:
         clawIO.setAxis(0.0);

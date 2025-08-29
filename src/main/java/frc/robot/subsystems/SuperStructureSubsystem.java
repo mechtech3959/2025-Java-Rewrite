@@ -12,7 +12,6 @@ import edu.wpi.first.math.util.Units;
 
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Claw.ClawIO;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
@@ -43,8 +42,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     private superState setSuperState = superState.Home;
-    private FeedStates setFeed = FeedStates.Home;
+    private FeedStates setFeed = FeedStates.Off;
     private double clawSetOut = 0.0;
+
     public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain) {
         // external extries of subsystems are equal to local declarations
         this.elevator = elevator;
@@ -59,34 +59,34 @@ public class SuperStructureSubsystem extends SubsystemBase {
         switch (setSuperState) {
 
             case Home:
-                Home();
+                home();
                 break;
             case L1:
-                L1();
+                l1();
                 break;
             case L2:
-                L2();
+                l2();
                 break;
             case L3:
-                L3();
+                l3();
                 break;
             case L4:
-                L4();
+                l4();
                 break;
             case Net:
-                Net();
+                net();
                 break;
             case DeAlgea_L2:
-                DeAlgea_L2();
+                deAlgea_L2();
                 break;
             case DeAlgea_L3:
-                DeAlgea_L3();
+                deAlgea_L3();
                 break;
             case Processor:
-                Processor();
+                processor();
                 break;
             case Intake:
-                Intake();
+                intake();
                 break;
             case Test:
                 // claw.clawState = ClawStates.L1;
@@ -108,14 +108,14 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 claw.changeState(setFeed);
                 break;
             case Outake:
-            claw.changeState(setFeed);
-            break;
+                claw.changeState(setFeed);
+                break;
             case PercentOut:
-            claw.changeState(setFeed, clawSetOut);
-            break;
+                claw.changeState(setFeed, clawSetOut);
+                break;
             case Algea:
-            claw.changeState(setFeed);
-            break;
+                claw.changeState(setFeed);
+                break;
             default:
                 break;
         }
@@ -126,70 +126,70 @@ public class SuperStructureSubsystem extends SubsystemBase {
     // this is done because the function is only called once and if the claw is not
     // where it is supposed to be
     // the elevator will not move
-    private void L1() {
+    private void l1() {
         claw.changeState(ClawStates.L1);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L1);
         } else {
-            L1();
+            l1();
         }
     }
 
-    private void L2() {
+    private void l2() {
         claw.changeState(ClawStates.L2);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L2);
         } else {
-            L2();
+            l2();
         }
     }
 
-    private void L3() {
+    private void l3() {
         claw.changeState(ClawStates.L3);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L3);
         } else {
-            L3();
+            l3();
         }
     }
 
-    private void L4() {
+    private void l4() {
         claw.changeState(ClawStates.L4);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L4);
         } else {
-            L4();
+            l4();
         }
     }
 
-    private void Home() {
+    private void home() {
         claw.changeState(ClawStates.Travel);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.Home);
         } else {
-            Home();
+            home();
         }
     }
 
-    private void DeAlgea_L2() {
+    private void deAlgea_L2() {
         claw.changeState(ClawStates.Algea);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.DeAlgea_L2);
         } else {
-            DeAlgea_L2();
+            deAlgea_L2();
         }
     }
 
-    private void DeAlgea_L3() {
+    private void deAlgea_L3() {
         claw.changeState(ClawStates.Algea);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.DeAlgea_L3);
         } else {
-            DeAlgea_L3();
+            deAlgea_L3();
         }
     }
 
-    private void Intake() {
+    private void intake() {
         elevator.changeState(ElevatorStates.Home);
         if (!claw.dataF.hasCoral) {
             claw.changeState(ClawStates.Intake);
@@ -198,16 +198,16 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
     }
 
-    private void Processor() {
-        claw.changeState(ClawStates.Algea);
+    private void processor() {
+        claw.changeState(ClawStates.Process);
         if (claw.data.acceptableAngle) {
             elevator.changeState(ElevatorStates.L1);
         } else {
-            Processor();
+            processor();
         }
     }
-    
-    private void Net() {
+
+    private void net() {
 
     }
 
@@ -217,9 +217,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
         // The 3d allows visualization of the robot
         Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
         Logger.recordOutput("3D/Elevator/1stStage",
-                new Pose3d(0.0,0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0,0,0)));
+                new Pose3d(0.0, 0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/Carrige",
-                new Pose3d(0.0,0.0, elevator.data.encoderPosition, new Rotation3d(0,0,0)));
+                new Pose3d(0.0, 0.0, elevator.data.encoderPosition, new Rotation3d(0, 0, 0)));
         // keep outputs logged for diagnosis
         Logger.recordOutput("Claw/accept", claw.data.acceptableAngle);
         Logger.recordOutput("Claw/Target pose", claw.data.targetPose);
@@ -235,24 +235,29 @@ public class SuperStructureSubsystem extends SubsystemBase {
         setSuperState = state;
 
     }
+
     public void changeState(superState state, FeedStates feed) {
         setSuperState = state;
         setFeed = feed;
 
     }
+
     public void changeState(superState state, FeedStates feed, double percent) {
         setSuperState = state;
         setFeed = feed;
         clawSetOut = percent;
     }
+
     public void changeState(FeedStates feed, double percent) {
         setFeed = feed;
         clawSetOut = percent;
-    }  
-     public void changeState(FeedStates feed) {
+    }
+
+    public void changeState(FeedStates feed) {
         setFeed = feed;
     }
-// fix ABOVE REDUNDANT
+
+    // fix ABOVE REDUNDANT
     @Override
     public void periodic() {
         SubTelemetry();

@@ -137,6 +137,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // meters;
     // this just makes sure the robot is properly visualized during replay or live
     // visualization
+    
     public double visualizeElevatorOutput() {
         if (data.encoderPosition > 0.93) {
             return 0.93;

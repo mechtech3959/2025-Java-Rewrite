@@ -242,6 +242,13 @@ public class RobotContainer {
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
+                                coJoystick.leftBumper()
+                                .onTrue(Commands.runOnce(() -> {
+                                        superStruct.changeState(FeedStates.PercentOut, 0.2);
+                                }, superStruct).alongWith(controllerRumbleCommand().withTimeout(0.5)))
+                                .onFalse(Commands.runOnce(() -> {
+                                        superStruct.changeState(FeedStates.PercentOut, 0.0);
+                                }, superStruct));
                 coJoystick.povRight().toggleOnTrue(new InstantCommand(() -> {
                         algeaMode = true;
                 })).toggleOnFalse(new InstantCommand(() -> {

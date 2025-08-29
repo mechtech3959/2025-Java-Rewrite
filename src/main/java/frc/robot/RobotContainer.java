@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
@@ -52,6 +53,7 @@ import frc.robot.subsystems.Claw.feed.FeedIO;
 import frc.robot.subsystems.Claw.feed.FeedRevMaxIO;
 import frc.robot.subsystems.Claw.ClawIO;
 import frc.robot.subsystems.Claw.ClawTalonFXIO;
+import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
@@ -70,6 +72,7 @@ public class RobotContainer {
         public Pose2d redTargetPose = new Pose2d(15.965, 0.6, Rotation2d.fromDegrees(53));
         public Pose2d targetPose;
         public Pose2d startingPose;
+        boolean algeaMode = false;
 
         public Alliance currentAlliance = Alliance.Blue;
 
@@ -154,8 +157,9 @@ public class RobotContainer {
         double clawAngle = 0;
 
         public RobotContainer() {
-                 DriverStation.getAlliance().ifPresent(currentAlliance ->{});
-                
+                DriverStation.getAlliance().ifPresent(currentAlliance -> {
+                });
+
                 if (currentAlliance == Alliance.Blue) {
                         NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
                 } else {
@@ -214,20 +218,13 @@ public class RobotContainer {
                 // reset the field-centric heading on left bumper press
                 joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-                coJoystick.a()
-                                .onChange(Commands.runOnce(() -> {
-                                        superStruct.changeState(superState.Home);
-                                }, superStruct));
-                coJoystick.b()
-                                .onChange(Commands.runOnce(() -> {
-                                        superStruct.changeState(superState.L2);
+                /*
+                 * coJoystick.a()
+                 * .onChange(Commands.runOnce(() -> {
+                 * superStruct.changeState(superState.Home);
+                 * }, superStruct));
+                 */
 
-                                }, superStruct));
-                coJoystick.x()
-                                .onChange(Commands.runOnce(() -> {
-                                        superStruct.changeState(superState.L3);
-
-                                }, superStruct));
                 coJoystick.y()
                                 .onChange(Commands.runOnce(() -> {
                                         superStruct.changeState(superState.L4);
@@ -245,6 +242,32 @@ public class RobotContainer {
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
+                coJoystick.povRight().toggleOnTrue(new InstantCommand(() -> {
+                        algeaMode = true;
+                })).toggleOnFalse(new InstantCommand(() -> {
+                        algeaMode = false;
+                }));
+                coJoystick.x().onChange(Commands.runOnce(() -> {
+                        if (algeaMode)
+                                superStruct.changeState(superState.DeAlgea_L3);
+                        else {
+                                superStruct.changeState(superState.L3);
+                        }
+                }, superStruct));
+                coJoystick.b().onChange(Commands.runOnce(() -> {
+                        if (algeaMode)
+                                superStruct.changeState(superState.DeAlgea_L3);
+                        else {
+                                superStruct.changeState(superState.L2);
+                        }
+                }, superStruct));
+                coJoystick.a().onChange(Commands.runOnce(() -> {
+                        if (algeaMode)
+                                superStruct.changeState(superState.Processor);
+                        else {
+                                superStruct.changeState(superState.Home);
+                        }
+                }, superStruct));
         }
 
         public void positionStartup() {
@@ -279,7 +302,7 @@ public class RobotContainer {
 
         public void periodic() {
                 DriverStation.getAlliance().ifPresent(currentAlliance -> {
-                SmartDashboard.putString("Ali", currentAlliance.toString());
+                        SmartDashboard.putString("Ali", currentAlliance.toString());
 
                 });
                 SmartDashboard.putData(poseChooser);
@@ -290,50 +313,50 @@ public class RobotContainer {
                         positionStartup();
                         drivetrain.resetPose(startingPose);
                 }
-        
-        /*
-         * clawAngle = claw.lastKnownAngle;
-         * if (clawAngle == 0) {
-         * finalH = 0;
-         * finalX = 0;
-         * } else if (clawAngle == 0.349) {
-         * finalH = 0.115;// 0.1415;
-         * finalX = -0.11;// -0.13;
-         * 
-         * } else if (clawAngle == 0.698) {
-         * finalH = 0.259;
-         * finalX = -0.1755;
-         * 
-         * } else if (clawAngle == 2.61) {
-         * finalH = 0.825;// 0.72;
-         * finalX = 0.31;
-         * 
-         * }
-         * // using a sin reggression model translation should be
-         * // double modelY = 0.547343 * Math.sin((10.77753 * claw.sim.getAngleRads()) -
-         * // 0.466346) + 0.821554;
-         * // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
-         * // 0.466346 / 10.77753;
-         * // this was wrong:sob:
-         * 
-         * Logger.recordOutput("Sim/Drivetrain Pose", new
-         * Pose3d(drivetrain.getState().Pose));
-         * Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
-         * Logger.recordOutput("Sim/Final Position", new Pose3d[] {
-         * new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
-         * new Rotation3d(0, 0, 0)),
-         * new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
-         * new Rotation3d(0, 0, 0)),
-         * new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() +
-         * finalH,
-         * new Rotation3d(0, claw.sim.getAngleRads(), 0))
-         * });
-         * Logger.recordOutput("calc", new Pose3d[] {
-         * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-         * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-         * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-         * });
-         */
+
+                /*
+                 * clawAngle = claw.lastKnownAngle;
+                 * if (clawAngle == 0) {
+                 * finalH = 0;
+                 * finalX = 0;
+                 * } else if (clawAngle == 0.349) {
+                 * finalH = 0.115;// 0.1415;
+                 * finalX = -0.11;// -0.13;
+                 * 
+                 * } else if (clawAngle == 0.698) {
+                 * finalH = 0.259;
+                 * finalX = -0.1755;
+                 * 
+                 * } else if (clawAngle == 2.61) {
+                 * finalH = 0.825;// 0.72;
+                 * finalX = 0.31;
+                 * 
+                 * }
+                 * // using a sin reggression model translation should be
+                 * // double modelY = 0.547343 * Math.sin((10.77753 * claw.sim.getAngleRads()) -
+                 * // 0.466346) + 0.821554;
+                 * // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
+                 * // 0.466346 / 10.77753;
+                 * // this was wrong:sob:
+                 * 
+                 * Logger.recordOutput("Sim/Drivetrain Pose", new
+                 * Pose3d(drivetrain.getState().Pose));
+                 * Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
+                 * Logger.recordOutput("Sim/Final Position", new Pose3d[] {
+                 * new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
+                 * new Rotation3d(0, 0, 0)),
+                 * new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
+                 * new Rotation3d(0, 0, 0)),
+                 * new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() +
+                 * finalH,
+                 * new Rotation3d(0, claw.sim.getAngleRads(), 0))
+                 * });
+                 * Logger.recordOutput("calc", new Pose3d[] {
+                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
+                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
+                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
+                 * });
+                 */
 
         }
 

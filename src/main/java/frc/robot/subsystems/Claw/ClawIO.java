@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public interface ClawIO {
     @AutoLog
-    class clawData {
+    class ClawIOInputs {
         public double clawAxis;
         public double clawMotorPose;
         public double clawMotorVelocity;
@@ -37,7 +37,7 @@ public interface ClawIO {
     default boolean acceptableAngle() {
         return true;
     }
-    default void updateInput(clawData data){
+    default void updateInputs(ClawIOInputs data){
     
     }
 

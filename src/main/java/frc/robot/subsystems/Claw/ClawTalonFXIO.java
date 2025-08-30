@@ -74,7 +74,7 @@ public class ClawTalonFXIO implements ClawIO {
 
   // this makes sure log outputs are up to date(when called periodically)
   @Override
-  public void updateInput(clawData data) {
+  public void updateInputs(ClawIOInputs data) {
     data.acceptableAngle = acceptableAngle();
     data.clawAxis = axisEncoder.getPosition().getValueAsDouble();
     data.clawMotorPose = axisMotor.getPosition().getValueAsDouble();

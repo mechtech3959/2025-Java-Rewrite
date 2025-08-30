@@ -165,6 +165,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         elevatorIO.updateInputs(data);
         Logger.processInputs("Elevator", data);
+        Logger.recordOutput("State/Elevator", elevatorState);
         setStates();
         sendData();
         SmartDashboard.putString("applied", data.getAppliedControl);

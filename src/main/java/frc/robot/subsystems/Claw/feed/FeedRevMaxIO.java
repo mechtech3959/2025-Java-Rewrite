@@ -39,7 +39,7 @@ public class FeedRevMaxIO implements FeedIO {
         }
     }
     @Override
-    public void updateInput(feedData data){
+    public void updateInputs(FeedIOInputs data){
         data.hasCoral = hasCoral();
     }
 }

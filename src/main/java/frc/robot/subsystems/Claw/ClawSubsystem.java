@@ -2,8 +2,8 @@ package frc.robot.subsystems.Claw;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.Claw.ClawIO.clawData;
-import frc.robot.subsystems.Claw.feed.FeedIO.feedData;
+import frc.robot.subsystems.Claw.ClawIOInputsAutoLogged;
+import frc.robot.subsystems.Claw.feed.FeedIOInputsAutoLogged;
 import frc.robot.subsystems.Claw.feed.FeedIO;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
@@ -20,8 +21,8 @@ public class ClawSubsystem extends SubsystemBase {
 
   private final ClawIO clawIO;
   private final FeedIO feedIO;
-  public clawData data = new clawData();
-  public feedData dataF = new feedData();
+  private final ClawIOInputsAutoLogged dataClaw = new ClawIOInputsAutoLogged();
+  private final FeedIOInputsAutoLogged dataFeed = new FeedIOInputsAutoLogged();
 
   public enum ClawStates {
     L1,
@@ -90,7 +91,7 @@ public class ClawSubsystem extends SubsystemBase {
         clawIO.setAxis(2.617);// 150 deg
 
         break;
-        case Process:
+      case Process:
         clawIO.setAxis(2.0944);
         break;
       case Home:
@@ -128,9 +129,9 @@ public class ClawSubsystem extends SubsystemBase {
         feedIO.setIntake(percentOut);
         break;
       case Algea:
-      //check what is needed for static intake of algea
-      feedIO.setIntake(-0.1);
-      break;
+        // check what is needed for static intake of algea
+        feedIO.setIntake(-0.1);
+        break;
       default:
         break;
     }
@@ -140,6 +141,18 @@ public class ClawSubsystem extends SubsystemBase {
     sim.setInputVoltage(12);
     sim.setInput(0, 0); // Set simulation input to a default value
 
+  }
+
+  public void getAxis() {
+    clawIO.getAxis();
+  }
+
+  public boolean isAcceptable() {
+    return clawIO.acceptableAngle();
+  }
+
+  public boolean hasCoral() {
+    return feedIO.hasCoral();
   }
 
   @Override
@@ -179,6 +192,7 @@ public class ClawSubsystem extends SubsystemBase {
     percentOut = percent;
 
   }
+
   public void changeState(FeedStates feed, double percent) {
     feedState = feed;
     percentOut = percent;
@@ -187,11 +201,15 @@ public class ClawSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    clawIO.updateInput(data);
-    feedIO.updateInput(dataF);
-    // clawIO.acceptableAngle();
-    // clawIO.getAxis();
-    // feedIO.hasCoral();
+    clawIO.updateInputs(dataClaw);
+    feedIO.updateInputs(dataFeed);
+    Logger.processInputs("Subsystem/Claw/", dataClaw);
+    Logger.processInputs("Subsystem/Feed/", dataFeed);
+    Logger.recordOutput("State/Claw", clawState);
+
+    getAxis();
+    isAcceptable();
+    hasCoral();
     setStates();
     sendData();
 

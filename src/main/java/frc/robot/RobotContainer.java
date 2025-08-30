@@ -55,10 +55,10 @@ import frc.robot.subsystems.Claw.ClawIO;
 import frc.robot.subsystems.Claw.ClawTalonFXIO;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
-import frc.robot.subsystems.Elevator.ElevatorIO;
-import frc.robot.subsystems.Elevator.ElevatorSubsystem;
-import frc.robot.subsystems.Elevator.ElevatorTalonFXIO;
 import frc.robot.subsystems.SuperStructureSubsystem.superState;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorTalonFXIO;
 
 @SuppressWarnings("unused")
 public class RobotContainer {

@@ -1,8 +1,9 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.Elevator.ElevatorIO.elevatorData;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOInputsAutoLogged;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,10 +12,12 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
-
+import org.littletonrobotics.junction.inputs.LoggableInputs;
+import org.littletonrobotics.junction.AutoLogOutput;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 
@@ -44,7 +47,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     TalonFXSimState simSlave;
     CANcoderSimState simEncoder;
     private final ElevatorIO elevatorIO;
-    public elevatorData data = new elevatorData();
+    private final ElevatorIOInputsAutoLogged data = new ElevatorIOInputsAutoLogged();
+
     public ElevatorStates elevatorState = ElevatorStates.Home;
 
     public ElevatorSubsystem(ElevatorIO elevatorIO) {
@@ -137,7 +141,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // meters;
     // this just makes sure the robot is properly visualized during replay or live
     // visualization
-    
+
     public double visualizeElevatorOutput() {
         if (data.encoderPosition > 0.93) {
             return 0.93;
@@ -159,7 +163,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        elevatorIO.updateData(data);
+        elevatorIO.updateInputs(data);
+        Logger.processInputs("Elevator", data);
         setStates();
         sendData();
         SmartDashboard.putString("applied", data.getAppliedControl);

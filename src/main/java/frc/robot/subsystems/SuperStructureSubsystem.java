@@ -15,8 +15,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Claw.ClawSubsystem;
 import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
-import frc.robot.subsystems.Elevator.ElevatorSubsystem;
-import frc.robot.subsystems.Elevator.ElevatorSubsystem.ElevatorStates;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorStates;
 
 public class SuperStructureSubsystem extends SubsystemBase {
     private final ElevatorSubsystem elevator;
@@ -216,10 +216,10 @@ public class SuperStructureSubsystem extends SubsystemBase {
         drivetrain.registerTelemetry(logger::telemeterize);
         // The 3d allows visualization of the robot
         Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
-        Logger.recordOutput("3D/Elevator/1stStage",
-                new Pose3d(0.0, 0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0, 0, 0)));
-        Logger.recordOutput("3D/Elevator/Carrige",
-                new Pose3d(0.0, 0.0, elevator.data.encoderPosition, new Rotation3d(0, 0, 0)));
+  //      Logger.recordOutput("3D/Elevator/1stStage",
+    //            new Pose3d(0.0, 0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0, 0, 0)));
+      //  Logger.recordOutput("3D/Elevator/Carrige",
+        //        new Pose3d(0.0, 0.0, elevator.data.encoderPosition, new Rotation3d(0, 0, 0)));
         // keep outputs logged for diagnosis
         Logger.recordOutput("Claw/accept", claw.data.acceptableAngle);
         Logger.recordOutput("Claw/Target pose", claw.data.targetPose);

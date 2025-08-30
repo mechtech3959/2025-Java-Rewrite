@@ -1,23 +1,26 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorIO {
     @AutoLog
-    class elevatorData {
-        public double masterMPosition;
-        public double masterMVelocity;
-        public double slaveMPosition;
-        public double slaveMVelocity;
-        public double encoderPosition;
-        public double encoderVelocity;
-        public double targetPose;
-        public double MasterMinputVolts;
-        public double MasterMinputCurrentDraw;
-        public String getAppliedControl;
+    public class ElevatorIOInputs {
+        public double masterMPosition = 0;
+        public double masterMVelocity = 0;
+        public double slaveMPosition = 0;
+        public double slaveMVelocity = 0;
+        public double encoderPosition = 0;
+        public double encoderVelocity = 0;
+        public double targetPose = 0;
+        public double MasterMinputVolts = 0;
+        public double MasterMinputCurrentDraw = 0;
+        public String getAppliedControl = "def";
 
     }
-    default void resetAxis(){}
+
+    default void resetAxis() {
+    }
+
     default void setHeight(double pose) {
     }
 
@@ -32,6 +35,7 @@ public interface ElevatorIO {
     default void configure() {
     }
 
-    default void updateData(elevatorData data) {
+    default void updateInputs(ElevatorIOInputs inputs) {
     }
+
 }

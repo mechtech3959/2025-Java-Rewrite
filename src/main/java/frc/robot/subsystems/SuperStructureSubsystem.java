@@ -12,9 +12,9 @@ import edu.wpi.first.math.util.Units;
 
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Claw.ClawSubsystem;
-import frc.robot.subsystems.Claw.ClawSubsystem.ClawStates;
-import frc.robot.subsystems.Claw.ClawSubsystem.FeedStates;
+import frc.robot.subsystems.claw.ClawSubsystem;
+import frc.robot.subsystems.claw.ClawSubsystem.ClawStates;
+import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorStates;
 

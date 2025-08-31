@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Claw.feed;
+package frc.robot.subsystems.claw.feed;
 
 import org.littletonrobotics.junction.AutoLog;
 

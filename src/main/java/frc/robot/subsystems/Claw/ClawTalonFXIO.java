@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Claw;
+package frc.robot.subsystems.claw;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;

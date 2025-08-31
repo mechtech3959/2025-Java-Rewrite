@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Claw.feed;
+package frc.robot.subsystems.claw.feed;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;

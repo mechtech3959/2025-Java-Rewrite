@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Claw.ClawSubsystem;
+import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class scoreL1 extends SequentialCommandGroup {

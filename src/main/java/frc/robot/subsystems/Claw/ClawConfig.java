@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Claw;
+package frc.robot.subsystems.claw;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;

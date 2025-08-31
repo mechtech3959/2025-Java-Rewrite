@@ -55,15 +55,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.configure();
         this.elevatorIO = elevatorIO;
 
-        elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000, 0.000);
-        carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
-                0.000, 0.000);
-        blue = new Color8Bit(0, 0, 255);
-        elevatorMech = new LoggedMechanism2d(20, 50, blue);
-        root = elevatorMech.getRoot("elev", 10, 0);
-        elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
-        elevatorMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getKrakenX60Foc(2));
         if (Robot.isSimulation()) {
             // simMaster = masterM.getSimState();
             // simSlave = slaveM.getSimState();
@@ -130,11 +121,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         // TalonFXSimState simSlave = slaveM.getSimState();
         // CANcoderSimState simEncoder = elevatorEncoder.getSimState();
         // simMaster.setSupplyVoltage(12);
-        elevatorMotorSim.update(0.02);
-        elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
-        carriagElevatorSim.setInput(target);
-        elevatorSim.update(0.02);
-        carriagElevatorSim.update(0.02);
+        //elevatorMotorSim.update(0.02);
+       // elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
+       // carriagElevatorSim.setInput(target);
+       // elevatorSim.update(0.02);
+        //carriagElevatorSim.update(0.02);
     }
 
     // Elevator is a 2 stage cascade so the 1st stage can only physically reach 0.93

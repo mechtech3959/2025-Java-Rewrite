@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -40,7 +41,7 @@ public class ElevatorSimIO implements ElevatorIO {
     LoggedMechanismLigament2d  elevatorLin = root.append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
     DCMotorSim  elevatorMotorSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getKrakenX60Foc(2));
-
+    PIDController elevatorMotion = new PIDController(7, 1.2, 0.1);
     @Override
     public void configure() {
         masterM.getConfigurator().apply(config.ElevatorMotorConfig());
@@ -53,5 +54,11 @@ public class ElevatorSimIO implements ElevatorIO {
         masterSimM = masterM.getSimState();
         slaveSimM = slaveM.getSimState();
         elevatorEncoderSim = elevatorEncoder.getSimState();
+    }
+     
+    @Override
+    public void setHeight(double pose) {
+        elevatorMotion.setSetpoint(pose);
+
     }
 }

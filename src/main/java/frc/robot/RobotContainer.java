@@ -238,24 +238,26 @@ public class RobotContainer {
                 coJoystick.rightBumper()
                                 .onTrue(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.Outake);
-                                }, superStruct).alongWith(controllerRumbleCommand().withTimeout(0.5)))
+                                }, superStruct).alongWith(controllerRumbleCommand()))
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
                 coJoystick.leftBumper()
                                 .onTrue(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.2);
-                                }, superStruct).alongWith(controllerRumbleCommand().withTimeout(0.5)))
+                                }, superStruct).alongWith(controllerRumbleCommand()))
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
-                coJoystick.povRight().onChange(Commands.runOnce(()-> {
+                                //right
+                coJoystick.pov(90).onChange(Commands.runOnce(()-> {
                         superStruct.changeState(superState.DeAlgea_L2);
                 } , superStruct));
-                coJoystick.povLeft().onChange(Commands.runOnce(()-> {
+                coJoystick.pov(270).onChange(Commands.runOnce(()-> {
                         superStruct.changeState(superState.DeAlgea_L3);
                 } , superStruct));
-                coJoystick.povDown().onChange(Commands.runOnce(()-> {
+                //left?
+                coJoystick.pov(180).onChange(Commands.runOnce(()-> {
                         superStruct.changeState(superState.Processor);
                 } , superStruct));
                 coJoystick.x().onChange(Commands.runOnce(() -> {

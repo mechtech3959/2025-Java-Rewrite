@@ -18,8 +18,12 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 import org.littletonrobotics.junction.AutoLogOutput;
+
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 
 public class ElevatorSubsystem extends SubsystemBase {
     public enum ElevatorStates {
@@ -121,11 +125,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         // TalonFXSimState simSlave = slaveM.getSimState();
         // CANcoderSimState simEncoder = elevatorEncoder.getSimState();
         // simMaster.setSupplyVoltage(12);
-        //elevatorMotorSim.update(0.02);
-       // elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
-       // carriagElevatorSim.setInput(target);
-       // elevatorSim.update(0.02);
-        //carriagElevatorSim.update(0.02);
+        // elevatorMotorSim.update(0.02);
+        // elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
+        // carriagElevatorSim.setInput(target);
+        // elevatorSim.update(0.02);
+        // carriagElevatorSim.update(0.02);
     }
 
     // Elevator is a 2 stage cascade so the 1st stage can only physically reach 0.93
@@ -134,10 +138,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     // visualization
 
     public double visualizeElevatorOutput() {
-        if (data.encoderPosition > 0.93) {
+        if (data.masterMPosition > 0.93) {
             return 0.93;
         } else {
-            return data.encoderPosition;
+            return data.masterMPosition;
         }
     }
 
@@ -157,6 +161,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.updateInputs(data);
         Logger.processInputs("Elevator", data);
         Logger.recordOutput("State/Elevator", elevatorState);
+        Logger.recordOutput("3D/Elevator/1st stage",
+                new Pose3d(0, 0, visualizeElevatorOutput(), new Rotation3d(0, 0, 0)));
+        Logger.recordOutput("3D/Elevator/carriage",
+                new Pose3d(0, 0,  data.masterMPosition,new Ro tation3d(0,0,0))) ; 
+        Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
+
         setStates();
         sendData();
         SmartDashboard.putString("applied", data.getAppliedControl);

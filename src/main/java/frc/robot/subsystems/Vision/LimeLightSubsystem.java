@@ -39,7 +39,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         TA = LimelightHelpers.getTA(pipeLine);
         TV = LimelightHelpers.getTV(pipeLine);
         limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
-        if(limelightMeasurement.pose != null){
+        if(limelightMeasurement != null){
         foundPosition = limelightMeasurement.pose;
         timeStamp = limelightMeasurement.timestampSeconds;
         }

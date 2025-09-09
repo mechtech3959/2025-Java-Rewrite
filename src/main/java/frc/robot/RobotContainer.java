@@ -146,9 +146,10 @@ public class RobotContainer {
                                         coJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
                                 });
         }
+
         scoreL4 ScoreL4;
         Intake intakeCMD;
-        
+
         double finalH = 0;
         double finalX = 0;
         double clawAngle = 0;
@@ -157,14 +158,12 @@ public class RobotContainer {
                 DriverStation.getAlliance().ifPresent(currentAlliance -> {
                 });
 
-                if (currentAlliance == Alliance.Blue) {
-                        NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
-                } else {
-                        NamedCommands.registerCommand("pathFind", redPathfindingCommand);
+                // if (currentAlliance == Alliance.Blue) {
+                // NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
+                // } else {
+                // NamedCommands.registerCommand("pathFind", redPathfindingCommand);
+                // }
 
-                }
-
-                
                 state = superState.Home;
                 elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
                 claw = new ClawSubsystem(new ClawTalonFXIO(), new FeedRevMaxIO());
@@ -198,6 +197,16 @@ public class RobotContainer {
                                                 .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
                                 // X(counterclockwise)
                                 ));
+                joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
+                                .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
+                                .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
+                                .withRotationalRate(-joystick.getRightX() * 0.5) // negative
+                // X(counterclockwise)
+                )).whileFalse(drivetrain.applyRequest(() -> drive
+                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+
                 joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(
                                 () -> point.withModuleDirection(
@@ -254,17 +263,17 @@ public class RobotContainer {
                                 .onFalse(Commands.runOnce(() -> {
                                         superStruct.changeState(FeedStates.PercentOut, 0.0);
                                 }, superStruct));
-                                //right
-                coJoystick.pov(90).onChange(Commands.runOnce(()-> {
+                // right
+                coJoystick.pov(90).onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.DeAlgea_L2);
-                } , superStruct));
-                coJoystick.pov(270).onChange(Commands.runOnce(()-> {
+                }, superStruct));
+                coJoystick.pov(270).onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.DeAlgea_L3);
-                } , superStruct));
-                //left?
-                coJoystick.pov(180).onChange(Commands.runOnce(()-> {
+                }, superStruct));
+                // left?
+                coJoystick.pov(180).onChange(Commands.runOnce(() -> {
                         superStruct.changeState(superState.Processor);
-                } , superStruct));
+                }, superStruct));
                 coJoystick.x().onChange(Commands.runOnce(() -> {
 
                         superStruct.changeState(superState.L3);

@@ -7,79 +7,55 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Mid Start 1R "
+            "pathName": "BSC-BG"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pathFind"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Lsource to 5L"
+            "pathName": "BG-BRS"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pathFind"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "name": "Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Lsource to 5R"
+            "pathName": "BRS-BD"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pathFind"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Lsource to 4L"
+            "pathName": "BD-BRS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BRS-BC"
           }
         },
         {
@@ -89,9 +65,63 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "BC-BRS"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "pathFind"
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BRS-BE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BE-BRS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BRS-BF"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BF-BRS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
           }
         }
       ]
@@ -99,5 +129,5 @@
   },
   "resetOdom": true,
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }

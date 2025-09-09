@@ -17,6 +17,9 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
+
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -157,8 +160,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Logger.recordOutput("Real/Elevator/Acceleration",
         // elevatorEncoder.getVelocity().getValueAsDouble());
     }
-    public boolean isAtTarget(){
-        return elevatorIO.isAtTarget();
+    public BooleanSupplier isTarget(){
+     return ()->elevatorIO.isAtTarget();
     }
     @Override
     public void periodic() {
@@ -172,7 +175,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
 
         setStates();
-        isAtTarget();
+        isTarget();
         sendData();
         SmartDashboard.putString("applied", data.getAppliedControl);
         super.periodic();

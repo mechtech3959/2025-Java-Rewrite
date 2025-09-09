@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -19,8 +21,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorStates;
 
 public class SuperStructureSubsystem extends SubsystemBase {
-    private final ElevatorSubsystem elevator;
-    private final ClawSubsystem claw;
+    public final ElevatorSubsystem elevator;
+    public final ClawSubsystem claw;
     private final CommandSwerveDrivetrain drivetrain;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
     private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -41,7 +43,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         Test3
     }
 
-    private superState setSuperState = superState.Home;
+    public superState setSuperState = superState.Home;
     private FeedStates setFeed = FeedStates.Off;
     private double clawSetOut = 0.0;
 
@@ -195,6 +197,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             claw.changeState(ClawStates.Intake);
         } else {
             claw.changeState(ClawStates.Travel);
+            changeState(superState.Home);
         }
     }
 
@@ -206,7 +209,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             processor();
         }
     }
-
+    //public BooleanSupplier hasAglea = claw.supplyAcceptable();
     private void net() {
 
     }

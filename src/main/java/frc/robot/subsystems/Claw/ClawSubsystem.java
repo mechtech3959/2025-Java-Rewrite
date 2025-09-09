@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
@@ -131,6 +133,9 @@ public class ClawSubsystem extends SubsystemBase {
         // check what is needed for static intake of algea
         feedIO.setIntake(-0.1);
         break;
+      case Off:
+        feedIO.Stop();
+        break;
       default:
         break;
     }
@@ -150,8 +155,17 @@ public class ClawSubsystem extends SubsystemBase {
     return clawIO.acceptableAngle();
   }
 
+  public BooleanSupplier supplyAcceptable() {
+    return () -> clawIO.acceptableAngle();
+  }
+
   public boolean hasCoral() {
     return feedIO.hasCoral();
+  }
+
+  // should send the opposite as has coral...
+  public BooleanSupplier supplyCoral() {
+    return () -> !feedIO.hasCoral();
   }
 
   @Override
@@ -209,6 +223,8 @@ public class ClawSubsystem extends SubsystemBase {
     getAxis();
     isAcceptable();
     hasCoral();
+    supplyAcceptable();
+    supplyCoral();
     setStates();
     sendData();
 

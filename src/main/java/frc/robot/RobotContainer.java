@@ -45,6 +45,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Intake;
+import frc.robot.commands.scoreL1;
+import frc.robot.commands.scoreL4;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SuperStructureSubsystem;
@@ -143,18 +146,9 @@ public class RobotContainer {
                                         coJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
                                 });
         }
-
-        /*
-         * scoreL1 scorel1 = new scoreL1(elevator, claw);
-         * L1 l1;
-         * L2 l2;
-         * L3 l3;
-         * scoreL4 scorel4 = new scoreL4(elevator, claw);
-         * testL1 test2 = new testL1(elevator, claw);
-         * Zero zero;
-         * // You could technically run the demo on robot but im scared....
-         * simDemo demo = new simDemo(elevator, claw);
-         */
+        scoreL4 ScoreL4;
+        Intake intakeCMD;
+        
         double finalH = 0;
         double finalX = 0;
         double clawAngle = 0;
@@ -170,23 +164,26 @@ public class RobotContainer {
 
                 }
 
-                poseChooser.addOption("Collum", "Collum");
-                poseChooser.addOption("Middle", "Middle");
-                poseChooser.addOption("Wall", "Wall");
-                poseChooser.setDefaultOption("Middle", "Middle");
-                NamedCommands.registerCommand("Score L1", Commands.none());
-                NamedCommands.registerCommand("Score L4", Commands.none());
-                autoChooser = AutoBuilder.buildAutoChooser();
-                SmartDashboard.putData("Auto Mode", autoChooser);
-
+                
                 state = superState.Home;
                 elevator = new ElevatorSubsystem(new ElevatorTalonFXIO());
                 claw = new ClawSubsystem(new ClawTalonFXIO(), new FeedRevMaxIO());
                 superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
+                ScoreL4 = new scoreL4(superStruct);
+                intakeCMD = new Intake(superStruct);
                 frontCam = new LimeLightSubsystem("front-limelight");
                 backCam = new LimeLightSubsystem("back-limelight");
                 frontCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
                 backCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
+
+                poseChooser.addOption("Collum", "Collum");
+                poseChooser.addOption("Middle", "Middle");
+                poseChooser.addOption("Wall", "Wall");
+                poseChooser.setDefaultOption("Middle", "Middle");
+                NamedCommands.registerCommand("Score L1", ScoreL4);
+                NamedCommands.registerCommand("Intake", intakeCMD);
+                autoChooser = AutoBuilder.buildAutoChooser();
+                SmartDashboard.putData("Auto Mode", autoChooser);
 
                 configureBindings();
 

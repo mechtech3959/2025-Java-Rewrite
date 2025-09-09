@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BSM-BG.0"
+            "pathName": "RSC-RH"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BG-BRS"
+            "pathName": "RH-RLS"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BRS-BD"
+            "pathName": "RLS-RK"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BD-BRS"
+            "pathName": "RK-RLS"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BRS-BC"
+            "pathName": "RLS-RL"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BC-BRS"
+            "pathName": "RL-RLS"
           }
         },
         {
@@ -79,7 +79,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BRS-BE"
+            "pathName": "RLS-RJ"
           }
         },
         {
@@ -91,7 +91,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BE-BRS"
+            "pathName": "RJ-RLS"
           }
         },
         {
@@ -103,7 +103,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BRS-BF"
+            "pathName": "RLS-RI"
           }
         },
         {
@@ -115,7 +115,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BF-BRS"
+            "pathName": "RI-RLS"
           }
         },
         {

@@ -157,7 +157,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Logger.recordOutput("Real/Elevator/Acceleration",
         // elevatorEncoder.getVelocity().getValueAsDouble());
     }
-
+    public boolean isAtTarget(){
+        return elevatorIO.isAtTarget();
+    }
     @Override
     public void periodic() {
         elevatorIO.updateInputs(data);
@@ -170,6 +172,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
 
         setStates();
+        isAtTarget();
         sendData();
         SmartDashboard.putString("applied", data.getAppliedControl);
         super.periodic();

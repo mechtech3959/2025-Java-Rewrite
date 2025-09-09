@@ -52,7 +52,7 @@ public class ElevatorTalonFXIO implements ElevatorIO {
 
     @Override
     public boolean isAtTarget() {
-        if (target == getHeight()) {
+        if (target == getHeight() || (target <= getHeight()-0.05) && (target >= getHeight() +0.05)) {
             // Further this later.. like acceptable angle with claw.
             return true;
         } else {

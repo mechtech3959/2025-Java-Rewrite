@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.rlog.RLOGServer;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -62,7 +63,7 @@ public class Robot extends LoggedRobot {
       // "_sim"))); // Save outputs to a new log
       Logger.addDataReceiver(new RLOGServer());
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-
+      CameraServer.startAutomaticCapture().setFPS(30);
     }
 
     m_robotContainer = new RobotContainer();

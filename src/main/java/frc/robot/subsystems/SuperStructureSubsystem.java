@@ -26,7 +26,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final CommandSwerveDrivetrain drivetrain;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
     private final Telemetry logger = new Telemetry(MaxSpeed);
-
+    public boolean coral;
     public enum superState {
         Home,
         L1,
@@ -195,7 +195,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
         elevator.changeState(ElevatorStates.Home);
         if (!claw.hasCoral()) {
             claw.changeState(ClawStates.Intake);
+            coral = false;
         } else {
+            coral = true;
             claw.changeState(ClawStates.Travel);
             changeState(superState.Home);
         }
@@ -258,7 +260,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
     public void changeState(FeedStates feed) {
         setFeed = feed;
     }
-
+    public superState getState(){
+        return setSuperState;
+    }
     // fix ABOVE REDUNDANT
     @Override
     public void periodic() {

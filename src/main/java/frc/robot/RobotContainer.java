@@ -103,8 +103,8 @@ public class RobotContainer {
         public final ElevatorSubsystem elevator;
         public final ClawSubsystem claw;
         private final SuperStructureSubsystem superStruct;
-        private final LimeLightSubsystem frontCam;
-        private final LimeLightSubsystem backCam;
+    //    private final LimeLightSubsystem frontCam;
+    //    private final LimeLightSubsystem backCam;
 
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
@@ -170,10 +170,12 @@ public class RobotContainer {
                 superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
                 ScoreL4 = new scoreL4(superStruct);
                 intakeCMD = new Intake(superStruct);
-                frontCam = new LimeLightSubsystem("front-limelight");
-                backCam = new LimeLightSubsystem("back-limelight");
-                frontCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
-                backCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
+
+                //No camera anymore:(
+               // frontCam = new LimeLightSubsystem("front-limelight");
+               // backCam = new LimeLightSubsystem("back-limelight");
+              //  frontCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
+              //  backCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
 
                 poseChooser.addOption("Collum", "Collum");
                 poseChooser.addOption("Middle", "Middle");
@@ -323,8 +325,13 @@ public class RobotContainer {
         }
 
         public void periodic() {
-                drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
-                drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
+                if(superStruct.coral && superStruct.getState() == superState.Intake){
+                        controllerRumbleCommand();
+                }
+
+
+                //drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
+               // drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
 
                 DriverStation.getAlliance().ifPresent(currentAlliance -> {
                         SmartDashboard.putString("Ali", currentAlliance.toString());

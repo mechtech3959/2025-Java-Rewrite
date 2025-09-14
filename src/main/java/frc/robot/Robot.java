@@ -63,7 +63,6 @@ public class Robot extends LoggedRobot {
       // "_sim"))); // Save outputs to a new log
       Logger.addDataReceiver(new RLOGServer());
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      CameraServer.startAutomaticCapture().setFPS(30);
     }
 
     m_robotContainer = new RobotContainer();

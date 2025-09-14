@@ -133,6 +133,7 @@ public class ClawSubsystem extends SubsystemBase {
         // check what is needed for static intake of algea
         feedIO.setIntake(-0.1);
         break;
+        
       case Off:
         feedIO.Stop();
         break;

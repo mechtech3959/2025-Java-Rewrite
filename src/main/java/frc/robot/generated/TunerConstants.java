@@ -2,6 +2,7 @@ package frc.robot.generated;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.*;
@@ -68,7 +69,7 @@ public class TunerConstants {
         );
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
-    private static final Pigeon2Configuration pigeonConfigs = null;
+    private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration();
 
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
@@ -87,7 +88,7 @@ public class TunerConstants {
     private static final Distance kWheelRadius = Inches.of(2);
 
     private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = false;//true.
+    private static final boolean kInvertRightSide = true;//true.
 
     private static final int kPigeonId = 16;
 
@@ -152,7 +153,7 @@ public class TunerConstants {
     // Back Left
     private static final int kBackLeftDriveMotorId = 3;
     private static final int kBackLeftSteerMotorId = 7;
-    private static final int kBackLeftEncoderId = 10;
+    private static final int kBackLeftEncoderId = 11;
     private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.4072265625);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
@@ -163,8 +164,8 @@ public class TunerConstants {
     // Back Right
     private static final int kBackRightDriveMotorId = 4;
     private static final int kBackRightSteerMotorId = 8;
-    private static final int kBackRightEncoderId = 11;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.384033203125);
+    private static final int kBackRightEncoderId = 10;
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.3837890625);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 

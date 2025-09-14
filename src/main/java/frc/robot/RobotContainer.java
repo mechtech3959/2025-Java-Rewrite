@@ -4,37 +4,24 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.pathfinding.*;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.auto.CommandUtil;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.events.EventTrigger;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -42,25 +29,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Intake;
-import frc.robot.commands.scoreL1;
 import frc.robot.commands.scoreL4;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.SuperStructureSubsystem.superState;
-import frc.robot.subsystems.Vision.LimeLightSubsystem;
-import frc.robot.subsystems.claw.ClawIO;
 import frc.robot.subsystems.claw.ClawSubsystem;
-import frc.robot.subsystems.claw.ClawTalonFXIO;
-import frc.robot.subsystems.claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
-import frc.robot.subsystems.claw.feed.FeedIO;
+import frc.robot.subsystems.claw.ClawTalonFXIO;
 import frc.robot.subsystems.claw.feed.FeedRevMaxIO;
-import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorTalonFXIO;
 
@@ -105,7 +84,8 @@ public class RobotContainer {
         private final SuperStructureSubsystem superStruct;
     //    private final LimeLightSubsystem frontCam;
     //    private final LimeLightSubsystem backCam;
-
+  // public  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+ //  public MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
         private final SendableChooser<String> poseChooser = new SendableChooser<String>();
@@ -191,18 +171,22 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
+      CameraServer.startAutomaticCapture();
+
+
+
 
                 drivetrain.setDefaultCommand(
                                 drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
                                                 .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // negative
-                                // X(counterclockwise)
+                                                .withRotationalRate(joystick.getRightX() * MaxAngularRate) // negative
+                                // X(counterclockwise) SWAPPED ... kinda all - on this are turned to positive
                                 ));
                 joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
                                 .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
                                 .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
-                                .withRotationalRate(-joystick.getRightX() * 0.5) // negative
+                                .withRotationalRate(joystick.getRightX() * 0.5) // negative
                 // X(counterclockwise)
                 )).whileFalse(drivetrain.applyRequest(() -> drive
                                 .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)

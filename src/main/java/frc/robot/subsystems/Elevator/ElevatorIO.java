@@ -37,5 +37,6 @@ public interface ElevatorIO {
 
     default void updateInputs(ElevatorIOInputs inputs) {
     }
+    default void periodic(){}
 
 }

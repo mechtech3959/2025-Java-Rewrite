@@ -43,8 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     double target = 0;
     double simPose = 0;
-    public ElevatorSim elevatorSim;
-    public ElevatorSim carriagElevatorSim;
+    
     Color8Bit blue;
     public LoggedMechanism2d elevatorMech;
     LoggedMechanismRoot2d root;
@@ -114,10 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void simulationInit() {
-        elevatorSim.setInputVoltage(12);
-        elevatorSim.setInput(0);
-        carriagElevatorSim.setInputVoltage(12);
-        carriagElevatorSim.setInput(0);
+        elevatorIO.simulationInit();
     }
 
     public void simSetHeight(double rot) {
@@ -169,13 +165,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        elevatorIO.periodic();
         elevatorIO.updateInputs(data);
         Logger.processInputs("Elevator", data);
         Logger.recordOutput("State/Elevator", elevatorState);
         Logger.recordOutput("3D/Elevator/1st stage",
                 new Pose3d(0, 0, visualizeElevatorOutput(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/carriage",
-                new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
+                new Pose3d(0, 0, convert()*1.3, new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
 
         setStates();

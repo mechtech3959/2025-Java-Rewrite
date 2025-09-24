@@ -1,10 +1,13 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismObject2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -28,14 +31,16 @@ public class ElevatorSimIO implements ElevatorIO {
     private CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
             Constants.CanIdConstants.canbus);
     private ElevatorConfig config = new ElevatorConfig();
+    private MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0.0).withSlot(0);
+
     private TalonFXSimState masterSimM;
     private TalonFXSimState slaveSimM;
     private CANcoderSimState elevatorEncoderSim;
     double target = 0;
 
     double simPose = 0;
-    public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 0.93, true, 0.01, 0.000,
-            0.000);;
+    public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 2, 0, 0.93, true, 0.01, 0.000,
+            0.000);
     public ElevatorSim carriagElevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 1, 0, 1.8, true, 0.01,
             0.000, 0.000);
     Color8Bit blue = new Color8Bit(0, 0, 255);
@@ -45,14 +50,12 @@ public class ElevatorSimIO implements ElevatorIO {
             .append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
     DCMotorSim elevatorMotorSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getKrakenX60Foc(2));
-    PIDController elevatorMotion = new PIDController(7, 1.2, 0.1);
-    ElevatorFeedforward feed = new ElevatorFeedforward(0.4, 0.75, 0.001);
 
     @Override
     public void configure() {
-        masterM.getConfigurator().apply(config.ElevatorMotorConfig());
-        slaveM.getConfigurator().apply(config.ElevatorMotorConfig());
-        elevatorEncoder.getConfigurator().apply(config.elevatorEncoderConfig());
+        masterM.getConfigurator().apply(config.SimElevatorMotorConfig());
+        slaveM.getConfigurator().apply(config.SimElevatorMotorConfig());
+        elevatorEncoder.getConfigurator().apply(config.simElevatorEncoderConfig());
         resetAxis();
         // slave follows master to ensure motors arent fighting each other when
         // following motion profiles
@@ -60,21 +63,60 @@ public class ElevatorSimIO implements ElevatorIO {
         masterSimM = masterM.getSimState();
         slaveSimM = slaveM.getSimState();
         elevatorEncoderSim = elevatorEncoder.getSimState();
+
     }
 
     @Override
     public void setHeight(double pose) {
-        elevatorMotion.setSetpoint(pose);
+        if (pose != target) {
+            masterM.setControl(elevatorMotion.withPosition(pose).withUseTimesync(true));
+            target = pose;
+        }
+    }
 
-        target = elevatorMotion.calculate(elevatorMotorSim.getAngularPositionRotations());
-        feed.calculate(elevatorMotion.getSetpoint());
-        elevatorMotorSim.setInput(feed.calculate((elevatorMotion.getSetpoint()) + target));
-        elevatorSim.update(0.02);
+    @Override
+    public void simulationInit() {
 
     }
 
     @Override
     public void periodic() {
-        elevatorSim.setInput(elevatorMotorSim.getAngularVelocityRPM() * RobotController.getBatteryVoltage());
+        masterSimM = masterM.getSimState();
+        slaveSimM = slaveM.getSimState();
+        elevatorEncoderSim = elevatorEncoder.getSimState();
+
+        masterSimM.setSupplyVoltage(RobotController.getBatteryVoltage());
+        slaveSimM.setSupplyVoltage(RobotController.getBatteryVoltage());
+        elevatorEncoderSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+       var mMotorVolts = masterSimM.getMotorVoltageMeasure();
+       var sMotorVolts= slaveSimM.getMotorVoltageMeasure();
+       elevatorMotorSim.setInputVoltage(mMotorVolts.in(Volts) );
+        elevatorMotorSim.update(0.02);
+        masterSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition());
+        masterSimM.setRotorVelocity(elevatorMotorSim.getAngularVelocity());
+        slaveSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition() );
+        slaveSimM.setRotorVelocity(elevatorMotorSim.getAngularVelocity() );
+        elevatorEncoderSim.setRawPosition(elevatorMotorSim.getAngularPosition());
+        elevatorEncoderSim.setVelocity(elevatorMotorSim.getAngularVelocity());
+        elevatorSim.update(0.02);
+        carriagElevatorSim.update(0.02);
+        elevatorSim.setInputVoltage(elevatorMotorSim.getInputVoltage());
+        carriagElevatorSim.setInputVoltage(elevatorMotorSim.getInputVoltage());
+        elevatorSim.setInput(elevatorMotorSim.getAngularVelocityRPM() * elevatorMotorSim.getInputVoltage());
+        carriagElevatorSim.setInput(elevatorMotorSim.getAngularVelocityRPM() * elevatorMotorSim.getInputVoltage());
+        elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), elevatorMotorSim.getAngularVelocityRPM());
+
+    }
+
+    @Override
+    public void updateInputs(ElevatorIOInputs inputs) {
+        inputs.masterMPosition = masterM.getPosition().getValueAsDouble();
+        inputs.masterMVelocity = masterM.getPosition().getValueAsDouble();
+        inputs.MasterMinputVolts = masterM.getMotorVoltage().getValueAsDouble();
+        inputs.slaveMPosition = slaveM.getPosition().getValueAsDouble();
+        inputs.slaveMVelocity = slaveM.getPosition().getValueAsDouble();
+        inputs.targetPose = target;
+        inputs.getAppliedControl = masterM.getAppliedControl().toString();
+
     }
 }

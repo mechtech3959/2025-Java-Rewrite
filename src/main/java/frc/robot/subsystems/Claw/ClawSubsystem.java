@@ -148,8 +148,8 @@ public class ClawSubsystem extends SubsystemBase {
 
   }
 
-  public void getAxis() {
-    clawIO.getAxis();
+  public double getAxis() {
+    return clawIO.getAxis();
   }
 
   public boolean isAcceptable() {
@@ -161,7 +161,9 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    return feedIO.hasCoral();
+    if(Robot.isReal()){
+    return feedIO.hasCoral();}
+    else{return true;}
   }
 
   // should send the opposite as has coral...

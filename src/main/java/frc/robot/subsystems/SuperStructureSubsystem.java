@@ -221,6 +221,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         drivetrain.registerTelemetry(logger::telemeterize);
         // The 3d allows visualization of the robot
         Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
+        Logger.recordOutput("3D/Claw", new Pose3d(0,0,elevator.convert()*1.3, new Rotation3d(0,claw.getAxis(),0)));
         // Logger.recordOutput("3D/Elevator/1stStage",
         // new Pose3d(0.0, 0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0, 0,
         // 0)));

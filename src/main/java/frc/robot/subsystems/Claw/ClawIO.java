@@ -40,5 +40,6 @@ public interface ClawIO {
     default void updateInputs(ClawIOInputs data){
     
     }
+    default void periodic(){}
 
 }

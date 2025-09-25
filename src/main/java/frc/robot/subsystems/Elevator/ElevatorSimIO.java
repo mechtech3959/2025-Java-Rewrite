@@ -49,7 +49,7 @@ public class ElevatorSimIO implements ElevatorIO {
     LoggedMechanismLigament2d elevatorLin = root
             .append(new LoggedMechanismLigament2d("elev", elevatorSim.getPositionMeters(), 90));
     DCMotorSim elevatorMotorSim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getKrakenX60Foc(2));
+            LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(2), 0.1, 18), DCMotor.getFalcon500Foc(2));
 
     @Override
     public void configure() {

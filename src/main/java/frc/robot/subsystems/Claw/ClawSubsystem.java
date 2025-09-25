@@ -223,6 +223,7 @@ public class ClawSubsystem extends SubsystemBase {
     Logger.processInputs("Subsystem/Feed/", dataFeed);
     Logger.recordOutput("State/Claw", clawState);
 
+    clawIO.periodic();
     getAxis();
     isAcceptable();
     hasCoral();

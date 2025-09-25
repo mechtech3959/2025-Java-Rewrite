@@ -170,9 +170,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.processInputs("Elevator", data);
         Logger.recordOutput("State/Elevator", elevatorState);
         Logger.recordOutput("3D/Elevator/1st stage",
-                new Pose3d(0, 0, visualizeElevatorOutput(), new Rotation3d(0, 0, 0)));
+                new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/carriage",
-                new Pose3d(0, 0, convert()*1.3, new Rotation3d(0, 0, 0)));
+                new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
 
         setStates();

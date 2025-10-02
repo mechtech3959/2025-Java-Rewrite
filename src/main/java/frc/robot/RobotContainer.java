@@ -8,14 +8,24 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
+import choreo.Choreo;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -30,7 +40,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.autos.BlueMid;
 import frc.robot.commands.Intake;
+import frc.robot.commands.scoreL1;
 import frc.robot.commands.scoreL4;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -86,12 +98,14 @@ public class RobotContainer {
         public final ElevatorSubsystem elevator;
         public final ClawSubsystem claw;
         private final SuperStructureSubsystem superStruct;
-    //    private final LimeLightSubsystem frontCam;
-    //    private final LimeLightSubsystem backCam;
-  // public  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
- //  public MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+        private final AutoFactory autoFactory;
+        // private final LimeLightSubsystem frontCam;
+        // private final LimeLightSubsystem backCam;
+        // public UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+        // public MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0",
+        // 1181);
         /* Path follower */
-        private final SendableChooser<Command> autoChooser;
+      //  private final SendableChooser<Command> autoChooser;
         private final SendableChooser<String> poseChooser = new SendableChooser<String>();
         // SendableBuilder poseBuilder;
         String _chosenPose;
@@ -104,7 +118,7 @@ public class RobotContainer {
         Command pathfindingCommand;
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command bluePathfindingCommand = AutoBuilder.pathfindToPose(
+   /*      Command bluePathfindingCommand = AutoBuilder.pathfindToPose(
                         blueTargetPose,
                         constraints,
                         0.0 // Goal end velocity in meters/sec
@@ -118,7 +132,12 @@ public class RobotContainer {
                             // Rotation delay distance in meters. This is how far the robot should travel
                             // before attempting to rotate.
         );
+*/
 
+        scoreL4 scorel4;
+        scoreL1 scorel1;
+
+        BlueMid blueMid;
         private Command controllerRumbleCommand() {
                 return Commands.startEnd(
                                 () -> {
@@ -131,7 +150,6 @@ public class RobotContainer {
                                 });
         }
 
-        scoreL4 ScoreL4;
         Intake intakeCMD;
 
         double finalH = 0;
@@ -139,6 +157,7 @@ public class RobotContainer {
         double clawAngle = 0;
 
         public RobotContainer() {
+
                 DriverStation.getAlliance().ifPresent(currentAlliance -> {
                 });
 
@@ -147,40 +166,43 @@ public class RobotContainer {
                 // } else {
                 // NamedCommands.registerCommand("pathFind", redPathfindingCommand);
                 // }
-                ElevatorIO elevatorIO = new ElevatorSimIO();//(Robot.isSimulation())? new ElevatorSimIO():  new ElevatorTalonFXIO();
-        
+                ElevatorIO elevatorIO = new ElevatorSimIO();// (Robot.isSimulation())? new ElevatorSimIO(): new
+                                                            // ElevatorTalonFXIO();
+
                 ClawIO clawIO = new ClawSimIO();
                 state = superState.Home;
                 elevator = new ElevatorSubsystem(elevatorIO);
                 claw = new ClawSubsystem(clawIO, new FeedRevMaxIO());
                 superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
-                ScoreL4 = new scoreL4(superStruct);
+                scorel4 = new scoreL4(superStruct);
                 intakeCMD = new Intake(superStruct);
 
-                //No camera anymore:(
-               // frontCam = new LimeLightSubsystem("front-limelight");
-               // backCam = new LimeLightSubsystem("back-limelight");
-              //  frontCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
-              //  backCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
+                autoFactory = new AutoFactory(drivetrain::getPose, drivetrain::resetPose, drivetrain::followTrajectory,
+                                false, this.drivetrain);
+                scorel4 = new scoreL4(superStruct);
+                scorel1 = new scoreL1(superStruct);
+                blueMid = new BlueMid(superStruct, drivetrain, scorel4,scorel1, autoFactory);
+                // No camera anymore:(
+                // frontCam = new LimeLightSubsystem("front-limelight");
+                // backCam = new LimeLightSubsystem("back-limelight");
+                // frontCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
+                // backCam.setRobot(drivetrain.getPigeon2().getYaw().getValueAsDouble());
 
                 poseChooser.addOption("Collum", "Collum");
                 poseChooser.addOption("Middle", "Middle");
                 poseChooser.addOption("Wall", "Wall");
                 poseChooser.setDefaultOption("Middle", "Middle");
-                NamedCommands.registerCommand("Score L1", ScoreL4);
+                NamedCommands.registerCommand("Score L1", scorel4);
                 NamedCommands.registerCommand("Intake", intakeCMD);
-                autoChooser = AutoBuilder.buildAutoChooser();
-                SmartDashboard.putData("Auto Mode", autoChooser);
+           //     autoChooser = AutoBuilder.buildAutoChooser();
+               // SmartDashboard.putData("Auto Mode", autoChooser);
 
                 configureBindings();
 
         }
 
         private void configureBindings() {
-      CameraServer.startAutomaticCapture();
-
-
-
+            //    CameraServer.startAutomaticCapture();
 
                 drivetrain.setDefaultCommand(
                                 drivetrain.applyRequest(() -> drive
@@ -315,13 +337,12 @@ public class RobotContainer {
         }
 
         public void periodic() {
-                if(superStruct.coral && superStruct.getState() == superState.Intake){
+                if (superStruct.coral && superStruct.getState() == superState.Intake) {
                         controllerRumbleCommand();
                 }
 
-
-                //drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
-               // drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
+                // drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
+                // drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
 
                 DriverStation.getAlliance().ifPresent(currentAlliance -> {
                         SmartDashboard.putString("Ali", currentAlliance.toString());
@@ -335,7 +356,6 @@ public class RobotContainer {
                         positionStartup();
                         drivetrain.resetPose(startingPose);
                 }
-
                 /*
                  * clawAngle = claw.lastKnownAngle;
                  * if (clawAngle == 0) {
@@ -384,7 +404,7 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 /* Run the path selected from the auto chooser */
-                return autoChooser.getSelected();
+                return blueMid.run().cmd();
 
         }
 }

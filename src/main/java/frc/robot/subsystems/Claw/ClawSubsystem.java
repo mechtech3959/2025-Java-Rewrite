@@ -167,8 +167,12 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   // should send the opposite as has coral...
-  public BooleanSupplier supplyCoral() {
-    return () -> !feedIO.hasCoral();
+  public BooleanSupplier noCoral() {
+    if(Robot.isReal()){
+    return () -> !feedIO.hasCoral();}
+    else{
+      return ()-> true;
+    }
   }
 
   @Override
@@ -228,7 +232,7 @@ public class ClawSubsystem extends SubsystemBase {
     isAcceptable();
     hasCoral();
     supplyAcceptable();
-    supplyCoral();
+    noCoral();
     setStates();
     sendData();
 

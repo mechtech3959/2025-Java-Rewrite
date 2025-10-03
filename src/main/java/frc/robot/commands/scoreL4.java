@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Robot;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.SuperStructureSubsystem.superState;
 import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
@@ -18,7 +19,7 @@ public class scoreL4 extends SequentialCommandGroup {
                 Commands.waitUntil(_SuperStructureSubsystem.elevator.isTarget()),
                 Commands.runOnce(() -> _SuperStructureSubsystem.changeState(FeedStates.Outake)),
                 // this might do some weird stuff....
-                Commands.waitUntil(_SuperStructureSubsystem.claw.supplyCoral()),
+                Commands.waitUntil(_SuperStructureSubsystem.claw.noCoral()),
                 Commands.runOnce(() -> _SuperStructureSubsystem.changeState(superState.Home, FeedStates.Off)));
 
     }

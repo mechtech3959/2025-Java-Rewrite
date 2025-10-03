@@ -73,7 +73,7 @@ public class RobotContainer {
         public Pose2d startingPose;
         boolean algeaMode = false;
 
-        public Alliance currentAlliance = Alliance.Blue;
+        public Alliance currentAlliance; //= Alliance.Red;
 
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                       // speed
@@ -158,8 +158,7 @@ public class RobotContainer {
 
         public RobotContainer() {
 
-                DriverStation.getAlliance().ifPresent(currentAlliance -> {
-                });
+                        currentAlliance = (DriverStation.getAlliance().isPresent())? DriverStation.getAlliance().get() : Alliance.Red;
 
                 // if (currentAlliance == Alliance.Blue) {
                 // NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
@@ -178,7 +177,7 @@ public class RobotContainer {
                 intakeCMD = new Intake(superStruct);
 
                 autoFactory = new AutoFactory(drivetrain::getPose, drivetrain::resetPose, drivetrain::followTrajectory,
-                                false, this.drivetrain);
+                                true, this.drivetrain);
                 scorel4 = new scoreL4(superStruct);
                 scorel1 = new scoreL1(superStruct);
                 blueMid = new BlueMid(superStruct, drivetrain, scorel4,scorel1, autoFactory);
@@ -350,10 +349,11 @@ public class RobotContainer {
                 });
                 SmartDashboard.putData(poseChooser);
 
-                // Logger.recordOutput("Alli", currentAlliance.toString());
+                 Logger.recordOutput("posechosen", startingPose);
                 Logger.recordOutput("containstate", state);
+                positionStartup();
+
                 if (DriverStation.isDisabled()) {
-                        positionStartup();
                         drivetrain.resetPose(startingPose);
                 }
                 /*

@@ -25,7 +25,7 @@ public class L4 extends SequentialCommandGroup {
             .andThen(() -> _ElevatorSubsystem.changeState(ElevatorStates.L4)));
     Commands.waitUntil(_ElevatorSubsystem.isTarget());
     Commands.runOnce(() -> _ClawSubsystem.changeState(FeedStates.Outake));
-    Commands.waitUntil(_ClawSubsystem.supplyCoral());
+    Commands.waitUntil(_ClawSubsystem.noCoral());
     Commands.runOnce(() -> _ElevatorSubsystem.changeState(ElevatorStates.Home));
     Commands.runOnce(() -> _ClawSubsystem.changeState(ClawStates.Travel, FeedStates.Off));
 

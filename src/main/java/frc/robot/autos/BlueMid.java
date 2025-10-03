@@ -28,14 +28,12 @@ public class BlueMid {
     
     public AutoRoutine run(){
         AutoRoutine routine = autoFactory.newRoutine("run");
-        AutoTrajectory BSMBH = routine.trajectory("BSM-BH.traj");
-        AutoTrajectory BHBLS = routine.trajectory("BH-BLS.traj");
+        AutoTrajectory BSMBH = routine.trajectory("RSM-RH.traj");
+        AutoTrajectory BHBLS = routine.trajectory("RH-RLS.traj");
 
         routine.active().onTrue(BSMBH.cmd());
         BSMBH.done().onTrue(scorel4);
-        routine.active().and(BSMBH.done()).onTrue(scorel1);
-        routine.active().onTrue(BHBLS.cmd());
-
+        if(scorel4.isFinished() && 1 ==2) BHBLS.cmd();
         
         return routine;
     }

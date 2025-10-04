@@ -17,10 +17,10 @@ public class scoreL4 extends SequentialCommandGroup {
         addCommands(
                 Commands.runOnce(() -> _SuperStructureSubsystem.changeState(superState.L4)),
                 Commands.waitUntil(_SuperStructureSubsystem.elevator.isTarget()),
-                Commands.runOnce(() -> _SuperStructureSubsystem.changeState(FeedStates.Outake)),
+               // Commands.runOnce(() -> _SuperStructureSubsystem.changeState(FeedStates.Outake)),
                 // this might do some weird stuff....
-                Commands.waitUntil(_SuperStructureSubsystem.claw.noCoral()),
-                Commands.runOnce(() -> _SuperStructureSubsystem.changeState(superState.Home, FeedStates.Off)));
+               // Commands.waitUntil(_SuperStructureSubsystem.claw.noCoral()),
+                Commands.runOnce(() -> _SuperStructureSubsystem.changeState(superState.Home)));
 
     }
 

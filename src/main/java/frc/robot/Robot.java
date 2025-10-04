@@ -110,6 +110,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.initAuto();
     try {
       m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     } catch (Exception f) {

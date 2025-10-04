@@ -133,7 +133,7 @@ public class ClawSubsystem extends SubsystemBase {
         // check what is needed for static intake of algea
         feedIO.setIntake(-0.1);
         break;
-        
+
       case Off:
         feedIO.Stop();
         break;
@@ -161,17 +161,19 @@ public class ClawSubsystem extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    if(Robot.isReal()){
-    return feedIO.hasCoral();}
-    else{return true;}
+    if (Robot.isReal()) {
+      return feedIO.hasCoral();
+    } else {
+      return true;
+    }
   }
 
   // should send the opposite as has coral...
   public BooleanSupplier noCoral() {
-    if(Robot.isReal()){
-    return () -> !feedIO.hasCoral();}
-    else{
-      return ()-> true;
+    if (Robot.isReal()) {
+      return () -> !feedIO.hasCoral();
+    } else {
+      return () -> true;
     }
   }
 
@@ -216,6 +218,12 @@ public class ClawSubsystem extends SubsystemBase {
   public void changeState(FeedStates feed, double percent) {
     feedState = feed;
     percentOut = percent;
+
+  }
+
+  public void tareClaw() {
+    changeState(ClawStates.Home, FeedStates.Off);
+    clawIO.resetAxis();
 
   }
 

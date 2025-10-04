@@ -38,6 +38,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         DeAlgea_L2,
         DeAlgea_L3,
         Processor,
+        Tare,
         Test,
         Test2,
         Test3
@@ -89,6 +90,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
             case Intake:
                 intake();
+                break;
+            case Tare:
+                tareSuper();
                 break;
             case Test:
                 // claw.clawState = ClawStates.L1;
@@ -263,6 +267,10 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
     public superState getState(){
         return setSuperState;
+    }
+    private void tareSuper(){
+        elevator.tareElevator();
+        claw.tareClaw();
     }
     // fix ABOVE REDUNDANT
     @Override

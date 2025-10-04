@@ -15,6 +15,7 @@ public interface ElevatorIO {
         public double MasterMinputVolts = 0;
         public double MasterMinputCurrentDraw = 0;
         public String getAppliedControl = "def";
+        public boolean isAtTarget = false;
 
     }
 

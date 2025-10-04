@@ -169,7 +169,7 @@ public class RobotContainer {
                                                             // ElevatorTalonFXIO();
 
                 ClawIO clawIO = new ClawSimIO();
-                state = superState.Home;
+                state = superState.Tare;
                 elevator = new ElevatorSubsystem(elevatorIO);
                 claw = new ClawSubsystem(clawIO, new FeedRevMaxIO());
                 superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
@@ -199,7 +199,9 @@ public class RobotContainer {
                 configureBindings();
 
         }
-
+        public void initAuto(){
+                superStruct.changeState(superState.Tare);
+        }
         private void configureBindings() {
             //    CameraServer.startAutomaticCapture();
 
@@ -351,9 +353,11 @@ public class RobotContainer {
 
                  Logger.recordOutput("posechosen", startingPose);
                 Logger.recordOutput("containstate", state);
-                positionStartup();
-
+ 
                 if (DriverStation.isDisabled()) {
+                        currentAlliance = (DriverStation.getAlliance().isPresent())? DriverStation.getAlliance().get() : Alliance.Red;
+                        positionStartup();
+
                         drivetrain.resetPose(startingPose);
                 }
                 /*

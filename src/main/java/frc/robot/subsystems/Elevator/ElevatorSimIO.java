@@ -36,7 +36,7 @@ public class ElevatorSimIO implements ElevatorIO {
     private TalonFXSimState masterSimM;
     private TalonFXSimState slaveSimM;
     private CANcoderSimState elevatorEncoderSim;
-    double target = 0;
+    public double target = 0;
 
     double simPose = 0;
     public ElevatorSim elevatorSim = new ElevatorSim(DCMotor.getFalcon500Foc(2), 18, 1, 2, 0, 0.93, true, 0.01, 0.000,
@@ -75,27 +75,45 @@ public class ElevatorSimIO implements ElevatorIO {
     }
 
     @Override
+    public double getHeight() {
+        return  masterM.getPosition().getValueAsDouble();
+    }
+    @Override 
+    public void resetAxis(){
+        masterM.setPosition(0);
+        slaveM.setPosition(0);
+        elevatorMotorSim.setState(0,0);
+       // elevatorSim.setState(0, 0);
+        //carriagElevatorSim.setState(0 ,0);
+    }
+    @Override
     public void simulationInit() {
 
     }
 
     @Override
+    public boolean isAtTarget() {
+        return ((target == getHeight()) || ((target >= getHeight() - 0.01) && (target <= getHeight() + 0.01))) ? true : false;
+       
+    }
+
+    @Override
     public void periodic() {
-        masterSimM = masterM.getSimState();
+         masterSimM = masterM.getSimState();
         slaveSimM = slaveM.getSimState();
         elevatorEncoderSim = elevatorEncoder.getSimState();
 
         masterSimM.setSupplyVoltage(RobotController.getBatteryVoltage());
         slaveSimM.setSupplyVoltage(RobotController.getBatteryVoltage());
         elevatorEncoderSim.setSupplyVoltage(RobotController.getBatteryVoltage());
-       var mMotorVolts = masterSimM.getMotorVoltageMeasure();
-       var sMotorVolts= slaveSimM.getMotorVoltageMeasure();
-       elevatorMotorSim.setInputVoltage(mMotorVolts.in(Volts) );
+        var mMotorVolts = masterSimM.getMotorVoltageMeasure();
+        var sMotorVolts = slaveSimM.getMotorVoltageMeasure();
+        elevatorMotorSim.setInputVoltage(mMotorVolts.in(Volts));
         elevatorMotorSim.update(0.02);
         masterSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition());
         masterSimM.setRotorVelocity(elevatorMotorSim.getAngularVelocity());
-        slaveSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition() );
-        slaveSimM.setRotorVelocity(elevatorMotorSim.getAngularVelocity() );
+        slaveSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition());
+        slaveSimM.setRotorVelocity(elevatorMotorSim.getAngularVelocity());
         elevatorEncoderSim.setRawPosition(elevatorMotorSim.getAngularPosition());
         elevatorEncoderSim.setVelocity(elevatorMotorSim.getAngularVelocity());
         elevatorSim.update(0.02);

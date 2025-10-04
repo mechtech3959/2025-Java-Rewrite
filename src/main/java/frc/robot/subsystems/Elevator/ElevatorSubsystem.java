@@ -43,7 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     double target = 0;
     double simPose = 0;
-    
+
     Color8Bit blue;
     public LoggedMechanism2d elevatorMech;
     LoggedMechanismRoot2d root;
@@ -163,17 +163,26 @@ public class ElevatorSubsystem extends SubsystemBase {
         return () -> elevatorIO.isAtTarget();
     }
 
+    public void tareElevator() {
+     //   changeState(ElevatorStates.Home);
+        elevatorIO.resetAxis();
+
+    }
+ 
     @Override
     public void periodic() {
         elevatorIO.periodic();
         elevatorIO.updateInputs(data);
-        Logger.processInputs("Elevator", data);
+         Logger.processInputs("Elevator", data);
         Logger.recordOutput("State/Elevator", elevatorState);
         Logger.recordOutput("3D/Elevator/1st stage",
                 new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/carriage",
                 new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
+        Logger.recordOutput("Elevator/ist", isTarget());
+        Logger.recordOutput("Elevator/istint", elevatorIO.isAtTarget());
+ 
 
         setStates();
         isTarget();

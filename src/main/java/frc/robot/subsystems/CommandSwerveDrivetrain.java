@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -55,6 +57,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
     public Trajectory<SwerveSample> followedPath;
+    Timer pathingTimer = new Timer();
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;// swap??
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -285,8 +288,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    public void followTrajectory(SwerveSample sample) {
+    public void followTrajectory(Optional <SwerveSample> inp) {
 
+        if(inp.isPresent()){
+            SwerveSample sample = inp.get();
         // Get the current pose of the robot
         Pose2d pose = getState().Pose;
 
@@ -297,14 +302,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
         // Apply the generated speeds
+        pathingTimer.start();
         this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
+        }
     }// } () -> (DriverStation.getAlliance().equals(Alliance.Blue)) ? true : false};
 
     public void setTrajectory(Trajectory<SwerveSample> input) {
         followedPath = input;
-        followTrajectory(input.getFinalSample(false).orElseThrow());
+        pathingTimer.reset();
+        followTrajectory(followedPath.sampleAt(pathingTimer.get(), false)
+        );
     }
-
+    public boolean isPathComplete(){
+        if(followedPath.getFinalPose(false).isPresent()){
+      Pose2d pose =  followedPath.getFinalPose(false).get();
+        
+    }
+    
+        return false;
+    }
     public Pose2d getPose() {
         return this.getPose();
     }
@@ -323,7 +339,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * occurs during testing.
          */
 
-         //Logger.recordOutput("Drive/Traj", followedPath.getPoses());
+        // Logger.recordOutput("Drive/Traj", followedPath.getPoses());
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(

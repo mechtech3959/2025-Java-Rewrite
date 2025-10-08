@@ -14,6 +14,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -37,7 +38,7 @@ public class ClawSimIO implements ClawIO {
   
   public TalonFXSimState axisSimMotor = axisMotor.getSimState();
  public CANcoderSimState axisSimEncoder = axisEncoder.getSimState();
-
+ 
  public DCMotorSim clawMotorSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500Foc(1),0.001, 18), DCMotor.getFalcon500Foc(1));
  public SingleJointedArmSim clawSim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
   SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0, 0.0);
@@ -106,7 +107,7 @@ public LoggedMechanismLigament2d flat = root.append(new LoggedMechanismLigament2
   axisSimEncoder = axisEncoder.getSimState();
   axisSimMotor.setSupplyVoltage(RobotController.getBatteryVoltage());
   axisSimEncoder.setSupplyVoltage(RobotController.getBatteryVoltage());
-
+  var axisvolt = axisSimMotor.getMotorVoltageMeasure();
   clawMotorSim.setInputVoltage(axisSimMotor.getMotorVoltageMeasure().in(Volts));
   clawMotorSim.update(0.02);
   

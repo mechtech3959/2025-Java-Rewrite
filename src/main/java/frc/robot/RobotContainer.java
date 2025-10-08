@@ -105,7 +105,7 @@ public class RobotContainer {
         // public MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0",
         // 1181);
         /* Path follower */
-      //  private final SendableChooser<Command> autoChooser;
+       private final SendableChooser<Command> autoChooser;
         private final SendableChooser<String> poseChooser = new SendableChooser<String>();
         // SendableBuilder poseBuilder;
         String _chosenPose;
@@ -193,8 +193,8 @@ public class RobotContainer {
                 poseChooser.setDefaultOption("Middle", "Middle");
                 NamedCommands.registerCommand("Score L1", scorel4);
                 NamedCommands.registerCommand("Intake", intakeCMD);
-           //     autoChooser = AutoBuilder.buildAutoChooser();
-               // SmartDashboard.putData("Auto Mode", autoChooser);
+                autoChooser = AutoBuilder.buildAutoChooser();
+               SmartDashboard.putData("Auto Mode", autoChooser);
 
                 configureBindings();
 
@@ -408,7 +408,7 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 /* Run the path selected from the auto chooser */
-                return blueMid;
+                return autoChooser.getSelected() ;
 
         }
 }

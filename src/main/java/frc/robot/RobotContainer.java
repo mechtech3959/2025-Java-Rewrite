@@ -98,7 +98,7 @@ public class RobotContainer {
         public final ElevatorSubsystem elevator;
         public final ClawSubsystem claw;
         private final SuperStructureSubsystem superStruct;
-        private final AutoFactory autoFactory;
+      //  private final AutoFactory autoFactory;
         // private final LimeLightSubsystem frontCam;
         // private final LimeLightSubsystem backCam;
         // public UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
@@ -137,7 +137,7 @@ public class RobotContainer {
         scoreL4 scorel4;
         scoreL1 scorel1;
 
-        BlueMid blueMid;
+     //   BlueMid blueMid;
         private Command controllerRumbleCommand() {
                 return Commands.startEnd(
                                 () -> {
@@ -176,11 +176,11 @@ public class RobotContainer {
                 scorel4 = new scoreL4(superStruct);
                 intakeCMD = new Intake(superStruct);
 
-                autoFactory = new AutoFactory(drivetrain::getPose, drivetrain::resetPose, drivetrain::followTrajectory,
-                                true, this.drivetrain);
+              //  autoFactory = new AutoFactory(drivetrain::getPose, drivetrain::resetPose, drivetrain::followTrajectory,
+              //                  true, this.drivetrain);
                 scorel4 = new scoreL4(superStruct);
                 scorel1 = new scoreL1(superStruct);
-                blueMid = new BlueMid(superStruct, drivetrain, scorel4,scorel1, autoFactory);
+              //  blueMid = new BlueMid(superStruct, drivetrain, scorel4,scorel1, autoFactory);
                 // No camera anymore:(
                 // frontCam = new LimeLightSubsystem("front-limelight");
                 // backCam = new LimeLightSubsystem("back-limelight");
@@ -193,6 +193,7 @@ public class RobotContainer {
                 poseChooser.setDefaultOption("Middle", "Middle");
                 NamedCommands.registerCommand("Score L1", scorel4);
                 NamedCommands.registerCommand("Intake", intakeCMD);
+                
                 autoChooser = AutoBuilder.buildAutoChooser();
                SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -384,30 +385,16 @@ public class RobotContainer {
                  * // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
                  * // 0.466346 / 10.77753;
                  * // this was wrong:sob:
-                 * 
-                 * Logger.recordOutput("Sim/Drivetrain Pose", new
-                 * Pose3d(drivetrain.getState().Pose));
-                 * Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
-                 * Logger.recordOutput("Sim/Final Position", new Pose3d[] {
-                 * new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
-                 * new Rotation3d(0, 0, 0)),
-                 * new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
-                 * new Rotation3d(0, 0, 0)),
-                 * new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() +
-                 * finalH,
-                 * new Rotation3d(0, claw.sim.getAngleRads(), 0))
-                 * });
-                 * Logger.recordOutput("calc", new Pose3d[] {
-                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                 * });
                  */
 
         }
 
         public Command getAutonomousCommand() {
                 /* Run the path selected from the auto chooser */
+
+                //try{
+             //Logger.recordOutput("pathing", PathPlannerPath.fromPathFile((PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName()).get(0).toString())).getPathPoses().toArray(new Pose2d[0] )); }
+             //   catch(Exception e){}
                 return autoChooser.getSelected() ;
 
         }

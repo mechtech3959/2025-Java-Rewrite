@@ -11,10 +11,10 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class Intake extends SequentialCommandGroup {
 
-    public final SuperStructureSubsystem superstruc;
+    public final SuperStructureSubsystem superstruct;
 
     public Intake(SuperStructureSubsystem _SuperStructureSubsystem ){
-        this.superstruc = _SuperStructureSubsystem;
+        this.superstruct = _SuperStructureSubsystem;
     addCommands(
         Commands.runOnce(()-> _SuperStructureSubsystem.changeState(superState.Intake)),
         Commands.waitUntil(()->_SuperStructureSubsystem.setSuperState == superState.Home));

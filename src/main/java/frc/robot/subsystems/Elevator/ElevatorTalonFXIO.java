@@ -41,7 +41,7 @@ public class ElevatorTalonFXIO implements ElevatorIO {
     @Override
     public void setHeight(double pose) {
          if(pose != target){
-        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true)  );
          target = pose;}
     }
 

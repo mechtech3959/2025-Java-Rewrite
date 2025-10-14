@@ -53,11 +53,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
 
     // choreo pathing
-    private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
-    private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
-    private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
-    public Trajectory<SwerveSample> followedPath;
-    Timer pathingTimer = new Timer();
+  //  private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
+   // private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+   // private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
+    //public Trajectory<SwerveSample> followedPath;
+    //Timer pathingTimer = new Timer();
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;// swap??
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -224,7 +224,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     private void configureAutoBuilder() {
-        headingController.enableContinuousInput(-Math.PI, Math.PI);
+       // headingController.enableContinuousInput(-Math.PI, Math.PI);
 
         try{
         var config = RobotConfig.fromGUISettings();
@@ -245,7 +245,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           config,
           // Assume the path needs to be flipped for Red vs Blue, this is normally the
           // case
-          () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+          () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue,
           this // Subsystem for requirements
           );
           } catch (Exception ex) {
@@ -288,7 +288,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    public void followTrajectory(Optional <SwerveSample> inp) {
+    /*public void followTrajectory(Optional <SwerveSample> inp) {
 
         if(inp.isPresent()){
             SwerveSample sample = inp.get();
@@ -321,7 +321,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     
         return false;
-    }
+    }*/
     public Pose2d getPose() {
         return this.getPose();
     }

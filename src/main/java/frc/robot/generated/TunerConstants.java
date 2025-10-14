@@ -93,9 +93,11 @@ public class TunerConstants {
     private static final int kPigeonId = 16;
 
     // These are only used for simulation
+    // 0.01 each
     private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
     private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
     // Simulated voltage necessary to overcome friction
+    //0.2 turn & 0.2 drive
     private static final Voltage kSteerFrictionVoltage = Volts.of(0.2);
     private static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
 
@@ -171,7 +173,7 @@ public class TunerConstants {
 
     private static final Distance kBackRightXPos = Inches.of(-12.25);
     private static final Distance kBackRightYPos = Inches.of(-12.25);
-
+//moi 6.883
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(

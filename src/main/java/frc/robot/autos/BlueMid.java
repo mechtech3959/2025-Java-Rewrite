@@ -33,7 +33,7 @@ public class BlueMid extends SequentialCommandGroup{
         
           var tr = cache.loadTrajectory("BSM-BH.traj");
          addCommands(
-            Commands.runOnce(()-> { swerve.setTrajectory( (Trajectory<SwerveSample>)tr.get()); })
+          //  Commands.runOnce(()-> { swerve.setTrajectory( (Trajectory<SwerveSample>)tr.get()); })
         );
 
     }

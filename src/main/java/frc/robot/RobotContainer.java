@@ -168,7 +168,7 @@ public class RobotContainer {
                 ElevatorIO elevatorIO = new ElevatorSimIO();// (Robot.isSimulation())? new ElevatorSimIO(): new
                                                             // ElevatorTalonFXIO();
 
-                ClawIO clawIO = new ClawSimIO();
+                ClawIO clawIO = (Robot.isSimulation())? new ClawSimIO() : new ClawTalonFXIO();
                 state = superState.Tare;
                 elevator = new ElevatorSubsystem(elevatorIO);
                 claw = new ClawSubsystem(clawIO, new FeedRevMaxIO());

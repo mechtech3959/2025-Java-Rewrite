@@ -208,20 +208,20 @@ public class RobotContainer {
 
                 drivetrain.setDefaultCommand(
                                 drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                                .withRotationalRate(joystick.getRightX() * MaxAngularRate) // negative
+                                                .withVelocityX(-joystick.getLeftY() * 1.5) // Negative Y(forward)
+                                                .withVelocityY(-joystick.getLeftX() * 1.5)// Negative X(left)
+                                                .withRotationalRate(joystick.getRightX() * 1) // negative
                                 // X(counterclockwise) SWAPPED ... kinda all - on this are turned to positive
                                 ));
-                joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
-                                .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
-                                .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
-                                .withRotationalRate(joystick.getRightX() * 0.5) // negative
+              //  joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
+               //                 .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
+               //                 .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
+              //                  .withRotationalRate(joystick.getRightX() * 0.5) // negative
                 // X(counterclockwise)
-                )).whileFalse(drivetrain.applyRequest(() -> drive
-                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+             //   )).whileFalse(drivetrain.applyRequest(() -> drive
+               //                 .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+             //                   .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+              //                  .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
                 joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(

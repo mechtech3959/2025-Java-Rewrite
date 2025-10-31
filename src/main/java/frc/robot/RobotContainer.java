@@ -210,7 +210,7 @@ public class RobotContainer {
                                 drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY() * 1.5) // Negative Y(forward)
                                                 .withVelocityY(-joystick.getLeftX() * 1.5)// Negative X(left)
-                                                .withRotationalRate(joystick.getRightX() * 1) // negative
+                                                .withRotationalRate(-joystick.getRightX() * 1) // negative
                                 // X(counterclockwise) SWAPPED ... kinda all - on this are turned to positive
                                 ));
               //  joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive

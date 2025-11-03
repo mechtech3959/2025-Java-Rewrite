@@ -88,7 +88,7 @@ public class TunerConstants {
     private static final Distance kWheelRadius = Inches.of(2);
 
     private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = false;//true.
+    private static final boolean kInvertRightSide = true;//true.
 
     private static final int kPigeonId = 16;
 

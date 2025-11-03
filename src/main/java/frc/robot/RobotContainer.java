@@ -8,9 +8,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
+
 
 import org.littletonrobotics.junction.Logger;
 
@@ -18,17 +16,10 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
-import choreo.Choreo;
+
 import choreo.auto.AutoFactory;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.MjpegServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -52,14 +43,11 @@ import frc.robot.subsystems.claw.ClawIO;
 import frc.robot.subsystems.claw.ClawSimIO;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
-import frc.robot.subsystems.claw.ClawTalonFXIO;
 import frc.robot.subsystems.claw.feed.FeedRevMaxIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimIO;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.elevator.ElevatorTalonFXIO;
 
-@SuppressWarnings("unused")
 public class RobotContainer {
         Pose2d blueStartPillar = new Pose2d(8.0, 5, new Rotation2d(3.14));
         Pose2d blueStartMid = new Pose2d(8.0, 6.1, new Rotation2d(3.14));
@@ -88,7 +76,7 @@ public class RobotContainer {
         private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
                         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-        private final Telemetry logger = new Telemetry(MaxSpeed);
+      //  private final Telemetry logger = new Telemetry(MaxSpeed);
         private final CommandXboxController joystick = new CommandXboxController(0);
         private final CommandXboxController coJoystick = new CommandXboxController(1);
 
@@ -139,6 +127,7 @@ public class RobotContainer {
 
         BlueMid blueMid;
         private Command controllerRumbleCommand() {
+        
                 return Commands.startEnd(
                                 () -> {
                                         joystick.getHID().setRumble(RumbleType.kBothRumble, 1.0);

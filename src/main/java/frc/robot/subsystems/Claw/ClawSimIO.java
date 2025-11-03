@@ -107,7 +107,7 @@ public LoggedMechanismLigament2d flat = root.append(new LoggedMechanismLigament2
   axisSimEncoder = axisEncoder.getSimState();
   axisSimMotor.setSupplyVoltage(RobotController.getBatteryVoltage());
   axisSimEncoder.setSupplyVoltage(RobotController.getBatteryVoltage());
-  var axisvolt = axisSimMotor.getMotorVoltageMeasure();
+  //var axisvolt = axisSimMotor.getMotorVoltageMeasure();
   clawMotorSim.setInputVoltage(axisSimMotor.getMotorVoltageMeasure().in(Volts));
   clawMotorSim.update(0.02);
   

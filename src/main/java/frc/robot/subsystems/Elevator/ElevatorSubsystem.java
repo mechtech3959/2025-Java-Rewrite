@@ -1,24 +1,22 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-
-import com.ctre.phoenix6.sim.CANcoderSimState;
-import com.ctre.phoenix6.sim.TalonFXSimState;
+import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
-import java.util.function.BooleanSupplier;
-
+import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -31,7 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         Travel,
         Home,
         DeAlgea_L2,
-        DeAlgea_L3
+        DeAlgea_L3,
+        EStop
     }
 
     double target = 0;
@@ -99,6 +98,10 @@ public class ElevatorSubsystem extends SubsystemBase {
                 break;
             case Travel:
                 break;
+            case EStop:
+            //90% sure this wont work as expected 
+            elevatorIO.setHeight(getPose());
+            break;
             default:
                 break;
         }
@@ -161,7 +164,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.resetAxis();
 
     }
- 
+    public double getPose(){
+        return data.encoderPosition;
+    }
     @Override
     public void periodic() {
         elevatorIO.periodic();

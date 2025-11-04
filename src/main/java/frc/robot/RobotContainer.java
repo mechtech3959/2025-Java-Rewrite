@@ -19,7 +19,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 
 
-import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -86,7 +85,6 @@ public class RobotContainer {
         public final ElevatorSubsystem elevator;
         public final ClawSubsystem claw;
         private final SuperStructureSubsystem superStruct;
-        private final AutoFactory autoFactory;
         // private final LimeLightSubsystem frontCam;
         // private final LimeLightSubsystem backCam;
         // public UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
@@ -165,11 +163,9 @@ public class RobotContainer {
                 scorel4 = new scoreL4(superStruct);
                 intakeCMD = new Intake(superStruct);
 
-                autoFactory = new AutoFactory(drivetrain::getPose, drivetrain::resetPose, drivetrain::followTrajectory,
-                                true, this.drivetrain);
+               
                 scorel4 = new scoreL4(superStruct);
                 scorel1 = new scoreL1(superStruct);
-                blueMid = new BlueMid(superStruct, drivetrain, scorel4,scorel1, autoFactory);
                 // No camera anymore:(
                 // frontCam = new LimeLightSubsystem("front-limelight");
                 // backCam = new LimeLightSubsystem("back-limelight");

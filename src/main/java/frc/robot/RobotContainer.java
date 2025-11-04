@@ -75,7 +75,7 @@ public class RobotContainer {
         private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
                         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-      //  private final Telemetry logger = new Telemetry(MaxSpeed);
+        private final Telemetry logger = new Telemetry(MaxSpeed);
         private final CommandXboxController joystick = new CommandXboxController(0);
         private final CommandXboxController coJoystick = new CommandXboxController(1);
 
@@ -93,7 +93,6 @@ public class RobotContainer {
         /* Path follower */
        private final SendableChooser<Command> autoChooser;
         private final SendableChooser<String> poseChooser = new SendableChooser<String>();
-        // SendableBuilder poseBuilder;
         String _chosenPose;
 
         // Create the constraints to use while pathfinding
@@ -120,10 +119,7 @@ public class RobotContainer {
         );
 */
 
-        scoreL4 scorel4;
-        scoreL1 scorel1;
-
-        BlueMid blueMid;
+        
         private Command controllerRumbleCommand() {
         
                 return Commands.startEnd(
@@ -159,13 +155,8 @@ public class RobotContainer {
                 state = superState.Tare;
                 elevator = new ElevatorSubsystem(elevatorIO);
                 claw = new ClawSubsystem(clawIO, new FeedRevMaxIO());
-                superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
-                scorel4 = new scoreL4(superStruct);
-                intakeCMD = new Intake(superStruct);
-
+                superStruct = new SuperStructureSubsystem(elevator, claw);
                
-                scorel4 = new scoreL4(superStruct);
-                scorel1 = new scoreL1(superStruct);
                 // No camera anymore:(
                 // frontCam = new LimeLightSubsystem("front-limelight");
                 // backCam = new LimeLightSubsystem("back-limelight");
@@ -176,8 +167,8 @@ public class RobotContainer {
                 poseChooser.addOption("Middle", "Middle");
                 poseChooser.addOption("Wall", "Wall");
                 poseChooser.setDefaultOption("Middle", "Middle");
-                NamedCommands.registerCommand("Score L1", scorel4);
-                NamedCommands.registerCommand("Intake", intakeCMD);
+                //NamedCommands.registerCommand("Score L1", scorel4);
+              //  NamedCommands.registerCommand("Intake", intakeCMD);
                 autoChooser = AutoBuilder.buildAutoChooser();
                SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -189,7 +180,7 @@ public class RobotContainer {
         }
         private void configureBindings() {
             //    CameraServer.startAutomaticCapture();
-
+            drivetrain.registerTelemetry(logger::telemeterize);
                 drivetrain.setDefaultCommand(
                                 drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)

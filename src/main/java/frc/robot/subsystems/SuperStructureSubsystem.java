@@ -1,15 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawSubsystem;
@@ -21,9 +17,9 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorStates;
 public class SuperStructureSubsystem extends SubsystemBase {
     public final ElevatorSubsystem elevator;
     public final ClawSubsystem claw;
-    private final CommandSwerveDrivetrain drivetrain;
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    //private final CommandSwerveDrivetrain drivetrain;
+  //  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+    //private final Telemetry logger = new Telemetry(MaxSpeed);
     public boolean coral;
     public enum superState {
         Home,
@@ -46,16 +42,16 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private FeedStates setFeed = FeedStates.Off;
     private double clawSetOut = 0.0;
 
-    public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw, CommandSwerveDrivetrain drivetrain) {
+    public SuperStructureSubsystem(ElevatorSubsystem elevator, ClawSubsystem claw) {
         // external extries of subsystems are equal to local declarations
         this.elevator = elevator;
         this.claw = claw;
-        this.drivetrain = drivetrain;
-        drivetrain = TunerConstants.createDrivetrain();
+      //  this.drivetrain = drivetrain;
+     //   drivetrain = TunerConstants.createDrivetrain();
 
     }
 
-    void setState() {
+   private void setState() {
 
         switch (setSuperState) {
 
@@ -213,16 +209,20 @@ public class SuperStructureSubsystem extends SubsystemBase {
             processor();
         }
     }
+
     //public BooleanSupplier hasAglea = claw.supplyAcceptable();
     private void net() {
 
     }
 
+    private void transitionState(){
+        
+    }
     // data collection for subsystems
     public void SubTelemetry() {
-        drivetrain.registerTelemetry(logger::telemeterize);
+       // drivetrain.registerTelemetry(logger::telemeterize);
         // The 3d allows visualization of the robot
-        Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
+       // Logger.recordOutput("3D/Drive/Pose", new Pose3d(drivetrain.getState().Pose));
         Logger.recordOutput("3D/Claw", new Pose3d(0,0,elevator.convert(), new Rotation3d(0,claw.getAxis(),0)));
         // Logger.recordOutput("3D/Elevator/1stStage",
         // new Pose3d(0.0, 0.0, elevator.visualizeElevatorOutput(), new Rotation3d(0, 0,

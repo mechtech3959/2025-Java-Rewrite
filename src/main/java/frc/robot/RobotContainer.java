@@ -45,6 +45,7 @@ import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
 import frc.robot.subsystems.claw.feed.FeedRevMaxIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimIO;
+import frc.robot.subsystems.elevator.ElevatorTalonFXIO;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class RobotContainer {
@@ -148,8 +149,7 @@ public class RobotContainer {
                 // } else {
                 // NamedCommands.registerCommand("pathFind", redPathfindingCommand);
                 // }
-                ElevatorIO elevatorIO = new ElevatorSimIO();// (Robot.isSimulation())? new ElevatorSimIO(): new
-                                                            // ElevatorTalonFXIO();
+                ElevatorIO elevatorIO =  (Robot.isSimulation())? new ElevatorSimIO(): new ElevatorTalonFXIO();
 
                 ClawIO clawIO = new ClawSimIO();
                 state = superState.Tare;

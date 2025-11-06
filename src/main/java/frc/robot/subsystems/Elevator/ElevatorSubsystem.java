@@ -3,18 +3,9 @@ package frc.robot.subsystems.elevator;
 import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
-
-import com.ctre.phoenix6.sim.CANcoderSimState;
-import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
@@ -33,17 +24,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         EStop
     }
 
-    double target = 0;
-    double simPose = 0;
-
-    Color8Bit blue;
-    public LoggedMechanism2d elevatorMech;
-    LoggedMechanismRoot2d root;
-    LoggedMechanismLigament2d elevatorLin;
-    DCMotorSim elevatorMotorSim;
-    TalonFXSimState simMaster;
-    TalonFXSimState simSlave;
-    CANcoderSimState simEncoder;
+   
+ 
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged data = new ElevatorIOInputsAutoLogged();
 
@@ -54,9 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorIO = elevatorIO;
 
         if (Robot.isSimulation()) {
-            // simMaster = masterM.getSimState();
-            // simSlave = slaveM.getSimState();
-            // simEncoder = elevatorEncoder.getSimState();
+
             simulationInit();
         }
 
@@ -115,18 +95,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void simSetHeight(double rot) {
     }
 
-    @Override
-    public void simulationPeriodic() {
-        // TalonFXSimState simMaster = masterM.getSimState();
-        // TalonFXSimState simSlave = slaveM.getSimState();
-        // CANcoderSimState simEncoder = elevatorEncoder.getSimState();
-        // simMaster.setSupplyVoltage(12);
-        // elevatorMotorSim.update(0.02);
-        // elevatorSim.setState(elevatorMotorSim.getAngularPositionRotations(), 1);
-        // carriagElevatorSim.setInput(target);
-        // elevatorSim.update(0.02);
-        // carriagElevatorSim.update(0.02);
-    }
+
 
     // Elevator is a 2 stage cascade so the 1st stage can only physically reach 0.93
     // meters;
@@ -178,14 +147,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("3D/Elevator/carriage",
                 new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
-        Logger.recordOutput("Elevator/ist", isTarget());
-        Logger.recordOutput("Elevator/istint", elevatorIO.isAtTarget());
+       // Logger.recordOutput("Elevator/isAtTarget", isTarget());
+      //  Logger.recordOutput("Elevator/istint", elevatorIO.isAtTarget());
  
 
         setStates();
         isTarget();
         sendData();
-        SmartDashboard.putString("applied", data.getAppliedControl);
         super.periodic();
     }
 

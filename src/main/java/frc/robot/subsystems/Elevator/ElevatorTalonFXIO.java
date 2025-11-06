@@ -68,6 +68,7 @@ public class ElevatorTalonFXIO implements ElevatorIO {
         inputs.MasterMinputVolts = masterM.getMotorVoltage().getValueAsDouble();
         inputs.slaveMPosition = slaveM.getPosition().getValueAsDouble();
         inputs.slaveMVelocity = slaveM.getPosition().getValueAsDouble();
+        
         inputs.targetPose = target;
         inputs.getAppliedControl = masterM.getAppliedControl().toString();
 

@@ -2,8 +2,11 @@ package frc.robot.subsystems.claw;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.claw.feed.FeedIOInputsAutoLogged;
 import frc.robot.subsystems.claw.feed.FeedIO;
+import frc.robot.subsystems.claw.feed.FeedIOInputsAutoLogged;
+
+import frc.robot.subsystems.claw.ClawIO;
+import frc.robot.subsystems.claw.ClawIO.ClawIOInputsAutoLogged;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 

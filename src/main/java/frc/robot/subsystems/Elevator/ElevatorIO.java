@@ -25,7 +25,7 @@ public interface ElevatorIO {
         public double MasterMinputCurrentDraw = 0;
         public String getAppliedControl = "def";
         public boolean isAtTarget = false;
-        public LoggedMechanism2d elevator2d = e_Mech;
+      //  public LoggedMechanism2d elevator2d = e_Mech;
             }
     
     default void init(){

@@ -18,7 +18,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 
-
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -59,6 +59,10 @@ public class RobotContainer {
         public Pose2d redTargetPose = new Pose2d(15.965, 0.6, Rotation2d.fromDegrees(53));
         public Pose2d targetPose;
         public Pose2d startingPose;
+        public SlewRateLimiter driveLimiter;
+        public SlewRateLimiter rotLimiter;
+
+
         boolean algeaMode = false;
 
         public Alliance currentAlliance; //= Alliance.Red;
@@ -141,7 +145,8 @@ public class RobotContainer {
         double clawAngle = 0;
 
         public RobotContainer() {
-
+                        driveLimiter = new SlewRateLimiter(1); 
+                        rotLimiter = new SlewRateLimiter(1);
                         currentAlliance = (DriverStation.getAlliance().isPresent())? DriverStation.getAlliance().get() : Alliance.Red;
 
                 // if (currentAlliance == Alliance.Blue) {
@@ -181,22 +186,24 @@ public class RobotContainer {
         private void configureBindings() {
             //    CameraServer.startAutomaticCapture();
             drivetrain.registerTelemetry(logger::telemeterize);
-                drivetrain.setDefaultCommand(
-                                drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                                .withRotationalRate(joystick.getRightX() * MaxAngularRate) // negative
+           drivetrain.setDefaultCommand(
+                              drivetrain.applyRequest(() -> drive
+                                              .withVelocityX(driveLimiter.calculate( -joystick.getLeftY()) * MaxSpeed) // Negative Y(forward)
+                                               .withVelocityY(driveLimiter.calculate(-joystick.getLeftX()) * MaxSpeed)// Negative X(left)
+                                            .withRotationalRate(rotLimiter.calculate( joystick.getRightX()) * MaxAngularRate) // negative
                                 // X(counterclockwise) SWAPPED ... kinda all - on this are turned to positive
                                 ));
-                joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
-                                .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
-                                .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
-                                .withRotationalRate(joystick.getRightX() * 0.5) // negative
-                // X(counterclockwise)
-                )).whileFalse(drivetrain.applyRequest(() -> drive
-                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+                        
+                    /* joystick.rightBumper().onTrue(drivetrain.applyRequest( ()-> drive
+                                        .withVelocityX(-joystick.getLeftY() * 0.5) // Negative Y(forward)
+                                        .withVelocityY(-joystick.getLeftX() * 0.5)// Negative X(left)
+                                        .withRotationalRate(-joystick.getRightX() * 0.5)))
+
+                                .onFalse(drivetrain.applyRequest( ()-> drive
+                                        .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+                                        .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+                                        .withRotationalRate(-joystick.getRightX() * MaxAngularRate) ));
+*/
 
                 joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(

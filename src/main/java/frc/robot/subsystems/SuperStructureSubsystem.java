@@ -4,10 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Telemetry;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
@@ -54,70 +51,34 @@ public class SuperStructureSubsystem extends SubsystemBase {
    private void setState() {
 
         switch (setSuperState) {
-
-            case Home:
-                home();
-                break;
-            case L1:
-                l1();
-                break;
-            case L2:
-                l2();
-                break;
-            case L3:
-                l3();
-                break;
-            case L4:
-                l4();
-                break;
-            case Net:
-                net();
-                break;
-            case DeAlgea_L2:
-                deAlgea_L2();
-                break;
-            case DeAlgea_L3:
-                deAlgea_L3();
-                break;
-            case Processor:
-                processor();
-                break;
-            case Intake:
-                intake();
-                break;
-            case Tare:
-                tareSuper();
-                break;
-            case Test:
-                // claw.clawState = ClawStates.L1;
+           
+            case Home -> home();
+            case L1 -> l1();
+            case L2 -> l2();
+            case L3 -> l3();
+            case L4 -> l4();
+            case Net -> net();
+            case DeAlgea_L2 -> deAlgea_L2();
+            case DeAlgea_L3 -> deAlgea_L3();
+            case Processor -> processor();
+            case Intake -> intake();
+            case Tare -> tareSuper();
+            case Test -> // claw.clawState = ClawStates.L1;
                 elevator.changeState(ElevatorStates.L3);
-                break;
-            case Test2:
-                // claw.clawState = ClawStates.L1;
+            case Test2 -> // claw.clawState = ClawStates.L1;
                 elevator.changeState(ElevatorStates.L4);
-                break;
-            case Test3:
-                // claw.clawState = ClawStates.L1;
+            case Test3 -> // claw.clawState = ClawStates.L1;
                 elevator.changeState(ElevatorStates.Home);
-                break;
-            default:
-                break;
+            default -> {
+            }
         }
         switch (setFeed) {
-            case Intake:
-                claw.changeState(setFeed);
-                break;
-            case Outake:
-                claw.changeState(setFeed);
-                break;
-            case PercentOut:
-                claw.changeState(setFeed, clawSetOut);
-                break;
-            case Algea:
-                claw.changeState(setFeed);
-                break;
-            default:
-                break;
+            case Intake -> claw.changeState(setFeed);
+            case Outake -> claw.changeState(setFeed);
+            case PercentOut -> claw.changeState(setFeed, clawSetOut);
+            case Algea -> claw.changeState(setFeed);
+            default -> {
+            }
         }
     }
 

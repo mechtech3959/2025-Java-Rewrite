@@ -1,43 +1,31 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import choreo.auto.AutoFactory;
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
-import org.littletonrobotics.junction.Logger;
-
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -227,6 +215,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
+                    
                     () -> getState().Pose, // Supplier of current robot pose
                     this::resetPose, // Consumer for seeding pose against auto
                     () -> getState().Speeds, // Supplier of current robot speeds
@@ -237,9 +226,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                                     .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
                     new PPHolonomicDriveController(
                             // PID constants for translation
-                            new PIDConstants(5, 0, 0),
+                            new PIDConstants(10, 0, 0),
                             // PID constants for rotation
-                            new PIDConstants(5, 0, 0)),
+                            new PIDConstants(7, 0, 0)),
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
@@ -352,9 +341,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     
         return false;
     }*/
-    public Pose2d getPose() {
-        return this.getPose();
-    }
+   // public Pose2d getPose() {
+  //      return this.getPose();
+  //  }
 
     @Override
     public void periodic() {

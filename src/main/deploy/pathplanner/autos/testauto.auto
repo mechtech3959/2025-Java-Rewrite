@@ -5,21 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Intake"
+            "pathName": "testing pathing 1"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Copy of testing pathing 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "testing pathing 1"
           }
         }
       ]

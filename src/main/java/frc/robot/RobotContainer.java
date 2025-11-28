@@ -4,34 +4,20 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
-import choreo.Choreo;
-import choreo.auto.AutoFactory;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.MjpegServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -40,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.autos.BlueMid;
 import frc.robot.commands.Intake;
 import frc.robot.commands.scoreL1;
 import frc.robot.commands.scoreL4;
@@ -57,7 +42,6 @@ import frc.robot.subsystems.claw.feed.FeedRevMaxIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimIO;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.elevator.ElevatorTalonFXIO;
 
 @SuppressWarnings("unused")
 public class RobotContainer {
@@ -106,7 +90,7 @@ public class RobotContainer {
         // 1181);
         /* Path follower */
        private final SendableChooser<Command> autoChooser;
-        private final SendableChooser<String> poseChooser = new SendableChooser<String>();
+        private final SendableChooser<String> poseChooser = new SendableChooser<>();
         // SendableBuilder poseBuilder;
         String _chosenPose;
 
@@ -115,24 +99,8 @@ public class RobotContainer {
                         3.0, 4.0,
                         Units.degreesToRadians(300), Units.degreesToRadians(300));
 
-        Command pathfindingCommand;
 
-        // Since AutoBuilder is configured, we can use it to build pathfinding commands
-   /*      Command bluePathfindingCommand = AutoBuilder.pathfindToPose(
-                        blueTargetPose,
-                        constraints,
-                        0.0 // Goal end velocity in meters/sec
-                            // Rotation delay distance in meters. This is how far the robot should travel
-                            // before attempting to rotate.
-        );
-        Command redPathfindingCommand = AutoBuilder.pathfindToPose(
-                        redTargetPose,
-                        constraints,
-                        0.0 // Goal end velocity in meters/sec
-                            // Rotation delay distance in meters. This is how far the robot should travel
-                            // before attempting to rotate.
-        );
-*/
+      
 
         scoreL4 scorel4;
         scoreL1 scorel1;
@@ -346,10 +314,10 @@ public class RobotContainer {
                 // drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
                 // drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
 
-                DriverStation.getAlliance().ifPresent(currentAlliance -> {
-                        SmartDashboard.putString("Ali", currentAlliance.toString());
+               // DriverStation.getAlliance().ifPresent(currentAlliance -> {
+              //          SmartDashboard.putString("Ali", currentAlliance.toString());
 
-                });
+           //     });
                 SmartDashboard.putData(poseChooser);
 
                  Logger.recordOutput("posechosen", startingPose);

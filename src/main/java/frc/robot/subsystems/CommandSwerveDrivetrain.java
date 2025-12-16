@@ -332,8 +332,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         followTrajectory(followedPath.sampleAt(pathingTimer.get(), false)
         );
     }
-    //TODO MAKE THIS WORK
-    public boolean isPathComplete(){
+     public boolean isPathComplete(){
         if(followedPath.getFinalPose(false).isPresent()){
       Pose2d pose =  followedPath.getFinalPose(false).get();
     

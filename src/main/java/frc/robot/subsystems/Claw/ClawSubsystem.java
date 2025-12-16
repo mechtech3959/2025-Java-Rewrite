@@ -2,21 +2,14 @@ package frc.robot.subsystems.claw;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.claw.ClawIOInputsAutoLogged;
+//import frc.robot.subsystems.claw.ClawIOInputsAutoLogged;
 import frc.robot.subsystems.claw.feed.FeedIOInputsAutoLogged;
 import frc.robot.subsystems.claw.feed.FeedIO;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 
 import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ClawSubsystem extends SubsystemBase {
 
@@ -46,10 +39,7 @@ public class ClawSubsystem extends SubsystemBase {
     Algea
   }
 
-  public SingleJointedArmSim sim;
-  public LoggedMechanism2d clawMech;
-  public LoggedMechanismLigament2d pivot;
-  public LoggedMechanismLigament2d flat;
+ 
 
   public ClawStates clawState = ClawStates.Home;
   public FeedStates feedState = FeedStates.Off;
@@ -60,16 +50,8 @@ public class ClawSubsystem extends SubsystemBase {
     this.clawIO = clawIO;
     this.feedIO = feedIO;
 
-    sim = new SingleJointedArmSim(DCMotor.getFalcon500Foc(1), 36,
-        SingleJointedArmSim.estimateMOI(0.1, 12), 0.1, 0, 4.71, true, 0, 0.0, 0.0);
-    clawMech = new LoggedMechanism2d(0.1, 0.1, new Color8Bit(0, 0, 255));
-    LoggedMechanismRoot2d root = clawMech.getRoot("root", 0.02, 0.04);
-    pivot = root.append(new LoggedMechanismLigament2d("pivot", 0.01, 90));
-    flat = root.append(new LoggedMechanismLigament2d("flat", 0.02, 0));
-
-    if (Robot.isSimulation()) {
-      simulationInit();
-    }
+    
+ 
   }
 
   // Finite State Machine
@@ -142,11 +124,7 @@ public class ClawSubsystem extends SubsystemBase {
     }
   }
 
-  public void simulationInit() {
-    sim.setInputVoltage(12);
-    sim.setInput(0, 0); // Set simulation input to a default value
 
-  }
 
   public double getAxis() {
     return clawIO.getAxis();
@@ -177,13 +155,7 @@ public class ClawSubsystem extends SubsystemBase {
     }
   }
 
-  @Override
-  public void simulationPeriodic() {
-    sim.update(0.05);
-    // sim.setState(lastKnownAngle, 1);
-    // pivot.setAngle(lastKnownAngle);
-    SmartDashboard.putData("cc", clawMech);
-  }
+ 
 
   public void sendData() {
     // Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);

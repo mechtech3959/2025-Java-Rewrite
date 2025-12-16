@@ -238,7 +238,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     
 
     }
-
+    private void transferState(){}
     // Function for external alterations of the state
     public void changeState(superState state) {
         setSuperState = state;

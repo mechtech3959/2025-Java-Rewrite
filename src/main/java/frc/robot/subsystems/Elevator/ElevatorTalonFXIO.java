@@ -8,12 +8,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants;
 
 public class ElevatorTalonFXIO implements ElevatorIO {
-    private TalonFX masterM = new TalonFX(Constants.CanIdConstants.ElevatorSMotorId, Constants.CanIdConstants.canbus);
-    private TalonFX slaveM = new TalonFX(Constants.CanIdConstants.ElevatorMMotorId, Constants.CanIdConstants.canbus);
-    private CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
+    private final  TalonFX masterM = new TalonFX(Constants.CanIdConstants.ElevatorSMotorId, Constants.CanIdConstants.canbus);
+    private final TalonFX slaveM = new TalonFX(Constants.CanIdConstants.ElevatorMMotorId, Constants.CanIdConstants.canbus);
+    private final  CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
             Constants.CanIdConstants.canbus);
-    private ElevatorConfig config = new ElevatorConfig();
-    private MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0.0).withSlot(0);
+    private final ElevatorConfig config = new ElevatorConfig();
+    private final  MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0.0).withSlot(0);
     private double target = 0.0;
 
     // makes sure configs are applied during startup and are not retained

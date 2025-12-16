@@ -20,7 +20,7 @@ public class FeedRevMaxIO implements FeedIO {
     public void stdIntake() {
         feedMotor.set(-0.2);
     }
-
+    // the sensor indicates detection by changing voltage of analog
     @Override
     public boolean hasCoral() {
         if (feedMotor.getAnalog().getVoltage() >= 2.9) {

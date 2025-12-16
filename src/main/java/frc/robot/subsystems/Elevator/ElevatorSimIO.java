@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismObject2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -14,8 +13,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -107,7 +104,7 @@ public class ElevatorSimIO implements ElevatorIO {
         slaveSimM.setSupplyVoltage(RobotController.getBatteryVoltage());
         elevatorEncoderSim.setSupplyVoltage(RobotController.getBatteryVoltage());
         var mMotorVolts = masterSimM.getMotorVoltageMeasure();
-        var sMotorVolts = slaveSimM.getMotorVoltageMeasure();
+       // var sMotorVolts = slaveSimM.getMotorVoltageMeasure();
         elevatorMotorSim.setInputVoltage(mMotorVolts.in(Volts));
         elevatorMotorSim.update(0.02);
         masterSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition());

@@ -4,12 +4,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.SuperStructureSubsystem.superState;
-import frc.robot.subsystems.claw.ClawSubsystem;
-import frc.robot.subsystems.claw.ClawSubsystem.ClawStates;
 import frc.robot.subsystems.claw.ClawSubsystem.FeedStates;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorStates;
 
+@SuppressWarnings("unused")
 public class scoreL1 extends SequentialCommandGroup {
 
 

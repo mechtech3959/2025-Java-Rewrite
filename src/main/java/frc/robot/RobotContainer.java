@@ -4,34 +4,20 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
-import choreo.Choreo;
-import choreo.auto.AutoFactory;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.MjpegServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -40,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.autos.BlueMid;
 import frc.robot.commands.Intake;
 import frc.robot.commands.scoreL1;
 import frc.robot.commands.scoreL4;
@@ -73,7 +58,7 @@ public class RobotContainer {
         public Pose2d startingPose;
         boolean algeaMode = false;
 
-        public Alliance currentAlliance; //= Alliance.Red;
+        public Alliance currentAlliance; // = Alliance.Red;
 
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                       // speed
@@ -98,15 +83,14 @@ public class RobotContainer {
         public final ElevatorSubsystem elevator;
         public final ClawSubsystem claw;
         private final SuperStructureSubsystem superStruct;
-        private final AutoFactory autoFactory;
         // private final LimeLightSubsystem frontCam;
         // private final LimeLightSubsystem backCam;
         // public UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
         // public MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0",
         // 1181);
         /* Path follower */
-       private final SendableChooser<Command> autoChooser;
-        private final SendableChooser<String> poseChooser = new SendableChooser<String>();
+        private final SendableChooser<Command> autoChooser;
+        private final SendableChooser<String> poseChooser = new SendableChooser<>();
         // SendableBuilder poseBuilder;
         String _chosenPose;
 
@@ -115,29 +99,10 @@ public class RobotContainer {
                         3.0, 4.0,
                         Units.degreesToRadians(300), Units.degreesToRadians(300));
 
-        Command pathfindingCommand;
-
-        // Since AutoBuilder is configured, we can use it to build pathfinding commands
-   /*      Command bluePathfindingCommand = AutoBuilder.pathfindToPose(
-                        blueTargetPose,
-                        constraints,
-                        0.0 // Goal end velocity in meters/sec
-                            // Rotation delay distance in meters. This is how far the robot should travel
-                            // before attempting to rotate.
-        );
-        Command redPathfindingCommand = AutoBuilder.pathfindToPose(
-                        redTargetPose,
-                        constraints,
-                        0.0 // Goal end velocity in meters/sec
-                            // Rotation delay distance in meters. This is how far the robot should travel
-                            // before attempting to rotate.
-        );
-*/
-
         scoreL4 scorel4;
         scoreL1 scorel1;
+        Intake intakeCMD;
 
-        BlueMid blueMid;
         private Command controllerRumbleCommand() {
                 return Commands.startEnd(
                                 () -> {
@@ -150,37 +115,31 @@ public class RobotContainer {
                                 });
         }
 
-        Intake intakeCMD;
-
         double finalH = 0;
         double finalX = 0;
         double clawAngle = 0;
 
         public RobotContainer() {
 
-                        currentAlliance = (DriverStation.getAlliance().isPresent())? DriverStation.getAlliance().get() : Alliance.Red;
+                currentAlliance = (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get()
+                                : Alliance.Red;
 
                 // if (currentAlliance == Alliance.Blue) {
                 // NamedCommands.registerCommand("pathFind", bluePathfindingCommand);
                 // } else {
                 // NamedCommands.registerCommand("pathFind", redPathfindingCommand);
                 // }
-                ElevatorIO elevatorIO = new ElevatorSimIO();// (Robot.isSimulation())? new ElevatorSimIO(): new
-                                                            // ElevatorTalonFXIO();
+                ElevatorIO elevatorIO = (Robot.isSimulation()) ? new ElevatorSimIO() : new ElevatorTalonFXIO();
 
-                ClawIO clawIO = new ClawSimIO();
+                ClawIO clawIO = (Robot.isSimulation()) ? new ClawSimIO() : new ClawTalonFXIO();
                 state = superState.Tare;
                 elevator = new ElevatorSubsystem(elevatorIO);
                 claw = new ClawSubsystem(clawIO, new FeedRevMaxIO());
                 superStruct = new SuperStructureSubsystem(elevator, claw, drivetrain);
+
                 scorel4 = new scoreL4(superStruct);
                 intakeCMD = new Intake(superStruct);
-
-                autoFactory = new AutoFactory(drivetrain::getPose, drivetrain::resetPose, drivetrain::followTrajectory,
-                                true, this.drivetrain);
-                scorel4 = new scoreL4(superStruct);
                 scorel1 = new scoreL1(superStruct);
-                blueMid = new BlueMid(superStruct, drivetrain, scorel4,scorel1, autoFactory);
                 // No camera anymore:(
                 // frontCam = new LimeLightSubsystem("front-limelight");
                 // backCam = new LimeLightSubsystem("back-limelight");
@@ -193,34 +152,37 @@ public class RobotContainer {
                 poseChooser.setDefaultOption("Middle", "Middle");
                 NamedCommands.registerCommand("Score L1", scorel4);
                 NamedCommands.registerCommand("Intake", intakeCMD);
+
                 autoChooser = AutoBuilder.buildAutoChooser();
-               SmartDashboard.putData("Auto Mode", autoChooser);
+                SmartDashboard.putData("Auto Mode", autoChooser);
 
                 configureBindings();
 
         }
-        public void initAuto(){
+
+        public void initAuto() {
                 superStruct.changeState(superState.Tare);
         }
+
         private void configureBindings() {
-            //    CameraServer.startAutomaticCapture();
+                // CameraServer.startAutomaticCapture();
 
                 drivetrain.setDefaultCommand(
                                 drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                                .withRotationalRate(joystick.getRightX() * MaxAngularRate) // negative
+                                                .withVelocityX(-joystick.getLeftY() * 1.5) // Negative Y(forward)
+                                                .withVelocityY(-joystick.getLeftX() * 1.5)// Negative X(left)
+                                                .withRotationalRate(-joystick.getRightX() * 1) // negative
                                 // X(counterclockwise) SWAPPED ... kinda all - on this are turned to positive
                                 ));
-                joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
-                                .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
-                                .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
-                                .withRotationalRate(joystick.getRightX() * 0.5) // negative
+                // joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> drive
+                // .withVelocityX(-joystick.getLeftY() * 2) // Negative Y(forward)
+                // .withVelocityY(-joystick.getLeftX() * 2)// Negative X(left)
+                // .withRotationalRate(joystick.getRightX() * 0.5) // negative
                 // X(counterclockwise)
-                )).whileFalse(drivetrain.applyRequest(() -> drive
-                                .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
-                                .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
-                                .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+                // )).whileFalse(drivetrain.applyRequest(() -> drive
+                // .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Negative Y(forward)
+                // .withVelocityY(-joystick.getLeftX() * MaxSpeed)// Negative X(left)
+                // .withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
                 joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(
@@ -247,13 +209,7 @@ public class RobotContainer {
                 // reset the field-centric heading on left bumper press
                 joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-                /*
-                 * coJoystick.a()
-                 * .onChange(Commands.runOnce(() -> {
-                 * superStruct.changeState(superState.Home);
-                 * }, superStruct));
-                 */
-
+          
                 coJoystick.y()
                                 .onChange(Commands.runOnce(() -> {
                                         superStruct.changeState(superState.L4);
@@ -345,17 +301,15 @@ public class RobotContainer {
                 // drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
                 // drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
 
-                DriverStation.getAlliance().ifPresent(currentAlliance -> {
-                        SmartDashboard.putString("Ali", currentAlliance.toString());
-
-                });
+               
                 SmartDashboard.putData(poseChooser);
 
-                 Logger.recordOutput("posechosen", startingPose);
+                Logger.recordOutput("posechosen", startingPose);
                 Logger.recordOutput("containstate", state);
- 
+
                 if (DriverStation.isDisabled()) {
-                        currentAlliance = (DriverStation.getAlliance().isPresent())? DriverStation.getAlliance().get() : Alliance.Red;
+                        currentAlliance = (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get()
+                                        : Alliance.Red;
                         positionStartup();
 
                         drivetrain.resetPose(startingPose);
@@ -384,31 +338,13 @@ public class RobotContainer {
                  * // double modelX = Math.asin(claw.sim.getAngleRads() - 0.821554 / 0.547343) +
                  * // 0.466346 / 10.77753;
                  * // this was wrong:sob:
-                 * 
-                 * Logger.recordOutput("Sim/Drivetrain Pose", new
-                 * Pose3d(drivetrain.getState().Pose));
-                 * Logger.recordOutput("Sim/mech2d/elevator", elevator.elevatorMech);
-                 * Logger.recordOutput("Sim/Final Position", new Pose3d[] {
-                 * new Pose3d(0, 0, elevator.elevatorSim.getPositionMeters(),
-                 * new Rotation3d(0, 0, 0)),
-                 * new Pose3d(0, 0, elevator.carriagElevatorSim.getPositionMeters(),
-                 * new Rotation3d(0, 0, 0)),
-                 * new Pose3d(finalX, 0, elevator.carriagElevatorSim.getPositionMeters() +
-                 * finalH,
-                 * new Rotation3d(0, claw.sim.getAngleRads(), 0))
-                 * });
-                 * Logger.recordOutput("calc", new Pose3d[] {
-                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                 * new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)),
-                 * });
                  */
 
         }
 
         public Command getAutonomousCommand() {
                 /* Run the path selected from the auto chooser */
-                return autoChooser.getSelected() ;
+                return autoChooser.getSelected();
 
         }
 }

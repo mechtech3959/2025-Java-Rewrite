@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -27,20 +26,27 @@ public class SuperStructureSubsystem extends SubsystemBase {
     public boolean coral;
 
     public enum superState {
-        Home,
-        L1,
-        L2,
-        L3,
-        L4,
-        Net,
-        Intake,
-        DeAlgea_L2,
-        DeAlgea_L3,
-        Processor,
-        Tare,
-        Test,
-        Test2,
-        Test3
+        Tare(0),
+        Home(1),
+        Intake(2),
+        Processor(3),
+        L1(4),
+        L2(5),
+        DeAlgea_L2(6),
+        DeAlgea_L3(7),
+        L3(8),
+        L4(9),
+        Net(10);
+
+        private final int id;
+
+        private superState(int i) {
+            this.id = i;
+        }
+
+        public final int getId() {
+            return id;
+        }
     }
 
     public superState setSuperState = superState.Home;
@@ -92,18 +98,6 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 break;
             case Tare:
                 tareSuper();
-                break;
-            case Test:
-                // claw.clawState = ClawStates.L1;
-                elevator.changeState(ElevatorStates.L3);
-                break;
-            case Test2:
-                // claw.clawState = ClawStates.L1;
-                elevator.changeState(ElevatorStates.L4);
-                break;
-            case Test3:
-                // claw.clawState = ClawStates.L1;
-                elevator.changeState(ElevatorStates.Home);
                 break;
             default:
                 break;
@@ -196,14 +190,18 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     private void intake() {
         elevator.changeState(ElevatorStates.Home);
+        claw.changeState(ClawStates.Travel);
+
         if (!claw.hasCoral()) {
-            claw.changeState(ClawStates.Intake);
+            if (elevator.getHeight() <= 2.3)
+                claw.changeState(ClawStates.Intake);
             coral = false;
         } else {
             coral = true;
             claw.changeState(ClawStates.Travel);
             changeState(superState.Home);
         }
+
     }
 
     private void processor() {
@@ -227,13 +225,8 @@ public class SuperStructureSubsystem extends SubsystemBase {
         /// this is the only one outside of its respective subsystem because it's height
         /// relies on elevator pos
         Logger.recordOutput("3D/Claw", new Pose3d(0, 0, elevator.convert(), new Rotation3d(0, claw.getAxis(), 0)));
-        // keep outputs logged for diagnosis
-
         Logger.recordOutput("State/Super", setSuperState);
 
-    }
-
-    private void transferState() {
     }
 
     // Function for external alterations of the state

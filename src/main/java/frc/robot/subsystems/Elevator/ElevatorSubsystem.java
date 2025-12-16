@@ -127,7 +127,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void tareElevator() {
         elevatorIO.resetAxis();
     }
- 
+ public double getHeight(){
+    return elevatorIO.getHeight();
+ }
     @Override
     public void periodic() {
         elevatorIO.periodic();

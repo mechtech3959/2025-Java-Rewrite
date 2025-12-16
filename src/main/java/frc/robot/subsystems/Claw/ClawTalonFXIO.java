@@ -59,11 +59,13 @@ public class ClawTalonFXIO implements ClawIO {
       return true;
     }
   }
+
   @Override
-  public void resetAxis(){
+  public void resetAxis() {
     axisMotor.setPosition(0.0);
     axisEncoder.setPosition(0.0);
   }
+
   // Command test, same as setAxis but in command format
   @Override
   public Command moveAxis(double pose) {

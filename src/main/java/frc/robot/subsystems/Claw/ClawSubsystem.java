@@ -6,7 +6,6 @@ import frc.robot.Robot;
 import frc.robot.subsystems.claw.feed.FeedIOInputsAutoLogged;
 import frc.robot.subsystems.claw.feed.FeedIO;
 
-
 import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -39,8 +38,6 @@ public class ClawSubsystem extends SubsystemBase {
     Algea
   }
 
- 
-
   public ClawStates clawState = ClawStates.Home;
   public FeedStates feedState = FeedStates.Off;
   public double percentOut = 0.0;
@@ -50,8 +47,6 @@ public class ClawSubsystem extends SubsystemBase {
     this.clawIO = clawIO;
     this.feedIO = feedIO;
 
-    
- 
   }
 
   // Finite State Machine
@@ -124,8 +119,6 @@ public class ClawSubsystem extends SubsystemBase {
     }
   }
 
-
-
   public double getAxis() {
     return clawIO.getAxis();
   }
@@ -154,8 +147,6 @@ public class ClawSubsystem extends SubsystemBase {
       return () -> true;
     }
   }
-
- 
 
   public void sendData() {
     // Logger.recordOutput("Real/Claw/Axis", lastKnownAngle);

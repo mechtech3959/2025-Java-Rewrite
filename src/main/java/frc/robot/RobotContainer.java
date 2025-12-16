@@ -209,7 +209,6 @@ public class RobotContainer {
                 // reset the field-centric heading on left bumper press
                 joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-          
                 coJoystick.y()
                                 .onChange(Commands.runOnce(() -> {
                                         superStruct.changeState(superState.L4);
@@ -301,7 +300,6 @@ public class RobotContainer {
                 // drivetrain.addVisionMeasurement(frontCam.foundPosition, frontCam.timeStamp);
                 // drivetrain.addVisionMeasurement(backCam.foundPosition, backCam.timeStamp);
 
-               
                 SmartDashboard.putData(poseChooser);
 
                 Logger.recordOutput("posechosen", startingPose);

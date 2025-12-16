@@ -65,13 +65,13 @@ public class ElevatorConfig {
                                 .withMotionMagicAcceleration(40)
                                 .withMotionMagicJerk(1600).withMotionMagicExpo_kA(0.3);
                 Slot0Configs slot = new Slot0Configs().withGravityType(GravityTypeValue.Elevator_Static).withKP(20)
-                .withKI(3)
-                .withKD(0.5).withKS(0.4).withKV(0.001).withKA(0).withKG(0.75)
+                                .withKI(3)
+                                .withKD(0.5).withKS(0.4).withKV(0.001).withKA(0).withKG(0.75)
                                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
                 TalonFXConfiguration elevatorConfig = new TalonFXConfiguration().withFeedback(
                                 new FeedbackConfigs()
-                                             .withFeedbackSensorSource(fused).withFeedbackRemoteSensorID(24)
-                                               .withRotorToSensorRatio(18)
+                                                .withFeedbackSensorSource(fused).withFeedbackRemoteSensorID(24)
+                                                .withRotorToSensorRatio(18)
                                                 .withSensorToMechanismRatio(1))
                                 .withMotorOutput(new MotorOutputConfigs()
                                                 .withInverted(InvertedValue.CounterClockwise_Positive)

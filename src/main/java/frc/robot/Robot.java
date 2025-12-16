@@ -35,7 +35,7 @@ public class Robot extends LoggedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     Logger.recordMetadata("3959-2025 Java Rewrite", "3959-2025 Java Rewrite"); // Set a metadata value
-   // Pathfinding.setPathfinder(new LocalADStar());
+    // Pathfinding.setPathfinder(new LocalADStar());
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
@@ -113,7 +113,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-  
+
   }
 
   @Override

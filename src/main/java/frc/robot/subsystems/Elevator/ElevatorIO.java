@@ -38,6 +38,10 @@ public interface ElevatorIO {
 
     default void updateInputs(ElevatorIOInputs inputs) {
     }
-    default void periodic(){}
-    default void simulationInit(){}
+
+    default void periodic() {
+    }
+
+    default void simulationInit() {
+    }
 }

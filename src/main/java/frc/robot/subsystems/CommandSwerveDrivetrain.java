@@ -41,11 +41,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
 
     // choreo pathing
-  //  private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
-   // private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
-   // private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
-    //public Trajectory<SwerveSample> followedPath;
-    //Timer pathingTimer = new Timer();
+    // private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
+    // private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+    // private final PIDController headingController = new PIDController(7.5, 0.0,
+    // 0.0);
+    // public Trajectory<SwerveSample> followedPath;
+    // Timer pathingTimer = new Timer();
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.k180deg;// swap??
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -215,7 +216,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                    
+
                     () -> getState().Pose, // Supplier of current robot pose
                     this::resetPose, // Consumer for seeding pose against auto
                     () -> getState().Speeds, // Supplier of current robot speeds
@@ -239,39 +240,38 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",
                     ex.getStackTrace());
         }
-       // headingController.enableContinuousInput(-Math.PI, Math.PI);
-/* 
-        try{
-        var config = RobotConfig.fromGUISettings();
-          AutoBuilder.configure(
-          () -> getState().Pose, // Supplier of current robot pose
-          this::resetPose, // Consumer for seeding pose against auto
-          () -> getState().Speeds, // Supplier of current robot speeds
-          // Consumer of ChassisSpeeds and feedforwards to drive the robot
-          (speeds, feedforwards) -> setControl(
-          m_pathApplyRobotSpeeds.withSpeeds(speeds)
-          .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-          .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
-          new PPHolonomicDriveController(
-         // PID constants for translation
-          new PIDConstants(10, 0, 0),
-          // PID constants for rotation
-          new PIDConstants(7, 0, 0)),
-          config,
-          // Assume the path needs to be flipped for Red vs Blue, this is normally the
-          // case
-          () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue,
-          this // Subsystem for requirements
-          );
-          } catch (Exception ex) {
-          DriverStation.
-          reportError("Failed to load PathPlanner config and configure AutoBuilder",
-          ex.getStackTrace());}
-          */
-       
-    // Configure AutoBuilder last
-     
-         
+        // headingController.enableContinuousInput(-Math.PI, Math.PI);
+        /*
+         * try{
+         * var config = RobotConfig.fromGUISettings();
+         * AutoBuilder.configure(
+         * () -> getState().Pose, // Supplier of current robot pose
+         * this::resetPose, // Consumer for seeding pose against auto
+         * () -> getState().Speeds, // Supplier of current robot speeds
+         * // Consumer of ChassisSpeeds and feedforwards to drive the robot
+         * (speeds, feedforwards) -> setControl(
+         * m_pathApplyRobotSpeeds.withSpeeds(speeds)
+         * .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+         * .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+         * new PPHolonomicDriveController(
+         * // PID constants for translation
+         * new PIDConstants(10, 0, 0),
+         * // PID constants for rotation
+         * new PIDConstants(7, 0, 0)),
+         * config,
+         * // Assume the path needs to be flipped for Red vs Blue, this is normally the
+         * // case
+         * () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue,
+         * this // Subsystem for requirements
+         * );
+         * } catch (Exception ex) {
+         * DriverStation.
+         * reportError("Failed to load PathPlanner config and configure AutoBuilder",
+         * ex.getStackTrace());}
+         */
+
+        // Configure AutoBuilder last
+
     }
 
     /**
@@ -307,42 +307,46 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    /*public void followTrajectory(Optional <SwerveSample> inp) {
-
-        if(inp.isPresent()){
-            SwerveSample sample = inp.get();
-        // Get the current pose of the robot
-        Pose2d pose = getState().Pose;
-
-        // Generate the next speeds for the robot
-        ChassisSpeeds speeds = new ChassisSpeeds(
-                sample.vx + xController.calculate(pose.getX(), sample.x),
-                sample.vy + yController.calculate(pose.getY(), sample.y),
-                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
-
-        // Apply the generated speeds
-        pathingTimer.start();
-        this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
-        }
-    }// } () -> (DriverStation.getAlliance().equals(Alliance.Blue)) ? true : false};
-
-    public void setTrajectory(Trajectory<SwerveSample> input) {
-        followedPath = input;
-        pathingTimer.reset();
-        followTrajectory(followedPath.sampleAt(pathingTimer.get(), false)
-        );
-    }
-     public boolean isPathComplete(){
-        if(followedPath.getFinalPose(false).isPresent()){
-      Pose2d pose =  followedPath.getFinalPose(false).get();
-    
-    }
-    
-        return false;
-    }*/
-   // public Pose2d getPose() {
-  //      return this.getPose();
-  //  }
+    /*
+     * public void followTrajectory(Optional <SwerveSample> inp) {
+     * 
+     * if(inp.isPresent()){
+     * SwerveSample sample = inp.get();
+     * // Get the current pose of the robot
+     * Pose2d pose = getState().Pose;
+     * 
+     * // Generate the next speeds for the robot
+     * ChassisSpeeds speeds = new ChassisSpeeds(
+     * sample.vx + xController.calculate(pose.getX(), sample.x),
+     * sample.vy + yController.calculate(pose.getY(), sample.y),
+     * sample.omega + headingController.calculate(pose.getRotation().getRadians(),
+     * sample.heading));
+     * 
+     * // Apply the generated speeds
+     * pathingTimer.start();
+     * this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
+     * }
+     * }// } () -> (DriverStation.getAlliance().equals(Alliance.Blue)) ? true :
+     * false};
+     * 
+     * public void setTrajectory(Trajectory<SwerveSample> input) {
+     * followedPath = input;
+     * pathingTimer.reset();
+     * followTrajectory(followedPath.sampleAt(pathingTimer.get(), false)
+     * );
+     * }
+     * public boolean isPathComplete(){
+     * if(followedPath.getFinalPose(false).isPresent()){
+     * Pose2d pose = followedPath.getFinalPose(false).get();
+     * 
+     * }
+     * 
+     * return false;
+     * }
+     */
+    // public Pose2d getPose() {
+    // return this.getPose();
+    // }
 
     @Override
     public void periodic() {

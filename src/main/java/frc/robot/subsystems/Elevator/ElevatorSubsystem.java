@@ -4,12 +4,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 //import frc.robot.subsystems.elevator.ElevatorIOInputsAutoLogged;
 
-
 import org.littletonrobotics.junction.Logger;
 
-
 import java.util.function.BooleanSupplier;
-
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -28,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     double target = 0;
-    
+
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged data = new ElevatorIOInputsAutoLogged();
 
@@ -39,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorIO = elevatorIO;
 
         if (Robot.isSimulation()) {
-         
+
             simulationInit();
         }
 
@@ -91,8 +88,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIO.simulationInit();
     }
 
-
-
     // Elevator is a 2 stage cascade so the 1st stage can only physically reach 0.93
     // meters;
     // this just makes sure the robot is properly visualized during replay or live
@@ -127,14 +122,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void tareElevator() {
         elevatorIO.resetAxis();
     }
- public double getHeight(){
-    return elevatorIO.getHeight();
- }
+
+    public double getHeight() {
+        return elevatorIO.getHeight();
+    }
+
     @Override
     public void periodic() {
         elevatorIO.periodic();
         elevatorIO.updateInputs(data);
-         Logger.processInputs("Elevator", data);
+        Logger.processInputs("Elevator", data);
         Logger.recordOutput("State/Elevator", elevatorState);
         Logger.recordOutput("3D/Elevator/1st stage",
                 new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
@@ -142,7 +139,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                 new Pose3d(0, 0, convert(), new Rotation3d(0, 0, 0)));
         Logger.recordOutput("3D/Elevator/Stationary", new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)));
         Logger.recordOutput("Elevator/istint", elevatorIO.isAtTarget());
- 
 
         setStates();
         isTarget();

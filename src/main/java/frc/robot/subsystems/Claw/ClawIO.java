@@ -37,9 +37,12 @@ public interface ClawIO {
     default boolean acceptableAngle() {
         return true;
     }
-    default void updateInputs(ClawIOInputs data){
-    
+
+    default void updateInputs(ClawIOInputs data) {
+
     }
-    default void periodic(){}
+
+    default void periodic() {
+    }
 
 }

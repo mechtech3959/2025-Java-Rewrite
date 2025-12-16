@@ -9,12 +9,12 @@ public class Intake extends SequentialCommandGroup {
 
     public final SuperStructureSubsystem superstruct;
 
-    public Intake(SuperStructureSubsystem _SuperStructureSubsystem ){
+    public Intake(SuperStructureSubsystem _SuperStructureSubsystem) {
         this.superstruct = _SuperStructureSubsystem;
-    addCommands(
-        Commands.runOnce(()-> _SuperStructureSubsystem.changeState(superState.Intake)),
-        Commands.waitUntil(()->_SuperStructureSubsystem.setSuperState == superState.Home));
-    
+        addCommands(
+                Commands.runOnce(() -> _SuperStructureSubsystem.changeState(superState.Intake)),
+                Commands.waitUntil(() -> _SuperStructureSubsystem.setSuperState == superState.Home));
+
     }
 
 }

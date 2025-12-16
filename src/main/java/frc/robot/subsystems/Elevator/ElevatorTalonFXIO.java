@@ -8,12 +8,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants;
 
 public class ElevatorTalonFXIO implements ElevatorIO {
-    private final  TalonFX masterM = new TalonFX(Constants.CanIdConstants.ElevatorSMotorId, Constants.CanIdConstants.canbus);
-    private final TalonFX slaveM = new TalonFX(Constants.CanIdConstants.ElevatorMMotorId, Constants.CanIdConstants.canbus);
-    private final  CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
+    private final TalonFX masterM = new TalonFX(Constants.CanIdConstants.ElevatorSMotorId,
+            Constants.CanIdConstants.canbus);
+    private final TalonFX slaveM = new TalonFX(Constants.CanIdConstants.ElevatorMMotorId,
+            Constants.CanIdConstants.canbus);
+    private final CANcoder elevatorEncoder = new CANcoder(Constants.CanIdConstants.ElevatorEncoderId,
             Constants.CanIdConstants.canbus);
     private final ElevatorConfig config = new ElevatorConfig();
-    private final  MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0.0).withSlot(0);
+    private final MotionMagicVoltage elevatorMotion = new MotionMagicVoltage(0.0).withSlot(0);
     private double target = 0.0;
 
     // makes sure configs are applied during startup and are not retained
@@ -40,9 +42,10 @@ public class ElevatorTalonFXIO implements ElevatorIO {
     // if changed motion profile moves elevator to set position
     @Override
     public void setHeight(double pose) {
-         if(pose != target){
-        masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true)  );
-         target = pose;}
+        if (pose != target) {
+            masterM.setControl(elevatorMotion.withPosition(pose).withEnableFOC(true).withUseTimesync(true));
+            target = pose;
+        }
     }
 
     @Override
@@ -52,7 +55,7 @@ public class ElevatorTalonFXIO implements ElevatorIO {
 
     @Override
     public boolean isAtTarget() {
-        if (target == getHeight() || (target <= getHeight()-0.05) && (target >= getHeight() +0.05)) {
+        if (target == getHeight() || (target <= getHeight() - 0.05) && (target >= getHeight() + 0.05)) {
             // Further this later.. like acceptable angle with claw.
             return true;
         } else {

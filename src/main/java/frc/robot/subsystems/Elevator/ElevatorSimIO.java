@@ -73,16 +73,18 @@ public class ElevatorSimIO implements ElevatorIO {
 
     @Override
     public double getHeight() {
-        return  masterM.getPosition().getValueAsDouble();
+        return masterM.getPosition().getValueAsDouble();
     }
-    @Override 
-    public void resetAxis(){
+
+    @Override
+    public void resetAxis() {
         masterM.setPosition(0);
         slaveM.setPosition(0);
-        elevatorMotorSim.setState(0,0);
-       // elevatorSim.setState(0, 0);
-        //carriagElevatorSim.setState(0 ,0);
+        elevatorMotorSim.setState(0, 0);
+        // elevatorSim.setState(0, 0);
+        // carriagElevatorSim.setState(0 ,0);
     }
+
     @Override
     public void simulationInit() {
 
@@ -90,13 +92,14 @@ public class ElevatorSimIO implements ElevatorIO {
 
     @Override
     public boolean isAtTarget() {
-        return ((target == getHeight()) || ((target >= getHeight() - 0.01) && (target <= getHeight() + 0.01))) ? true : false;
-       
+        return ((target == getHeight()) || ((target >= getHeight() - 0.01) && (target <= getHeight() + 0.01))) ? true
+                : false;
+
     }
 
     @Override
     public void periodic() {
-         masterSimM = masterM.getSimState();
+        masterSimM = masterM.getSimState();
         slaveSimM = slaveM.getSimState();
         elevatorEncoderSim = elevatorEncoder.getSimState();
 
@@ -104,7 +107,7 @@ public class ElevatorSimIO implements ElevatorIO {
         slaveSimM.setSupplyVoltage(RobotController.getBatteryVoltage());
         elevatorEncoderSim.setSupplyVoltage(RobotController.getBatteryVoltage());
         var mMotorVolts = masterSimM.getMotorVoltageMeasure();
-       // var sMotorVolts = slaveSimM.getMotorVoltageMeasure();
+        // var sMotorVolts = slaveSimM.getMotorVoltageMeasure();
         elevatorMotorSim.setInputVoltage(mMotorVolts.in(Volts));
         elevatorMotorSim.update(0.02);
         masterSimM.setRawRotorPosition(elevatorMotorSim.getAngularPosition());

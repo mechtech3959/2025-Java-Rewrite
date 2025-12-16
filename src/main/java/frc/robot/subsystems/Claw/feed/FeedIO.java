@@ -4,11 +4,14 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface FeedIO {
     @AutoLog
-  class FeedIOInputs {
-      public boolean hasCoral;
+    class FeedIOInputs {
+        public boolean hasCoral;
 
     }
-    default void Stop(){}
+
+    default void Stop() {
+    }
+
     default void setIntake(double percentOut) {
     }
 
@@ -21,6 +24,8 @@ public interface FeedIO {
     default boolean hasCoral() {
         return false;
     }
-    default void updateInputs(FeedIOInputs data){}
+
+    default void updateInputs(FeedIOInputs data) {
+    }
 
 }
